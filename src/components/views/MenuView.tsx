@@ -2,12 +2,19 @@
 
 import Link from "next/link";
 import { ExternalLink, Info, Phone } from "lucide-react";
-import { MenuBrowser } from "@/components/MenuBrowser";
+import {
+  MenuBrowser,
+  type MenuDietaryFilter,
+} from "@/components/MenuBrowser";
 import { menuCategories } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
 
-export function MenuView() {
+interface MenuViewProps {
+  initialDietary?: MenuDietaryFilter;
+}
+
+export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
   const { isZh, isTraditional, zhText, pick } = useLocale();
 
   return (
@@ -81,7 +88,10 @@ export function MenuView() {
       </section>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <MenuBrowser categories={menuCategories} />
+        <MenuBrowser
+          categories={menuCategories}
+          initialDietary={initialDietary}
+        />
 
         <aside
           aria-label={pick("过敏原与价格提示", "Allergen and pricing notice")}
@@ -101,6 +111,11 @@ export function MenuView() {
               </h2>
               {isZh ? (
                 <>
+                  <p>
+                    {zhText(
+                      "清真牛肉煎饼、清真鸡肉煎饼及牛肉煎饺均选用清真肉类食材，并同时供应蛋奶素煎饼、素煎饺与纯素日式咖喱，点单时可通过顶部「饮食筛选」一键查看。"
+                    )}
+                  </p>
                   <p>
                     {zhText(
                       "本店厨房日常使用小麦/麸质、鸡蛋、芝麻、大豆、乳制品、甲壳类（鲜虾馄饨）及坚果（榛子巧克力酱）。如您对任何食材过敏，请在下单前致电 "
@@ -137,6 +152,13 @@ export function MenuView() {
                 </>
               ) : (
                 <>
+                  <p>
+                    Our signature Beef &amp; Chicken Jian Bing crepes and
+                    pan-fried beef dumplings are made with{" "}
+                    <strong>Halal meat</strong>, alongside dedicated vegetarian
+                    crepes, veggie dumplings, and vegan Japanese curry. Use the
+                    dietary filter bar above to narrow the menu in one tap.
+                  </p>
                   <p>
                     Our kitchen handles wheat/gluten, eggs, sesame, soy, dairy,
                     crustaceans (shrimp wontons), and nuts (Nutella). If you

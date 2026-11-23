@@ -43,6 +43,7 @@ const CHAR_MAP: Record<string, string> = {
   为: "為",
   举: "舉",
   乐: "樂",
+  乡: "鄉",
   书: "書",
   买: "買",
   于: "於",

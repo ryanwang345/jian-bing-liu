@@ -6,8 +6,12 @@ import {
   ArrowRight,
   Clock,
   ExternalLink,
+  Flame,
+  Leaf,
   MapPin,
   Phone,
+  ShieldCheck,
+  Star,
   UtensilsCrossed,
 } from "lucide-react";
 import { DietaryBadge } from "@/components/DietaryBadge";
@@ -134,6 +138,40 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               )}
             </div>
 
+            {/* Instant Trust & Dietary Quick Links */}
+            <div className="mt-6 flex flex-wrap items-center gap-2 text-xs font-semibold">
+              <a
+                href="#reviews"
+                className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white/85 px-3 py-1 text-ink shadow-2xs transition-colors hover:border-cinnabar/40 hover:text-cinnabar"
+              >
+                <Star
+                  className="h-3.5 w-3.5 fill-[#E59819] text-[#E59819]"
+                  aria-hidden="true"
+                />
+                <span className="tabular-nums">
+                  {initialReviews?.rating.score ?? "4.9"}
+                </span>
+                <span className="text-ink-muted">
+                  ({initialReviews?.rating.count ?? 286}{" "}
+                  {pick("Google 好评", "Google Reviews")})
+                </span>
+              </a>
+              <Link
+                href="/menu?diet=halal"
+                className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/[0.07] px-3 py-1 text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-parchment"
+              >
+                <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                {pick("清真牛肉 · 鸡肉", "Halal Beef & Chicken")}
+              </Link>
+              <Link
+                href="/menu?diet=vegetarian"
+                className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/[0.08] px-3 py-1 text-jade transition-colors hover:bg-jade hover:text-parchment"
+              >
+                <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
+                {pick("素食 · 纯素可选", "Veggie & Vegan")}
+              </Link>
+            </div>
+
             <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1.15fr]">
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
@@ -215,6 +253,137 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   )}
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Multicultural Audience Highlights: Halal, Asian Street Food, UK Locals & Plant-Based */}
+      <section className="border-b border-kraft-deep/80 bg-kraft/35">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <div className="grid gap-5 md:grid-cols-3">
+            {/* Halal Diners */}
+            <div className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs transition-shadow hover:shadow-md">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/10 px-3 py-1 text-xs font-semibold text-cinnabar-dark">
+                    <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pick("清真之选", "Halal Options")}
+                  </span>
+                  <span
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-lg text-ink-muted"
+                  >
+                    {zhText("清真美味")}
+                  </span>
+                </div>
+                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
+                  {pick(
+                    "清真牛肉与鸡肉，现点现摊",
+                    "Halal beef & chicken, cooked fresh"
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                  {pick(
+                    "招牌牛肉煎饼、鸡肉煎饼、午市简餐及脆底牛肉煎饺均采用清真肉类食材，菜单支持一键筛选全部清真菜品。",
+                    "Our signature Beef & Chicken Jian Bing, lunch specials, and pan-fried beef dumplings use Halal meat. Filter the menu in one tap."
+                  )}
+                </p>
+              </div>
+              <Link
+                href="/menu?diet=halal"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-cinnabar transition-colors hover:text-cinnabar-dark"
+              >
+                {pick("一键查看清真菜单", "Browse Halal Menu")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+
+            {/* Asian & Chinese Street Food Lovers */}
+            <div className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs transition-shadow hover:shadow-md">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-turmeric/35 bg-turmeric/15 px-3 py-1 text-xs font-semibold text-[#87560d]">
+                    <Flame className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pick("地道家乡味", "Authentic Street Food")}
+                  </span>
+                  <span
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-lg text-ink-muted"
+                  >
+                    {zhText("传统手艺")}
+                  </span>
+                </div>
+                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
+                  {pick(
+                    "酥脆煎饼配热豆浆，熟悉的中国胃",
+                    "Real Northern Chinese street food in NW1"
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                  {pick(
+                    "热铁板现摊果蔬饼皮、自家熬制酱料与辣椒油，搭配现磨豆浆、手磨黑芝麻糊与杨枝甘露，并支持饭团外卖（4.5 ★）下单。",
+                    "Hand-spread fruit-and-veg batters, homemade savoury sauce and chilli oil, hot soya milk, mango sago, and Fantuan delivery (4.5 ★)."
+                  )}
+                </p>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/our-story"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-cinnabar"
+                >
+                  {pick("了解铁板手艺", "See Our Craft")}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                {restaurant.links.fantuanOrder && (
+                  <a
+                    href={restaurant.links.fantuanOrder}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm font-semibold text-cinnabar transition-colors hover:text-cinnabar-dark"
+                  >
+                    {pick("饭团下单", "Fantuan")}
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* UK Locals, Mixed Groups & Plant-Based Diners */}
+            <div className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs transition-shadow hover:shadow-md">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/10 px-3 py-1 text-xs font-semibold text-jade">
+                    <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pick("本地与蔬食友好", "Locals & Plant-Based")}
+                  </span>
+                  <span
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-lg text-ink-muted"
+                  >
+                    {zhText("蔬食友好")}
+                  </span>
+                </div>
+                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
+                  {pick(
+                    "堂食外带皆宜，素食与纯素同样丰富",
+                    "Easy for mixed groups, veggies & vegans"
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                  {pick(
+                    "价格透明（£1 起），既可到店堂食也可随手外带；除经典咸甜煎饼外，还提供素食果蔬煎饼、菠菜芝士煎饼、素煎饺与纯素日式咖喱。",
+                    "Clear in-store prices from £1 with casual dine-in and quick takeaway, plus Veggie Lover crepes, veg dumplings, and Vegan Japanese Curry."
+                  )}
+                </p>
+              </div>
+              <Link
+                href="/menu?diet=vegetarian"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-jade transition-colors hover:text-ink"
+              >
+                {pick("浏览素食与纯素菜品", "Browse Veggie & Vegan")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>

@@ -39,12 +39,17 @@ export const metadata: Metadata = {
   keywords: [
     "Jian Bing Liu",
     "煎饼刘",
+    "煎餅劉",
     "爱民",
     "Jian Bing London",
     "Chinese street food Camden",
     "Chinese savoury crepe London",
     "Camden takeaway",
     "Halal Jian Bing London",
+    "Halal Chinese food Camden",
+    "Vegetarian Chinese street food London",
+    "Vegan Japanese curry Camden",
+    "伦敦煎饼果子",
   ],
   openGraph: {
     type: "website",

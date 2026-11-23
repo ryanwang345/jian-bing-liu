@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
+import { ShieldCheck } from "lucide-react";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import {
   dietaryLabels,
@@ -10,22 +11,53 @@ import {
 } from "@/data/menu";
 import { useLocale } from "@/lib/i18n";
 
+export type MenuDietaryFilter = "all" | DietaryTagKey;
+
 interface MenuBrowserProps {
   categories: MenuCategory[];
+  initialDietary?: MenuDietaryFilter;
 }
 
-const dietaryFilters: Array<"all" | DietaryTagKey> = [
+const dietaryFilters: MenuDietaryFilter[] = [
   "all",
   "halal",
   "vegetarian",
   "vegan",
 ];
 
-export function MenuBrowser({ categories }: MenuBrowserProps) {
+export function MenuBrowser({
+  categories,
+  initialDietary = "all",
+}: MenuBrowserProps) {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
-  const [activeDietary, setActiveDietary] = useState<"all" | DietaryTagKey>(
-    "all"
-  );
+  const [activeDietary, setActiveDietary] =
+    useState<MenuDietaryFilter>(initialDietary);
+
+  const dietaryCounts = useMemo(() => {
+    const allItems = categories.flatMap((c) => c.items);
+    return {
+      all: allItems.length,
+      halal: allItems.filter((i) => i.dietary?.includes("halal")).length,
+      vegetarian: allItems.filter((i) => i.dietary?.includes("vegetarian"))
+        .length,
+      vegan: allItems.filter((i) => i.dietary?.includes("vegan")).length,
+    };
+  }, [categories]);
+
+  const handleSelectDietary = (filter: MenuDietaryFilter) => {
+    setActiveDietary(filter);
+    try {
+      const url = new URL(window.location.href);
+      if (filter === "all") {
+        url.searchParams.delete("diet");
+      } else {
+        url.searchParams.set("diet", filter);
+      }
+      window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+    } catch {
+      // Ignore URL update restrictions
+    }
+  };
 
   const filteredCategories = categories
     .map((category) => ({
@@ -61,19 +93,24 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                   filter === "all"
                     ? pick("全部", "All")
                     : t(dietaryLabels[filter]);
+                const count = dietaryCounts[filter];
                 return (
                   <button
                     key={filter}
                     type="button"
-                    onClick={() => setActiveDietary(filter)}
+                    onClick={() => handleSelectDietary(filter)}
                     aria-pressed={selected}
-                    className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+                    className={`rounded-full px-3.5 py-1 text-xs font-semibold tabular-nums transition-all ${
                       selected
-                        ? "bg-ink text-parchment shadow-xs"
+                        ? filter === "halal"
+                          ? "bg-cinnabar text-parchment shadow-xs"
+                          : filter === "vegetarian" || filter === "vegan"
+                            ? "bg-jade text-parchment shadow-xs"
+                            : "bg-ink text-parchment shadow-xs"
                         : "border border-kraft-deep bg-white/80 text-ink-soft hover:bg-kraft"
                     }`}
                   >
-                    {label}
+                    {label} ({count})
                   </button>
                 );
               })}
@@ -100,6 +137,21 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
           </nav>
         </div>
       </div>
+
+      {activeDietary === "halal" && (
+        <div className="mt-6 flex items-start gap-3 rounded-2xl border border-cinnabar/25 bg-cinnabar/[0.06] px-5 py-4 text-sm text-ink-soft">
+          <ShieldCheck
+            className="mt-0.5 h-5 w-5 shrink-0 text-cinnabar"
+            aria-hidden="true"
+          />
+          <p className="leading-relaxed">
+            {pick(
+              "以下为您筛选出采用清真牛肉与清真鸡肉制作的招牌煎饼及手工煎饺。如需了解当日配料或点餐细节，欢迎随时向店员确认。",
+              "Showing our signature crepes and pan-fried dumplings made with Halal beef and Halal chicken. Ask our team at the counter if you have any questions about fillings or preparation."
+            )}
+          </p>
+        </div>
+      )}
 
       <div className="mt-12 space-y-16">
         {filteredCategories.map((category) => (
@@ -218,7 +270,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
             </p>
             <button
               type="button"
-              onClick={() => setActiveDietary("all")}
+              onClick={() => handleSelectDietary("all")}
               className="mt-4 rounded-full bg-cinnabar px-5 py-2 text-sm font-semibold text-parchment hover:bg-cinnabar-dark"
             >
               {pick("查看全部菜单", "Show Full Menu")}
