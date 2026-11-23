@@ -4,7 +4,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "Menu",
   description:
-    "Explore the verified menu for Jian Bing Liu in Camden, London — Halal Beef & Chicken Jian Bing crepes, Veggie Lover crepes, braised mains, vegan Japanese curry, dumplings, wonton soups, sweet crepes, and drinks.",
+    "Menu and prices for Jian Bing Liu on Camden Road, London: Halal Beef & Chicken Jian Bing, Veggie Lover crepes, braised beef rice, vegan Japanese curry, dumplings, wonton soups, sweet crepes, and drinks.",
   path: "/menu",
   image: "/images/beef-crepe-sleeve.jpg",
 });

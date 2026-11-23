@@ -38,7 +38,7 @@ export function Footer() {
             <p className="text-sm leading-relaxed text-parchment/75">
               {isZh
                 ? "位于伦敦卡姆登的正宗中式街头小吃，坚持手工现摊果蔬咸味煎饼、花式蕾丝甜煎饼、酥脆煎饺与家常热菜。"
-                : "Authentic Chinese savoury Jian Bing crepes, fruit-and-vegetable batters, handmade dumplings, and delicate lace sweet crepes in Camden, London."}
+                : "Northern Chinese savoury Jian Bing, fruit-and-veg batters, pan-fried dumplings, and lacy sweet crepes on Camden Road."}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">

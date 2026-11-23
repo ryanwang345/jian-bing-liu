@@ -456,7 +456,7 @@ export const socialPosts: SocialPost[] = [
       zh: "卡姆登置顶人气出餐视频",
     },
     caption: {
-      en: "390+ likes on our pinned Camden Road video — watch our freshly griddled Jian Bing and hand-piped lace crepes come together.",
+      en: "Our pinned Camden Road clip (390+ likes) showing savoury Jian Bing and hand-piped lace crepes cooked to order.",
       zh: "390+ 点赞置顶视频，感受卡姆登人气煎饼档口的热闹烟火气。",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7671489076666682646",
@@ -476,7 +476,7 @@ export const socialPosts: SocialPost[] = [
       zh: "清真牛肉鸡肉煎饼与街头热卖推荐",
     },
     caption: {
-      en: "Craving authentic Chinese street food in London? Explore Halal beef & chicken Jian Bing plus freshly made snacks on Camden Road.",
+      en: "Halal beef and chicken Jian Bing plus hot street-food snacks from our Camden Road counter.",
       zh: "1.54 万播放推荐：清真牛肉/鸡肉煎饼与现做中式街头小吃，欢迎关注打卡。",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7678046964440714518",
@@ -536,7 +536,7 @@ export const socialPosts: SocialPost[] = [
       zh: "卡姆登路每日现做咸甜双味煎饼",
     },
     caption: {
-      en: "Calling all London foodies — fresh daily sweet and savoury crepes crafted with crisp ingredients on Camden Road.",
+      en: "Sweet and savoury crepes cooked fresh every day on Camden Road.",
       zh: "每日新鲜食材现做，咸味果蔬煎饼与花式甜煎饼一次满足。",
     },
     href: "https://www.instagram.com/ruff.leah/reel/DF3YvDIoAyH/",
@@ -616,7 +616,7 @@ export const socialPosts: SocialPost[] = [
       zh: "入选 r/LondonFood「伦敦最正宗中餐」推荐讨论",
     },
     caption: {
-      en: "Recommended by London locals as a must-visit hidden gem for Northern Chinese street food in Camden.",
+      en: "Picked out by London locals as a go-to Camden spot for Northern Chinese street food.",
       zh: "被伦敦本地吃货力荐为卡姆登必打卡的北方中式街头风味宝藏小店。",
     },
     href: "https://www.reddit.com/r/LondonFood/comments/1vkvncd/best_authentic_chinese_food_in_london/",

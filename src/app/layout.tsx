@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import {
-  Fraunces,
+  IBM_Plex_Sans,
   Ma_Shan_Zheng,
+  Newsreader,
   Noto_Sans_SC,
-  Noto_Serif_SC,
-  Plus_Jakarta_Sans,
 } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -13,17 +12,18 @@ import { restaurant, SITE_URL } from "@/data/restaurant";
 import { LocaleProvider } from "@/lib/i18n";
 import { buildRestaurantJsonLd } from "@/lib/seo";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-ibm-plex-sans",
   display: "swap",
 });
 
-const fraunces = Fraunces({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-fraunces",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-newsreader",
   display: "swap",
 });
 
@@ -31,13 +31,6 @@ const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-noto-sans-sc",
-  display: "swap",
-});
-
-const notoSerifSC = Noto_Serif_SC({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-noto-serif-sc",
   display: "swap",
 });
 
@@ -99,7 +92,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${plusJakarta.variable} ${fraunces.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${maShanZheng.variable}`}
+      className={`${ibmPlexSans.variable} ${newsreader.variable} ${notoSansSC.variable} ${maShanZheng.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-parchment text-ink selection:bg-cinnabar/20 selection:text-ink">
         <script

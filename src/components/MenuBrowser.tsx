@@ -170,7 +170,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
 
                         <div className="shrink-0 text-right">
                           {item.price ? (
-                            <span className="inline-block rounded-lg bg-kraft px-2.5 py-1 font-display text-base font-bold text-cinnabar-dark">
+                            <span className="inline-block rounded-lg bg-kraft px-2.5 py-1 font-sans text-sm font-semibold tabular-nums text-cinnabar-dark">
                               {item.price}
                             </span>
                           ) : (

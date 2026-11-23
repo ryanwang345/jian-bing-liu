@@ -133,17 +133,17 @@ export function ReviewsSection() {
         {/* Header + Verified Google Rating Summary */}
         <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
           <SectionHeading
-            eyebrow={isZh ? "顾客真实口碑" : "Loved by Londoners"}
+            eyebrow={isZh ? "顾客真实口碑" : "What Guests Say"}
             chineseAccent="食客好评"
             title={
               isZh
                 ? "Google 4.9 高分好评与社区分享"
-                : "Rated 4.9 on Google by Camden regulars"
+                : "4.9 on Google from Camden locals"
             }
             description={
               isZh
                 ? "以下评价与互动均来自真实光临卡姆登路 124 号的食客——点击任意卡片可直达 Google 地图或对应社媒原帖。"
-                : "Verified reviews and comments from guests visiting 124 Camden Road — click any review or post to open it directly on Google Maps, Instagram, TikTok, or Threads."
+                : "Real reviews and posts from people who've eaten at 124 Camden Road. Click any card to view it on Google Maps, Instagram, TikTok, Reddit, or Fantuan."
             }
           />
 
@@ -155,7 +155,7 @@ export function ReviewsSection() {
           >
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-3xl font-extrabold text-ink">
+                <span className="font-display text-3xl font-semibold tabular-nums text-ink">
                   {rating.score}
                 </span>
                 <span
@@ -426,12 +426,12 @@ export function ReviewsSection() {
               <h3 className="font-display text-2xl font-bold text-ink">
                 {isZh
                   ? "精选社媒、Reddit 讨论与饭团外卖"
-                  : "Featured Posts on Instagram, TikTok, Threads, Reddit & Fantuan"}
+                  : "On Instagram, TikTok, Threads, Reddit & Fantuan"}
               </h3>
               <p className="mt-1 text-sm text-ink-muted">
                 {isZh
                   ? "TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★ · 点击直达原帖或门店"
-                  : "1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan · Click any card to open directly"}
+                  : "1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan · Click any card to open"}
               </p>
             </div>
 

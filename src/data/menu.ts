@@ -37,7 +37,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Signature Savoury Crepes (Jian Bing)", zh: "招牌咸味煎饼" },
     chineseTitle: "招牌果蔬煎饼",
     subtitle: {
-      en: "Hand-spread Chinese savoury crepes cooked fresh on the round griddle with homemade sauce and crispy layers.",
+      en: "Chinese savoury crepes spread by hand on a hot round griddle, finished with house sauce and crispy fillings.",
       zh: "圆铁板手工现摊，搭配秘制咸香酱料、新鲜蔬菜与金黄酥脆。",
     },
     items: [
@@ -99,7 +99,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Lunchtime Specials", zh: "午市精选煎饼" },
     chineseTitle: "午市精选",
     subtitle: {
-      en: "Lighter everyday crepe portions crafted for a quick, satisfying Camden lunch.",
+      en: "Lighter single-egg portions for a quick lunch on Camden Road.",
       zh: "分量恰到好处的日常简餐，适合工作与逛街途中快速补充能量。",
     },
     items: [
@@ -158,7 +158,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Mains & Rice Dishes", zh: "家常热菜与盖饭" },
     chineseTitle: "热菜盖饭",
     subtitle: {
-      en: "Warm, comforting homestyle dishes — enjoy on their own or paired with freshly steamed rice.",
+      en: "Homestyle hot dishes, served on their own or with steamed white rice.",
       zh: "暖心慢炖家常硬菜，可单点也可搭配热腾腾的白米饭。",
     },
     items: [
@@ -167,7 +167,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Braised Beef", zh: "土豆胡萝卜炖牛肉" },
         chineseName: "土豆胡萝卜炖牛肉",
         description: {
-          en: "Slow-braised beef simmered with tender potatoes and carrots in rich savoury gravy.",
+          en: "Slow-braised beef with tender potatoes and carrots in rich savoury gravy.",
           zh: "软烂入味的慢炖牛肉，搭配绵软土豆与香甜胡萝卜，汤汁浓郁下饭。",
         },
         price: "£11.95",
@@ -184,7 +184,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Japanese Curry Chicken", zh: "日式脆鸡咖喱" },
         chineseName: "日式咖喱鸡",
         description: {
-          en: "Crispy fried chicken paired with tender carrots and potatoes in smooth Japanese curry sauce.",
+          en: "Crispy fried chicken with carrots and potatoes in smooth Japanese curry sauce.",
           zh: "外酥里嫩的炸鸡搭配软糯土豆与胡萝卜，裹满醇厚日式咖喱。",
         },
         price: "£9.95",
@@ -195,7 +195,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Vegan Japanese Curry", zh: "纯素日式咖喱" },
         chineseName: "素食日式咖喱",
         description: {
-          en: "Hearty plant-based curry cooked with carrots, sweet onions, and potatoes.",
+          en: "Plant-based Japanese curry simmered with chunky carrots, sweet onions, and potatoes.",
           zh: "胡萝卜、洋葱与大块土豆慢炖而成的醇香纯素日式咖喱。",
         },
         price: "£6.95",
@@ -226,7 +226,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Wonton Soups", zh: "鲜汤馄饨" },
     chineseTitle: "鲜汤馄饨",
     subtitle: {
-      en: "Delicate handmade wontons served piping hot in comforting broth.",
+      en: "Handmade wontons served piping hot in light, clear broth.",
       zh: "皮薄馅鲜的手工馄饨，配一碗清爽暖胃的高汤。",
     },
     items: [
@@ -235,7 +235,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Beef Wonton Soup", zh: "牛肉馄饨" },
         chineseName: "牛肉馄饨",
         description: {
-          en: "Savoury beef-filled wontons in a light, warming broth.",
+          en: "Savoury beef wontons in a light, hot broth.",
           zh: "鲜香牛肉馅手工馄饨，泡在清润暖胃的热汤里。",
         },
         price: "£5.95",
@@ -245,7 +245,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Shrimp Wonton Soup", zh: "鲜虾馄饨" },
         chineseName: "鲜虾馄饨",
         description: {
-          en: "Plump shrimp wontons served in clear aromatic soup.",
+          en: "Plump shrimp wontons in a clear, fragrant broth.",
           zh: "饱满弹牙的鲜虾馄饨，汤鲜味美。",
         },
         price: "£8.00",
@@ -257,7 +257,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Snacks & Dumplings", zh: "街头小吃与煎饺" },
     chineseTitle: "街头小吃",
     subtitle: {
-      en: "Golden pan-fried dumplings, crispy rolls, and classic tea eggs.",
+      en: "Pan-fried dumplings, crispy spring rolls, and spiced tea eggs.",
       zh: "底部焦脆的手工煎饺、酥香春卷与古法五香茶叶蛋。",
     },
     items: [
@@ -299,7 +299,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Tea Egg", zh: "五香茶叶蛋" },
         chineseName: "茶叶蛋",
         description: {
-          en: "Traditional Chinese egg gently steeped in aromatic black tea, soy sauce, and whole spices.",
+          en: "Whole egg steeped in black tea, soy sauce, and whole spices.",
           zh: "红茶、酱油与整粒香料慢卤入味的经典中式茶叶蛋。",
         },
         price: "£1.00",
@@ -315,12 +315,12 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Vegetarian Spring Rolls", zh: "酥炸素春卷" },
         chineseName: "素春卷",
         description: {
-          en: "Crisp, golden-fried pastry rolls packed with savoury seasoned vegetables.",
+          en: "Crisp golden pastry rolls filled with seasoned vegetables.",
           zh: "外皮金黄酥脆、内馅鲜香爽口的传统蔬菜春卷。",
         },
         price: null,
         note: {
-          en: "Price TBC — confirm in-store or on All Eat",
+          en: "Ask in-store or check All Eat for today's price",
           zh: "价格以店内或在线点餐页面为准",
         },
         dietary: ["vegetarian"],
@@ -337,7 +337,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Sweet Crepes & Desserts", zh: "花式甜煎饼与甜品" },
     chineseTitle: "甜煎饼与甜品",
     subtitle: {
-      en: "Indulgent sweet crepes, delicate lacy cones, and traditional Chinese desserts.",
+      en: "Warm sweet crepes, lacy dessert cones, and classic Chinese desserts.",
       zh: "香甜松脆的现摊甜煎饼、手工蕾丝甜筒以及暖心传统中式甜品。",
     },
     items: [
@@ -346,7 +346,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Nutella Crepe", zh: "榛子巧克力甜煎饼" },
         chineseName: "榛子巧克力甜煎饼",
         description: {
-          en: "Warm freshly griddled sweet crepe generously layered with Nutella; ask in-store for fresh fruit toppings.",
+          en: "Warm sweet crepe spread with Nutella; ask at the counter for fresh fruit toppings.",
           zh: "现摊热乎甜饼皮抹上浓郁榛子巧克力酱，到店可选加新鲜草莓、香蕉等丰富配料。",
         },
         price: "£4.00",
@@ -363,7 +363,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Mango Sago", zh: "鲜果杨枝甘露" },
         chineseName: "杨枝甘露",
         description: {
-          en: "Chilled, silky dessert crafted with fresh sweet mango and chewy sago pearls.",
+          en: "Chilled sweet mango dessert with chewy sago pearls.",
           zh: "精选新鲜甜芒果与弹滑西米手工调制，冰凉清甜。",
         },
         price: "£6.00",
@@ -377,7 +377,7 @@ export const menuCategories: MenuCategory[] = [
         },
         chineseName: "手磨黑芝麻糊",
         description: {
-          en: "Velvety, comforting traditional hot dessert brewed from toasted black sesame.",
+          en: "Thick, warm traditional dessert made from toasted black sesame.",
           zh: "浓稠顺滑、芝麻香气扑鼻的传统热甜品，暖胃又解馋。",
         },
         price: "£2.99",
@@ -388,12 +388,12 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Fancy Lace Sweet Crepe Cone", zh: "花式蕾丝甜筒煎饼" },
         chineseName: "花式蕾丝甜筒",
         description: {
-          en: "Signature crisp hand-piped lace crepe rolled into a cone with whipped cream, fruit, and sweet biscuits (as photographed).",
+          en: "Crisp hand-piped lace crepe rolled into a cone with whipped cream, fresh fruit, and biscuit sticks.",
           zh: "招牌手工挤制粉色蕾丝脆边饼皮卷成甜筒，装满绵密奶油、鲜果、抹茶饼干棒与可爱小熊饼干。",
         },
         price: null,
         note: {
-          en: "Price & seasonal toppings TBC — ask in-store",
+          en: "Seasonal toppings — ask at the counter",
           zh: "当季配料与价格请以店内为准",
         },
         dietary: ["vegetarian"],
@@ -410,7 +410,7 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Drinks & Refreshers", zh: "手调饮品与豆浆" },
     chineseTitle: "手调饮品",
     subtitle: {
-      en: "Hand-brewed teas, fresh fruit refreshers, traditional soya milk, and chilled soft drinks.",
+      en: "Hand-whisked matcha, fresh fruit drinks, classic soya milk, and chilled cans.",
       zh: "现磨豆浆、手打抹茶、鲜果特调与多款冰镇罐装饮料。",
     },
     items: [
@@ -422,7 +422,7 @@ export const menuCategories: MenuCategory[] = [
         },
         chineseName: "手打抹茶拿铁",
         description: {
-          en: "Smooth hand-whisked matcha served hot or over ice.",
+          en: "Smooth hand-whisked matcha, served hot or over ice.",
           zh: "细腻手打抹茶融合醇香牛奶，冷热皆宜。",
         },
         price: "£2.99",
@@ -433,7 +433,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Passion Fruit Sparkling", zh: "百香果气泡饮" },
         chineseName: "百香果气泡饮",
         description: {
-          en: "Crisp, lightly sparkling refresher bursting with tangy passion fruit.",
+          en: "Lightly sparkling iced drink with tangy passion fruit.",
           zh: "酸甜爽口的气泡果饮，满口清新百香果香。",
         },
         price: "£5.80",
@@ -444,7 +444,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Passion Fruit Iced Lemon Tea", zh: "百香果冰柠檬茶" },
         chineseName: "百香果冰柠檬茶",
         description: {
-          en: "Chilled fragrant tea balanced with bright lemon and passion fruit.",
+          en: "Chilled tea with fresh lemon and passion fruit.",
           zh: "冰爽醇香茶底遇上鲜柠檬与百香果，解腻开胃。",
         },
         price: "£5.80",
@@ -458,7 +458,7 @@ export const menuCategories: MenuCategory[] = [
         },
         chineseName: "鲜榨西瓜汁",
         description: {
-          en: "Cool, naturally sweet hand-made watermelon juice.",
+          en: "Freshly made chilled watermelon juice.",
           zh: "清甜解渴的现制冰爽西瓜汁。",
         },
         price: "£5.80",
@@ -469,7 +469,7 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Soya Milk (Hot / Cold)", zh: "经典现磨豆浆（热 / 冰）" },
         chineseName: "现磨豆浆",
         description: {
-          en: "Classic silky Chinese soya milk — the timeless pairing for a hot Jian Bing.",
+          en: "Smooth, classic Chinese soya milk, served hot or cold alongside your Jian Bing.",
           zh: "温润顺滑的传统豆浆，是配热煎饼的绝佳搭档。",
         },
         price: "£2.00",
@@ -480,12 +480,12 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Chilled Cans & Soft Drinks", zh: "冰镇汽水与饮料" },
         chineseName: "冰镇汽水",
         description: {
-          en: "Selection of chilled cans and bottles available at the counter, including Coca-Cola, Diet Coke, Fanta, Sprite, Old Jamaica Ginger Beer, and Ting.",
+          en: "Chilled cans and bottles in the fridge, including Coca-Cola, Diet Coke, Fanta, Sprite, Old Jamaica Ginger Beer, and Ting.",
           zh: "店内冷柜常备多款罐装及瓶装饮品，包括可口可乐、健怡可乐、芬达、雪碧、姜汁汽水及西柚汽水等。",
         },
         price: null,
         note: {
-          en: "Price TBC — see chilled cabinet in-store",
+          en: "See fridge in-store for prices",
           zh: "价格以店内冷柜标价为准",
         },
         dietary: ["vegan"],

@@ -22,7 +22,7 @@ const griddleSteps: Array<{
     title: { en: "Swirled on Cast Iron", zh: "热铁板手工摊饼" },
     chinese: "摊面糊",
     description: {
-      en: "Fresh savoury or naturally tinted fruit-and-vegetable batter is poured onto a hot round griddle and swept paper-thin with cracked egg.",
+      en: "Fresh savoury or naturally coloured fruit-and-veg batter is poured onto a hot round griddle and spread paper-thin with cracked egg.",
       zh: "在烧至恰到好处的圆铁板上淋入鲜调面糊或天然果蔬面糊，迅速均匀摊开并打入鲜蛋，激出焦香。",
     },
     image: "/images/griddle-batter-egg.jpg",
@@ -50,7 +50,7 @@ const griddleSteps: Array<{
     title: { en: "Folded Warm to Go", zh: "趁热装袋酥脆入口" },
     chinese: "趁热享用",
     description: {
-      en: "Tucked straight into our signature 煎饼刘 (爱民) kraft sleeve so every bite balances tender egg-kissed batter with golden street-food crunch.",
+      en: "Folded straight into our 煎饼刘 (爱民) brown paper sleeve while the eggy crepe is still soft and the centre is piping hot and crisp.",
       zh: "迅速折好装入印有「煎饼刘 · 爱民」印章的暖黄牛皮纸袋，每一口都是外柔内脆的热乎满足。",
     },
     image: "/images/jianbing-apron-hero.jpg",
@@ -82,7 +82,7 @@ export function StoryView() {
                 关于煎饼刘
               </span>
             </p>
-            <h1 className="mt-2 font-display text-4xl leading-[1.12] font-extrabold tracking-tight text-ink sm:text-5xl">
+            <h1 className="mt-2 font-display text-4xl leading-[1.12] font-medium tracking-[-0.025em] text-ink sm:text-5xl">
               {t(restaurant.story.headline)}
             </h1>
             <p className="mt-5 text-base leading-relaxed text-ink-muted sm:text-lg">
@@ -133,7 +133,7 @@ export function StoryView() {
               <p className="mt-2.5 text-xs leading-relaxed text-ink-muted">
                 {isZh
                   ? "每一张煎饼都由店主亲手现摊，配自家熬制酱料与秘制辣椒油，欢迎在 Instagram（@jian_bing_liu）、TikTok（@jianbingliu.uk）与 Threads 关注我们的日常出餐。"
-                  : "Every crepe is cooked to order by hand with homemade sauces and chilli oil — follow @jian_bing_liu on Instagram & Threads and @jianbingliu.uk on TikTok for daily kitchen clips."}
+                  : "Every crepe is cooked to order by hand with homemade sauces and chilli oil. Follow @jian_bing_liu on Instagram & Threads and @jianbingliu.uk on TikTok for daily clips from the counter."}
               </p>
             </div>
           </div>
@@ -159,17 +159,17 @@ export function StoryView() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <SectionHeading
-          eyebrow={isZh ? "铁板手艺" : "The Griddle Craft"}
+          eyebrow={isZh ? "铁板手艺" : "On the Griddle"}
           chineseAccent="匠心工艺"
           title={
             isZh
               ? "三步出锅，从滚烫面糊到酥香纸袋"
-              : "Three steps from sizzling batter to warm kraft sleeve"
+              : "Three steps from hot batter to brown paper sleeve"
           }
           description={
             isZh
               ? "正宗中式煎饼讲究火候、手速与配料层次，热腾腾现摊现叠，趁热咬下去最香。"
-              : "Traditional Chinese Jian Bing is all about timing, heat, and texture — cooked right in front of you and best eaten piping hot."
+              : "Proper Jian Bing comes down to heat, speed, and crunch. Cooked right in front of you and best eaten hot."
           }
         />
 
@@ -215,17 +215,17 @@ export function StoryView() {
       <section className="border-y border-kraft-deep/80 bg-kraft/50">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow={isZh ? "品牌印记" : "Our Identity"}
+            eyebrow={isZh ? "品牌印记" : "The Details"}
             chineseAccent="正宗风味"
             title={
               isZh
                 ? "手写书法、爱民朱印与多彩果蔬煎饼"
-                : "Calligraphy, our 爱民 seal & colourful crepes"
+                : "Brush calligraphy, our 爱民 seal & colourful crepes"
             }
             description={
               isZh
                 ? "从印着毛笔字「煎饼刘」与「爱民」朱印的牛皮纸袋，到门口红底流苏的果蔬煎饼旗帜，每一处细节都延续着地道亲切的中国市井温度。"
-                : "Every detail of Jian Bing Liu takes inspiration from classic Chinese street-stall warmth — from our brush-lettered 煎饼刘 kraft sleeves and 爱民 seal to our red fringed banners and hand-piped lace crepes."
+                : "From the brush-lettered 煎饼刘 paper sleeves and red 爱民 stamp to the fringed banner out front and hand-piped lace crepes, we keep the feel of a traditional Chinese street stall."
             }
           />
 
@@ -247,7 +247,7 @@ export function StoryView() {
               <figcaption className="p-4 text-sm font-medium text-ink-muted">
                 {isZh
                   ? "招牌牛皮纸袋，印有手写书法「煎饼刘」与「爱民」朱红印章。"
-                  : "Signature kraft sleeve stamped with 煎饼刘 calligraphy and our vermilion 爱民 seal."}
+                  : "Our brown paper sleeve stamped with 煎饼刘 calligraphy and the red 爱民 seal."}
               </figcaption>
             </figure>
 
@@ -268,7 +268,7 @@ export function StoryView() {
               <figcaption className="p-4 text-sm font-medium text-ink-muted">
                 {isZh
                   ? "门店悬挂的传统红金流苏旗帜——「正宗风味 · 果蔬煎饼」。"
-                  : "Traditional red banner celebrating authentic fruit-and-vegetable crepes (果蔬煎饼)."}
+                  : "Our traditional red banner for fruit-and-vegetable crepes (果蔬煎饼)."}
               </figcaption>
             </figure>
 
@@ -289,7 +289,7 @@ export function StoryView() {
               <figcaption className="p-4 text-sm font-medium text-ink-muted">
                 {isZh
                   ? "手工挤制的花式蕾丝脆边，卷成高颜值的甜筒煎饼。"
-                  : "Playful hand-piped fancy lace edges crafted for our sweet crepe cones."}
+                  : "Hand-piped lace edges made on the griddle for our sweet crepe cones."}
               </figcaption>
             </figure>
           </div>
@@ -302,12 +302,12 @@ export function StoryView() {
             <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               {isZh
                 ? "想来一份刚出锅的热乎煎饼吗？"
-                : "Ready to try a warm Jian Bing in Camden?"}
+                : "Fancy a hot Jian Bing?"}
             </h2>
             <p className="mt-2 text-sm text-ink-muted sm:text-base">
               {isZh
                 ? "浏览全部菜单，或每天 11:00 – 21:30 顺路光临伦敦卡姆登路 124 号。"
-                : `Browse the full menu or drop by ${restaurant.address.street} any day between 11:00 AM and 9:30 PM.`}
+                : `Take a look at the menu, or pop into ${restaurant.address.street} any day between 11:00 AM and 9:30 PM.`}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

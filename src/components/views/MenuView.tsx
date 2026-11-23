@@ -29,7 +29,7 @@ export function MenuView() {
                   精选菜单
                 </span>
               </p>
-              <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">
+              <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
                 {isZh
                   ? "现点现做，地道中式街头风味"
                   : "Fresh Chinese street food, cooked to order"}
@@ -37,7 +37,7 @@ export function MenuView() {
               <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
                 {isZh
                   ? "从热乎酥脆的招牌咸味煎饼、午市简餐，到慢炖土豆牛肉、纯素日式咖喱、手工煎饺与现磨热饮，满足每一顿的想念。"
-                  : "From crisp savoury Jian Bing and lunchtime specials to hearty braised beef, vegan Japanese curry, handmade dumplings, and hand-brewed drinks."}
+                  : "Savoury Jian Bing, lighter lunchtime crepes, slow-braised beef with rice, vegan Japanese curry, pan-fried dumplings, and fresh drinks."}
               </p>
             </div>
 
@@ -146,18 +146,17 @@ export function MenuView() {
                     before placing your order.
                   </p>
                   <p>
-                    Items marked <strong>Price TBC</strong> are photographed
-                    offerings whose current pricing should be confirmed in-store
-                    or on our{" "}
+                    Items marked <strong>Price TBC</strong> vary seasonally or by
+                    toppings; please check at the counter or on our{" "}
                     <a
                       href={restaurant.links.orderOnline}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-semibold text-cinnabar underline underline-offset-4 hover:text-cinnabar-dark"
                     >
-                      {restaurant.links.orderOnlineProvider} ordering page
+                      {restaurant.links.orderOnlineProvider} page
                     </a>
-                    . Want to pick up in person?{" "}
+                    . Heading over in person?{" "}
                     <Link
                       href="/visit-us"
                       className="font-semibold text-ink underline underline-offset-4 hover:text-cinnabar"

@@ -246,7 +246,7 @@ async function fetchCustomFeedReviews(): Promise<CustomerReview[]> {
 }
 
 function deduplicateReviews(lists: CustomerReview[][]): CustomerReview[] {
-  const seenAuthors = new Set<string>();
+  const seenKeys = new Set<string>();
   const seenSnippets = new Set<string>();
   const merged: CustomerReview[] = [];
 
@@ -258,11 +258,15 @@ function deduplicateReviews(lists: CustomerReview[][]): CustomerReview[] {
         .toLowerCase()
         .replace(/[^a-z0-9\u4e00-\u9fa5]/g, "")
         .slice(0, 48);
+      const compositeKey = `${review.source}:${authorKey}:${snippetKey}`;
 
-      if (seenAuthors.has(authorKey) || (snippetKey && seenSnippets.has(snippetKey))) {
+      if (
+        seenKeys.has(compositeKey) ||
+        (snippetKey && seenSnippets.has(snippetKey))
+      ) {
         continue;
       }
-      seenAuthors.add(authorKey);
+      seenKeys.add(compositeKey);
       if (snippetKey) seenSnippets.add(snippetKey);
       merged.push(review);
     }

@@ -37,13 +37,13 @@ export function VisitView() {
                 来店指南
               </span>
             </p>
-            <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">
+            <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
               {isZh ? "在伦敦卡姆登路找到我们" : "Find us on Camden Road"}
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
               {isZh
                 ? "欢迎到店堂食或外带热乎现摊煎饼，也支持卡姆登及周边伦敦区域无接触配送。"
-                : "Drop by for casual dine-in or freshly griddled takeaway, or order no-contact delivery across Camden and surrounding North London neighbourhoods."}
+                : "Pop in for a seat, pick up a hot takeaway, or order no-contact delivery across Camden and nearby North London."}
             </p>
           </div>
         </div>
@@ -128,7 +128,7 @@ export function VisitView() {
                   <p className="mt-3 text-xs text-ink-muted">
                     {isZh
                       ? "节假日营业时间可能略有调整，如临近打烊前来店，建议提前致电确认。"
-                      : "Hours may occasionally vary on public holidays — call ahead if visiting close to closing time."}
+                      : "Bank holiday hours can vary, so give us a quick ring if you're heading over late."}
                   </p>
                 </div>
               </div>
@@ -146,7 +146,7 @@ export function VisitView() {
                   <p className="mt-1.5 text-sm text-ink-muted">
                     {isZh
                       ? "欢迎致电咨询菜品或提前预约到店自取："
-                      : "Call the kitchen directly for enquiries or pickup orders:"}
+                      : "Ring the shop for questions or to order for collection:"}
                   </p>
                   <a
                     href={restaurant.phone.href}
@@ -264,7 +264,7 @@ export function VisitView() {
               <p className="mt-1.5 text-sm text-ink-muted">
                 {isZh
                   ? "煎饼刘现点现做，欢迎到店堂食趁热享用，也支持到店外带与无接触配送。"
-                  : "Jian Bing Liu welcomes walk-in guests for dine-in as well as takeaway and no-contact delivery — everything cooked fresh to order."}
+                  : "Walk in for a seat, grab a takeaway on the go, or order no-contact delivery. Everything is cooked fresh to order."}
               </p>
 
               <ul className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -306,19 +306,19 @@ export function VisitView() {
                 >
                   {isZh
                     ? "查看完整菜单与价格 →"
-                    : "Browse verified menu & prices →"}
+                    : "See full menu & prices →"}
                 </Link>
               </div>
             </div>
 
             <div className="rounded-3xl border border-kraft-deep bg-white p-6 shadow-xs sm:p-7">
               <h2 className="font-display text-lg font-bold text-ink">
-                {isZh ? "关注我们的官方社交媒体" : "Follow Us on Social Media"}
+                {isZh ? "关注我们的官方社交媒体" : "Follow Us"}
               </h2>
               <p className="mt-1 text-sm text-ink-muted">
                 {isZh
                   ? "查看最新出餐短视频、当季新品与卡姆登门店日常："
-                  : "See fresh griddle clips, seasonal sweet crepes, and daily Camden kitchen updates:"}
+                  : "Daily clips from the griddle, seasonal sweet crepes, and news from Camden Road:"}
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
                 {restaurant.verifiedSocialLinks

@@ -4,7 +4,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "Gallery",
   description:
-    "Browse real food and kitchen photography from Jian Bing Liu in Camden, London — savoury Jian Bing crepes, lace dessert cones, crispy dumplings, spring rolls, and hearty rice dishes.",
+    "Photos from our Camden Road kitchen: savoury Jian Bing crepes, lacy dessert cones, pan-fried dumplings, spring rolls, and hot rice dishes.",
   path: "/gallery",
   image: "/images/nutella-strawberry-crepe.jpg",
 });

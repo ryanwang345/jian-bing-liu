@@ -17,13 +17,13 @@ export function NotFoundView() {
       >
         煎饼刘
       </p>
-      <h1 className="mt-4 font-display text-4xl font-extrabold text-ink sm:text-5xl">
+      <h1 className="mt-4 font-display text-4xl font-medium tracking-[-0.02em] text-ink sm:text-5xl">
         {isZh ? "页面未找到" : "Page not found"}
       </h1>
       <p className="mt-3 text-base text-ink-muted">
         {isZh
           ? "抱歉，您访问的页面不存在。可以返回首页或直接浏览我们的精选菜单。"
-          : "Sorry, we couldn't find the page you were looking for. Head back to our homepage or explore our freshly cooked menu."}
+          : "We couldn't find that page. Head back home or take a look at the menu."}
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link

@@ -82,15 +82,16 @@ export function HomeView() {
             </div>
 
             {isZh ? (
-              <h1 className="mt-5 font-display text-4xl leading-[1.18] font-bold tracking-tight text-ink sm:text-5xl">
-                铁板现摊，一口酥香热乎的
-                <span className="text-cinnabar">果蔬煎饼</span>。
+              <h1 className="mt-5 font-display text-4xl leading-[1.2] tracking-[0.03em] text-ink sm:text-[3.2rem]">
+                铁板现摊，
+                <br />
+                热乎酥香的<span className="text-cinnabar">果蔬煎饼</span>
               </h1>
             ) : (
-              <h1 className="mt-5 font-display text-4xl leading-[1.08] font-extrabold tracking-tight text-ink sm:text-5xl lg:text-[3.4rem]">
-                Crisp, warm{" "}
-                <span className="text-cinnabar">Jian Bing</span> folded fresh
-                off the griddle.
+              <h1 className="mt-5 font-display text-4xl leading-[1.06] font-medium tracking-[-0.025em] text-ink sm:text-5xl lg:text-[3.6rem]">
+                Hot, crisp{" "}
+                <em className="italic font-medium text-cinnabar">Jian Bing</em>{" "}
+                folded straight off the griddle.
               </h1>
             )}
 
@@ -128,7 +129,7 @@ export function HomeView() {
               )}
             </div>
 
-            <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-3">
+            <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1fr]">
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                   <MapPin className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
@@ -143,7 +144,7 @@ export function HomeView() {
                   <Clock className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
                   {isZh ? "每日营业" : "Open Daily"}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold text-ink">
+                <dd className="mt-1 text-sm font-semibold tabular-nums text-ink">
                   {isZh ? "11:00 – 21:30" : "11:00 AM – 9:30 PM"}
                 </dd>
               </div>
@@ -152,7 +153,7 @@ export function HomeView() {
                   <Phone className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
                   {isZh ? "堂食 · 外带 · 配送" : "Dine-In · Takeaway"}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold text-ink">
+                <dd className="mt-1 text-sm font-semibold tabular-nums text-ink">
                   <a
                     href={restaurant.phone.href}
                     className="hover:text-cinnabar"
@@ -206,7 +207,7 @@ export function HomeView() {
                 <p className="mt-1 text-xs leading-relaxed text-parchment/80">
                   {isZh
                     ? "清真牛肉鸡肉煎饼、天然果蔬素食饼皮、手工煎饺与慢炖家常菜，每单现点现做。"
-                    : "Halal beef & chicken crepes, vibrant veggie batters, and handmade dumplings made hot to order."}
+                    : "Halal beef & chicken crepes, natural veg batters, and pan-fried dumplings cooked to order."}
                 </p>
               </div>
             </div>
@@ -218,24 +219,24 @@ export function HomeView() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
-            eyebrow={isZh ? "当季热卖" : "From Our Menu"}
+            eyebrow={isZh ? "当季热卖" : "On the Menu"}
             chineseAccent="招牌美味"
             title={
               isZh
                 ? "热乎出锅的地道中式街头好味"
-                : "Street-food favourites cooked hot to order"
+                : "Cooked hot to order on Camden Road"
             }
             description={
               isZh
                 ? "精选最受欢迎的现摊咸味煎饼、慢炖牛肉饭、金黄脆底煎饺与花式甜煎饼，菜单均标注清晰实价。"
-                : "Explore our signature savoury Jian Bing crepes, slow-braised rice dishes, crispy dumplings, and sweet crepes — all with verified in-store pricing."
+                : "Our best-selling savoury Jian Bing, slow-braised beef, crispy dumplings, and sweet crepes, all with current in-store prices."
             }
           />
           <Link
             href="/menu"
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-xs transition-all hover:border-cinnabar hover:text-cinnabar"
           >
-            {isZh ? "浏览完整菜单" : "Explore Full Menu"}
+            {isZh ? "浏览完整菜单" : "See Full Menu"}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
@@ -256,7 +257,7 @@ export function HomeView() {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {item.price && (
-                    <span className="absolute right-3 bottom-3 rounded-full bg-ink/85 px-3 py-1 font-display text-sm font-bold text-[#F0C26E] backdrop-blur-xs">
+                    <span className="absolute right-3 bottom-3 rounded-full bg-ink/85 px-3 py-1 font-sans text-sm font-semibold tabular-nums text-[#F0C26E] backdrop-blur-xs">
                       {item.price}
                     </span>
                   )}
@@ -392,24 +393,24 @@ export function HomeView() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
-            eyebrow={isZh ? "后厨实拍" : "Kitchen Gallery"}
+            eyebrow={isZh ? "后厨实拍" : "From the Kitchen"}
             chineseAccent="色香俱全"
             title={
               isZh
                 ? "真实出餐，每一份都热气腾腾"
-                : "Real food, vibrant colour, every single order"
+                : "Real food, straight off the griddle"
             }
             description={
               isZh
                 ? "镜头直击伦敦卡姆登厨房——从天然果蔬咸味煎饼到手工花式蕾丝甜筒、金黄春卷与五香茶叶蛋。"
-                : "A peek behind the Camden counter — from savoury fruit-and-vegetable crepes to delicate hand-piped lace cones and street snacks."
+                : "Photos from behind our Camden counter: savoury fruit-and-veg crepes, hand-piped lace cones, crisp spring rolls, and tea eggs."
             }
           />
           <Link
             href="/gallery"
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-xs transition-all hover:border-cinnabar hover:text-cinnabar"
           >
-            {isZh ? "查看全部图集" : "View Full Gallery"}
+            {isZh ? "查看全部图集" : "See All Photos"}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
@@ -454,12 +455,12 @@ export function HomeView() {
               <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
                 {isZh
                   ? "欢迎路过卡姆登路 124 号，或线上下单热乎送到家。"
-                  : `Stop by ${restaurant.address.street} or order warm to your door.`}
+                  : `Drop by ${restaurant.address.street}, or order it hot to your door.`}
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-parchment/80 sm:text-base">
                 {isZh ? (
                   <>
-                    每天 11:00 至 21:30 营业，提供到店自取与无接触外卖配送。可提前致电{" "}
+                    每天 11:00 至 21:30 营业，提供堂食、到店自取与无接触外卖配送。可提前致电{" "}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
@@ -471,16 +472,15 @@ export function HomeView() {
                   </>
                 ) : (
                   <>
-                    Open daily from 11:00 AM to 9:30 PM for collection and
-                    no-contact delivery. Call ahead on{" "}
+                    Open daily, 11:00 AM to 9:30 PM, for dine-in, takeaway, and
+                    no-contact delivery. Ring us on{" "}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
                     >
                       {restaurant.phone.display}
                     </a>{" "}
-                    or place your order online via{" "}
-                    {restaurant.links.orderOnlineProvider}.
+                    or order online on {restaurant.links.orderOnlineProvider}.
                   </>
                 )}
               </p>

@@ -42,7 +42,7 @@ export const galleryItems: GalleryItem[] = [
       zh: "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
     },
     caption: {
-      en: "Signature savoury Jian Bing — fresh off the griddle",
+      en: "Signature savoury Jian Bing, fresh off the griddle",
       zh: "招牌果蔬咸味煎饼——热气腾腾刚出锅",
     },
     category: "savoury",
@@ -102,7 +102,7 @@ export const galleryItems: GalleryItem[] = [
       zh: "热圆铁板上自然调色的粉绿双色果蔬面糊煎饼，铺满鲜嫩蔬菜与香葱",
     },
     caption: {
-      en: "Naturally vibrant fruit & vegetable batter on the griddle",
+      en: "Naturally coloured fruit & veg batter on the griddle",
       zh: "天然果蔬双色面糊，铁板现场摊制",
     },
     category: "savoury",
@@ -267,7 +267,7 @@ export const galleryItems: GalleryItem[] = [
       zh: "在厨房里展示的整张金黄甜饼皮，边缘带有手工挤出的粉色蕾丝花边",
     },
     caption: {
-      en: "Intricate hand-piped lace edges before rolling",
+      en: "Hand-piped lace edges before rolling",
       zh: "手工细心挤制的花式蕾丝脆边",
     },
     category: "sweet",
