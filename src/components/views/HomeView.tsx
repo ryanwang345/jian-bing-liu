@@ -202,7 +202,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
                   <Phone className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
-                  {pick("堂食 · 外带 · 配送", "Dine-In · Takeaway")}
+                  {pick("外带 · 无接触配送", "Takeaway · Delivery")}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold whitespace-nowrap tabular-nums text-ink">
                   <a
@@ -374,14 +374,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </div>
                 <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
                   {pick(
-                    "堂食外带皆宜，素食与纯素同样丰富",
-                    "Easy for mixed groups, veggies & vegans"
+                    "现买现带超方便，素食与纯素同样丰富",
+                    "Quick takeaway for mixed groups & vegans"
                   )}
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                   {pick(
-                    "价格透明（£1 起），既可到店堂食也可随手外带；除经典咸甜煎饼外，还提供素食果蔬煎饼、菠菜芝士煎饼、素煎饺与纯素日式咖喱。",
-                    "Clear in-store prices from £1 with casual dine-in and quick takeaway, plus Veggie Lover crepes, veg dumplings, and Vegan Japanese Curry."
+                    "价格透明（£1 起），到店现摊外带或外卖直达；除经典咸甜煎饼外，还提供素食果蔬煎饼、菠菜芝士煎饼、素煎饺与纯素日式咖喱。",
+                    "Clear in-store prices from £1 for quick takeaway and delivery, plus Veggie Lover crepes, veg dumplings, and Vegan Japanese Curry."
                   )}
                 </p>
               </div>
@@ -515,7 +515,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             <div className="flex flex-wrap items-center gap-2.5">
               <ShareSpotButton variant="dark" />
               <a
-                href="https://www.xiaohongshu.com/search_result?keyword=1162231947"
+                href="https://xhslink.cn/m/24xL12L1i1R"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-full border border-parchment/25 bg-white/10 px-4 py-2 text-xs font-semibold text-parchment transition-colors hover:border-[#F0C26E] hover:text-[#F0C26E]"
@@ -774,34 +774,32 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             <div className="lg:col-span-7">
               <p className="text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
                 {pick(
-                  "伦敦卡姆登路 · 堂食、外带与配送",
-                  "Camden Road · Dine-In, Takeaway & Delivery"
+                  "伦敦卡姆登路 · 外带与无接触配送",
+                  "Camden Road · Takeaway & Delivery"
                 )}
               </p>
               <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
                 {pick(
-                  "欢迎路过卡姆登路 124 号，或线上下单热乎送到家。",
-                  `Drop by ${restaurant.address.street}, or order it hot to your door.`
+                  "欢迎路过卡姆登路 124 号外带，或线上下单热乎送到家。",
+                  `Grab a takeaway at ${restaurant.address.street}, or order it hot to your door.`
                 )}
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-parchment/80 sm:text-base">
                 {isZh ? (
                   <>
-                    {zhText("每天 11:00 至 21:30 营业，提供堂食、到店自取与无接触外卖配送。可提前致电 ")}
+                    {zhText("每天 11:00 至 21:30 营业，支持到店自取外带与无接触配送（不提供堂食）。可提前致电 ")}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
                     >
                       {restaurant.phone.display}
                     </a>{" "}
-                    {zhText("咨询，或直接通过 ")}
-                    {restaurant.links.orderOnlineProvider}{" "}
-                    {zhText("平台在线点单。")}
+                    {zhText(`咨询，或直接通过${restaurant.links.orderOnlineProviderZh}在线点单。`)}
                   </>
                 ) : (
                   <>
-                    Open daily, 11:00 AM to 9:30 PM, for dine-in, takeaway, and
-                    no-contact delivery. Ring us on{" "}
+                    Open daily, 11:00 AM to 9:30 PM, for takeaway and no-contact
+                    delivery (no dine-in). Ring us on{" "}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"

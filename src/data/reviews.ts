@@ -39,8 +39,7 @@ export const FANTUAN_STORE_URL =
 export const REDDIT_RECOMMEND_URL =
   "https://www.reddit.com/r/LondonFood/comments/1qmx85b/highly_recommend_jian_bing_liu_in_camden/";
 
-export const REDNOTE_PROFILE_URL =
-  "https://www.xiaohongshu.com/search_result?keyword=1162231947";
+export const REDNOTE_PROFILE_URL = "https://xhslink.cn/m/24xL12L1i1R";
 
 export const googleRating = {
   score: "4.9",

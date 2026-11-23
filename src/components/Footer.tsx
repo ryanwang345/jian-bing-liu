@@ -41,13 +41,13 @@ export function Footer() {
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
-                {pick("提供堂食", "Dine-in")}
-              </span>
-              <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
                 {pick("支持到店自取", "Takeaway")}
               </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
                 {pick("无接触配送", "No-contact delivery")}
+              </span>
+              <span className="rounded-full border border-parchment/15 bg-transparent px-3 py-1 text-parchment/60">
+                {pick("不提供堂食", "No dine-in")}
               </span>
             </div>
           </div>
@@ -77,7 +77,7 @@ export function Footer() {
                   >
                     <ShoppingBag className="h-3.5 w-3.5" aria-hidden="true" />
                     {pick(
-                      `在线点餐（${restaurant.links.orderOnlineProvider}）`,
+                      `在线点餐（${restaurant.links.orderOnlineProviderZh}）`,
                       `Order Online (${restaurant.links.orderOnlineProvider})`
                     )}
                     <ExternalLink className="h-3 w-3" aria-hidden="true" />
@@ -167,23 +167,6 @@ export function Footer() {
                   </a>
                 </li>
               ))}
-              {restaurant.links.orderOnline && (
-                <li className="pt-1">
-                  <a
-                    href={restaurant.links.orderOnline}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-medium text-[#F0C26E] transition-colors hover:text-white"
-                  >
-                    <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    {pick(
-                      `官方外卖菜单（${restaurant.links.orderOnlineProvider}）`,
-                      `Order Online (${restaurant.links.orderOnlineProvider})`
-                    )}
-                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                  </a>
-                </li>
-              )}
             </ul>
           </div>
         </div>
@@ -200,8 +183,8 @@ export function Footer() {
           </p>
           <p>
             {pick(
-              "堂食、外带与配送 · 菜品供应及价格以门店实际为准",
-              "Dine-in, takeaway & delivery · Prices & availability subject to in-store confirmation."
+              "仅限外带与无接触配送（不提供堂食） · 菜品供应及价格以门店实际为准",
+              "Takeaway & no-contact delivery only (no dine-in) · Prices & availability subject to in-store confirmation."
             )}
           </p>
         </div>

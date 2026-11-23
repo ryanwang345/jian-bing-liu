@@ -58,20 +58,9 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                   className="inline-flex items-center gap-2 rounded-full bg-cinnabar px-6 py-3 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark"
                 >
                   {pick(
-                    `在线点餐（${restaurant.links.orderOnlineProvider}）`,
+                    `在线点餐（${restaurant.links.orderOnlineProviderZh}）`,
                     `Order Online (${restaurant.links.orderOnlineProvider})`
                   )}
-                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                </a>
-              )}
-              {restaurant.links.fantuanOrder && (
-                <a
-                  href={restaurant.links.fantuanOrder}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar"
-                >
-                  {pick("饭团外卖下单", "Order on Fantuan")}
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
@@ -138,7 +127,7 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                       rel="noopener noreferrer"
                       className="font-semibold text-cinnabar underline underline-offset-4 hover:text-cinnabar-dark"
                     >
-                      {restaurant.links.orderOnlineProvider} {zhText("在线点餐页面")}
+                      {zhText(`${restaurant.links.orderOnlineProviderZh}页面`)}
                     </a>
                     {zhText("为准。如需到店自取，可前往 ")}
                     <Link

@@ -32,12 +32,12 @@ export const restaurant = {
   sealText: "爱民",
   chineseTagline: "正宗风味 · 果蔬煎饼",
   description: {
-    en: "Handmade Northern Chinese Jian Bing on Camden Road, London. Natural dragon fruit & beetroot batters with zero food dye, Halal beef & chicken, veggie & vegan choices, dumplings, and lace sweet crepes. Rated 4.9★ on Google.",
-    zh: "国内退休后来伦敦三次归零创业，扎根卡姆登路的暖心煎饼小店！鲜切红心火龙果与甜菜根现榨天然果蔬饼皮，清真牛鸡与素食纯素皆全，Google 4.9★ 好评，支持堂食、外带与配送。",
+    en: "Handmade Northern Chinese Jian Bing on Camden Road, London. Natural dragon fruit & beetroot batters with zero food dye, Halal beef & chicken, veggie & vegan choices, dumplings, and lace sweet crepes. Takeaway & delivery. Rated 4.9★ on Google.",
+    zh: "国内退休后来伦敦三次归零创业，扎根卡姆登路的暖心煎饼小店！鲜切红心火龙果与甜菜根现榨天然果蔬饼皮，清真牛鸡与素食纯素皆全，Google 4.9★ 好评，支持到店自取外带与无接触配送。",
   },
   shortIntro: {
     en: "After retiring in China, Mrs Liu started from zero in London — third time lucky. On Camden Road, every Jian Bing is spun hot to order with real dragon fruit and beetroot batters, crispy wonton cracker, Halal beef or chicken, and homemade chilli oil.",
-    zh: "在国内退休后来到伦敦，第三次把自己归零创业。扎根卡姆登路守着热铁板，坚持鲜切红心火龙果与甜菜根现榨和面、不加色素，清真牛鸡与素食纯素一桌全搞定，每一口都是滚烫酥脆的中国烟火气。",
+    zh: "在国内退休后来到伦敦，第三次把自己归零创业。扎根卡姆登路守着热铁板，坚持鲜切红心火龙果与甜菜根现榨和面、不加色素，清真牛鸡与素食纯素一应俱全，每一口都是滚烫酥脆的中国烟火气。",
   },
   priceRange: "£10–20",
   address: {
@@ -77,14 +77,14 @@ export const restaurant = {
     },
   ] as OpeningHoursEntry[],
   serviceOptions: {
-    dineIn: true,
+    dineIn: false,
     takeaway: true,
     noContactDelivery: true,
   },
   links: {
-    orderOnline:
-      "https://jianbingliucamden.co.uk/menu-jian-bing-liu-chinese-takeaway-camden-town",
-    orderOnlineProvider: "All Eat",
+    orderOnline: "https://www.fantuanorder.com/store/jian-bing-liu/gb-4753211",
+    orderOnlineProvider: "Fantuan",
+    orderOnlineProviderZh: "饭团外卖",
     fantuanOrder: "https://www.fantuanorder.com/store/jian-bing-liu/gb-4753211",
     googleMapsDirections:
       "https://www.google.com/maps/place/Jian+Bing+Liu/@51.5422785,-0.1377214,17z/data=!3m1!4b1!4m6!3m5!1s0x48761b0053d36dcf:0x6c48602980f0cb9e!8m2!3d51.5422785!4d-0.1377214!16s%2Fg%2F11y90b95h1",
@@ -112,7 +112,7 @@ export const restaurant = {
     {
       label: { en: "RedNote", zh: "小红书" },
       handle: "ID: 1162231947",
-      href: "https://www.xiaohongshu.com/search_result?keyword=1162231947",
+      href: "https://xhslink.cn/m/24xL12L1i1R",
       platform: "rednote",
     },
     {
@@ -153,8 +153,8 @@ export const restaurant = {
         zh: "绝不靠食用色素讨巧：粉色与翠绿的饼皮，来自后厨每天现切鲜榨的红心火龙果、甜菜根与新鲜菠菜。配上自家熬制咸香酱、秘制辣椒油和现炸薄脆，旁边还有手工挤制的花式蕾丝甜筒、慢炖牛肉饭、纯素咖喱与现磨豆浆。",
       },
       {
-        en: "Whether you are a UCL or CSM student missing home, a Camden local grabbing a £6.50 lunch crepe, or a group mixing Halal beef, veggie, and vegan orders, pull up a chair inside or take one hot for the walk.",
-        zh: "不管是想念家乡味的留子、下班顺路买份 £6.5 午市煎饼的伦敦本地客，还是清真搭子与素食朋友一起聚餐，只要铁板还热着，我们就在卡姆登路 124 号现点现摊，等你趁热来吃。",
+        en: "Whether you are a UCL or CSM student missing home, a Camden local grabbing a £6.50 lunch crepe, or a group mixing Halal beef, veggie, and vegan orders, pick one up hot for the walk or order delivery straight to your door.",
+        zh: "不管是想念家乡味的留子、下班顺路买份 £6.5 午市煎饼的伦敦本地客，还是清真搭子与素食朋友一起拼单外带，只要铁板还热着，我们就在卡姆登路 124 号现点现摊，等你趁热带走。",
       },
     ],
     pillars: [
@@ -175,11 +175,11 @@ export const restaurant = {
         },
       },
       {
-        title: { en: "Halal, Veggie & Vegan at One Table", zh: "清真、素食与纯素一桌共享" },
+        title: { en: "Halal, Veggie & Vegan Choices", zh: "清真、素食与纯素皆全" },
         chinese: "丰俭由人",
         description: {
           en: "Halal beef and chicken Jian Bing and beef dumplings sit alongside veggie crepes, veg dumplings, and vegan Japanese curry.",
-          zh: "清真牛肉/鸡肉煎饼与牛肉煎饺之外，同时备齐蛋奶素煎饼、素煎饺与纯素日式咖喱，聚餐不踩雷。",
+          zh: "清真牛肉/鸡肉煎饼与牛肉煎饺之外，同时备齐蛋奶素煎饼、素煎饺与纯素日式咖喱，拼单不踩雷。",
         },
       },
     ],

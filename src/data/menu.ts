@@ -320,8 +320,8 @@ export const menuCategories: MenuCategory[] = [
         },
         price: null,
         note: {
-          en: "Ask in-store or check All Eat for today's price",
-          zh: "价格以店内或在线点餐页面为准",
+          en: "Ask in-store or check Fantuan for today's price",
+          zh: "价格以店内或饭团外卖页面为准",
         },
         dietary: ["vegetarian"],
         image: "/images/veg-spring-rolls.webp",

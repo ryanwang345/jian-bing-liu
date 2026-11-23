@@ -11,6 +11,7 @@ import {
   Navigation,
   Phone,
   ShoppingBag,
+  XCircle,
 } from "lucide-react";
 import { LiveOpenBadge } from "@/components/LiveOpenBadge";
 import { ShareSpotButton } from "@/components/ShareSpotButton";
@@ -50,8 +51,8 @@ export function VisitView() {
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
               {pick(
-                "欢迎到店堂食或外带热乎现摊煎饼，也支持卡姆登及周边伦敦区域无接触配送。",
-                "Pop in for a seat, pick up a hot takeaway, or order no-contact delivery across Camden and nearby North London."
+                "支持到店自取外带热乎现摊煎饼，以及卡姆登及周边伦敦区域无接触配送（不提供堂食）。",
+                "Pick up a hot takeaway on Camden Road, or order no-contact delivery across Camden and nearby North London (takeaway & delivery only — no dine-in)."
               )}
             </p>
           </div>
@@ -180,23 +181,11 @@ export function VisitView() {
                       >
                         <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                         {pick(
-                          `前往 ${restaurant.links.orderOnlineProvider} 在线点餐`,
+                          `前往${restaurant.links.orderOnlineProviderZh}在线点餐`,
                           `Order Online via ${restaurant.links.orderOnlineProvider}`
                         )}
                         <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                       </a>
-                      {restaurant.links.fantuanOrder && (
-                        <a
-                          href={restaurant.links.fantuanOrder}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-kraft-deep bg-kraft/50 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"
-                        >
-                          <ShoppingBag className="h-4 w-4 text-cinnabar" aria-hidden="true" />
-                          {pick("前往饭团外卖下单", "Order on Fantuan Delivery")}
-                          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                        </a>
-                      )}
                     </div>
                   )}
 
@@ -210,7 +199,7 @@ export function VisitView() {
                         <>
                           {zhText("也可以在 ")}
                           <a
-                            href="https://www.xiaohongshu.com/search_result?keyword=1162231947"
+                            href="https://xhslink.cn/m/24xL12L1i1R"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
@@ -241,7 +230,7 @@ export function VisitView() {
                         <>
                           Prefer messaging? Reach us on{" "}
                           <a
-                            href="https://www.xiaohongshu.com/search_result?keyword=1162231947"
+                            href="https://xhslink.cn/m/24xL12L1i1R"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
@@ -298,23 +287,16 @@ export function VisitView() {
 
             <div className="rounded-3xl border border-kraft-deep bg-kraft/50 p-6 sm:p-8">
               <h2 className="font-display text-xl font-bold text-ink">
-                {pick("用餐与配送方式", "Service Information")}
+                {pick("取餐与配送方式", "Service Information")}
               </h2>
               <p className="mt-1.5 text-sm text-ink-muted">
                 {pick(
-                  "煎饼刘现点现做，欢迎到店堂食趁热享用，也支持到店外带与无接触配送。",
-                  "Walk in for a seat, grab a takeaway on the go, or order no-contact delivery. Everything is cooked fresh to order."
+                  "煎饼刘现点现做，仅支持到店外带自取与无接触配送，暂不提供堂食座位。",
+                  "Everything is cooked fresh to order for takeaway and no-contact delivery (no dine-in seating)."
                 )}
               </p>
 
               <ul className="mt-5 grid gap-3 sm:grid-cols-3">
-                <li className="flex items-center gap-2.5 rounded-2xl border border-jade/25 bg-white px-4 py-3 text-sm font-semibold text-ink">
-                  <CheckCircle2
-                    className="h-5 w-5 shrink-0 text-jade"
-                    aria-hidden="true"
-                  />
-                  {pick("提供堂食", "Dine-in")}
-                </li>
                 <li className="flex items-center gap-2.5 rounded-2xl border border-jade/25 bg-white px-4 py-3 text-sm font-semibold text-ink">
                   <CheckCircle2
                     className="h-5 w-5 shrink-0 text-jade"
@@ -328,6 +310,13 @@ export function VisitView() {
                     aria-hidden="true"
                   />
                   {pick("无接触配送", "No-contact delivery")}
+                </li>
+                <li className="flex items-center gap-2.5 rounded-2xl border border-kraft-deep bg-white/70 px-4 py-3 text-sm font-semibold text-ink-muted">
+                  <XCircle
+                    className="h-5 w-5 shrink-0 text-cinnabar/80"
+                    aria-hidden="true"
+                  />
+                  {pick("不提供堂食", "No dine-in")}
                 </li>
               </ul>
 

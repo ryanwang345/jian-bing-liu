@@ -122,7 +122,7 @@ export function Header() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={pick(
-                `前往 ${restaurant.links.orderOnlineProvider} 在线点餐（新窗口打开）`,
+                `前往${restaurant.links.orderOnlineProviderZh}在线点餐（新窗口打开）`,
                 `Order Online via ${restaurant.links.orderOnlineProvider} (opens in a new tab)`
               )}
               className="inline-flex items-center gap-1.5 rounded-full bg-cinnabar px-4 py-2 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-md"
@@ -198,7 +198,7 @@ export function Header() {
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-cinnabar px-5 py-3 text-sm font-semibold text-parchment shadow-sm transition-colors hover:bg-cinnabar-dark"
               >
                 {pick(
-                  `前往 ${restaurant.links.orderOnlineProvider} 在线点餐`,
+                  `前往${restaurant.links.orderOnlineProviderZh}在线点餐`,
                   `Order Online via ${restaurant.links.orderOnlineProvider}`
                 )}
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
