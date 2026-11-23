@@ -149,7 +149,8 @@ export function StoryView() {
                 )}
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                fetchPriority="high"
+                sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), 544px"
                 className="object-cover"
               />
             </div>

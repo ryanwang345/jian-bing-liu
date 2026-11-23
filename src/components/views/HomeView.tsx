@@ -16,6 +16,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { featuredMenuItems } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
+import type { ReviewsPayload } from "@/lib/reviews-service";
 
 const craftGalleryStrip: Array<{
   src: string;
@@ -56,7 +57,11 @@ const craftGalleryStrip: Array<{
   },
 ];
 
-export function HomeView() {
+interface HomeViewProps {
+  initialReviews?: ReviewsPayload;
+}
+
+export function HomeView({ initialReviews }: HomeViewProps = {}) {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
 
   return (
@@ -176,7 +181,8 @@ export function HomeView() {
                 )}
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                fetchPriority="high"
+                sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), 544px"
                 className="object-cover"
               />
             </div>
@@ -198,7 +204,7 @@ export function HomeView() {
               <div className="flex flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg sm:absolute sm:-right-3 sm:-bottom-6 sm:max-w-[235px]">
                 <p
                   lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                  className="font-calligraphy text-2xl text-[#F0C26E]"
+                  className="font-calligraphy text-xl whitespace-nowrap text-[#F0C26E] sm:text-[22px]"
                 >
                   {zhText("煎饼刘 · 现做现卖")}
                 </p>
@@ -250,7 +256,7 @@ export function HomeView() {
                     src={item.image}
                     alt={item.imageAlt ? t(item.imageAlt) : t(item.name)}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) 46vw, 356px"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {item.price && (
@@ -295,7 +301,7 @@ export function HomeView() {
       </section>
 
       {/* Our Story & Craft Editorial Band */}
-      <section className="border-y border-kraft-deep/80 bg-kraft/60">
+      <section className="cv-auto border-y border-kraft-deep/80 bg-kraft/60">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-22 lg:grid-cols-12 lg:px-8">
           <div className="grid grid-cols-12 gap-4 lg:col-span-6">
             <div className="relative col-span-7 aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
@@ -384,7 +390,7 @@ export function HomeView() {
       </section>
 
       {/* Gallery Preview Strip */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
+      <section className="cv-auto mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
             eyebrow={pick("后厨实拍", "From the Kitchen")}
@@ -432,10 +438,10 @@ export function HomeView() {
       </section>
 
       {/* Verified Google Reviews & Social Community */}
-      <ReviewsSection />
+      <ReviewsSection initialData={initialReviews} />
 
       {/* Visit Us CTA Banner */}
-      <section className="mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 lg:px-8">
+      <section className="cv-auto mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-[32px] bg-ink px-6 py-12 text-parchment shadow-xl sm:px-12 sm:py-16">
           <div className="relative z-10 grid items-center gap-8 lg:grid-cols-12">
             <div className="lg:col-span-7">

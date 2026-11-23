@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import {
-  IBM_Plex_Sans,
-  LXGW_WenKai_TC,
-  Ma_Shan_Zheng,
-  Newsreader,
-  Noto_Sans_SC,
-  Noto_Sans_TC,
-  Yuji_Boku,
-} from "next/font/google";
+import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { restaurant, SITE_URL } from "@/data/restaurant";
+import { getCalligraphyStylesheetHref } from "@/lib/fonts";
 import { LocaleProvider } from "@/lib/i18n";
 import {
   isValidLocale,
@@ -34,44 +27,6 @@ const newsreader = Newsreader({
   style: ["normal", "italic"],
   variable: "--font-newsreader",
   display: "swap",
-});
-
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
-  variable: "--font-noto-sans-sc",
-  display: "swap",
-  preload: false,
-});
-
-const notoSansTC = Noto_Sans_TC({
-  subsets: ["latin"],
-  variable: "--font-noto-sans-tc",
-  display: "swap",
-  preload: false,
-});
-
-const maShanZheng = Ma_Shan_Zheng({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-ma-shan-zheng",
-  display: "swap",
-  preload: false,
-});
-
-const lxgwWenKaiTC = LXGW_WenKai_TC({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-lxgw-wenkai-tc",
-  display: "swap",
-  preload: false,
-});
-
-const yujiBoku = Yuji_Boku({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-yuji-boku",
-  display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -129,11 +84,26 @@ export default async function RootLayout({
     ? savedCookie
     : parseAcceptLanguage((await headers()).get("accept-language"));
 
+  const calligraphyHref = getCalligraphyStylesheetHref(initialLocale);
+
   return (
     <html
       lang={localeToHtmlLang(initialLocale)}
-      className={`${ibmPlexSans.variable} ${newsreader.variable} ${notoSansSC.variable} ${notoSansTC.variable} ${maShanZheng.variable} ${lxgwWenKaiTC.variable} ${yujiBoku.variable}`}
+      className={`${ibmPlexSans.variable} ${newsreader.variable}`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href={calligraphyHref}
+          data-calligraphy-locale={initialLocale}
+        />
+      </head>
       <body className="flex min-h-screen flex-col bg-parchment text-ink selection:bg-cinnabar/20 selection:text-ink">
         <script
           type="application/ld+json"

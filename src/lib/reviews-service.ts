@@ -48,8 +48,12 @@ interface GoogleTextSearchResponse {
 
 const DEFAULT_MIN_RATING = 4;
 const CACHE_REVALIDATE_SECONDS = 3600; // 1 hour
+const CACHE_TTL_MS = CACHE_REVALIDATE_SECONDS * 1000;
+const FETCH_TIMEOUT_MS = 3500;
 
 let cachedPlaceId: string | null = null;
+let memoryCache: { payload: ReviewsPayload; expiresAt: number } | null = null;
+let inFlightRefresh: Promise<ReviewsPayload> | null = null;
 
 async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
   if (process.env.GOOGLE_PLACE_ID?.trim()) {
@@ -71,6 +75,7 @@ async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
       body: JSON.stringify({
         textQuery: "Jian Bing Liu 124 Camden Rd London NW1 9EE",
       }),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       next: { revalidate: 86400 },
     }
   );
@@ -116,6 +121,7 @@ async function fetchGooglePlacesReviews(): Promise<{
           "X-Goog-Api-Key": apiKey,
           "X-Goog-FieldMask": fieldMask,
         },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
         next: { revalidate: CACHE_REVALIDATE_SECONDS },
       }
     );
@@ -193,6 +199,7 @@ async function fetchCustomFeedReviews(): Promise<CustomerReview[]> {
 
   try {
     const res = await fetch(feedUrl, {
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       next: { revalidate: CACHE_REVALIDATE_SECONDS },
     });
     if (!res.ok) return [];
@@ -275,7 +282,7 @@ function deduplicateReviews(lists: CustomerReview[][]): CustomerReview[] {
   return merged;
 }
 
-export async function getDynamicReviews(): Promise<ReviewsPayload> {
+async function computeDynamicReviews(): Promise<ReviewsPayload> {
   const [googleData, customFeed] = await Promise.all([
     fetchGooglePlacesReviews(),
     fetchCustomFeedReviews(),
@@ -287,7 +294,7 @@ export async function getDynamicReviews(): Promise<ReviewsPayload> {
     fallbackReviews,
   ]);
 
-  return {
+  const payload: ReviewsPayload = {
     rating: {
       score: googleData?.rating?.score || fallbackRating.score,
       count: googleData?.rating?.count || fallbackRating.count,
@@ -301,4 +308,37 @@ export async function getDynamicReviews(): Promise<ReviewsPayload> {
     },
     updatedAt: new Date().toISOString(),
   };
+
+  memoryCache = {
+    payload,
+    expiresAt: Date.now() + CACHE_TTL_MS,
+  };
+  return payload;
+}
+
+export async function getDynamicReviews(): Promise<ReviewsPayload> {
+  const now = Date.now();
+
+  // Fast path: fresh in-memory cache (< 0.1ms)
+  if (memoryCache && now < memoryCache.expiresAt) {
+    return memoryCache.payload;
+  }
+
+  // Stale-while-revalidate: serve stale immediately while refreshing in background
+  if (memoryCache) {
+    if (!inFlightRefresh) {
+      inFlightRefresh = computeDynamicReviews().finally(() => {
+        inFlightRefresh = null;
+      });
+    }
+    return memoryCache.payload;
+  }
+
+  // Cold boot: coalesce concurrent requests into one upstream fetch
+  if (!inFlightRefresh) {
+    inFlightRefresh = computeDynamicReviews().finally(() => {
+      inFlightRefresh = null;
+    });
+  }
+  return inFlightRefresh;
 }

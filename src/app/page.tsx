@@ -1,5 +1,6 @@
 import { HomeView } from "@/components/views/HomeView";
 import { restaurant } from "@/data/restaurant";
+import { getDynamicReviews } from "@/lib/reviews-service";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
@@ -8,6 +9,7 @@ export const metadata = buildPageMetadata({
   path: "/",
 });
 
-export default function HomePage() {
-  return <HomeView />;
+export default async function HomePage() {
+  const initialReviews = await getDynamicReviews();
+  return <HomeView initialReviews={initialReviews} />;
 }

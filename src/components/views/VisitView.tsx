@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -17,7 +18,13 @@ import { useLocale } from "@/lib/i18n";
 
 export function VisitView() {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
+  const [mapReady, setMapReady] = useState(false);
   const mapEmbedUrl = `https://maps.google.com/maps?q=${restaurant.links.googleMapsEmbedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setMapReady(true), 150);
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
     <div className="pb-20">
@@ -248,16 +255,22 @@ export function VisitView() {
 
           <div className="space-y-6 lg:col-span-7">
             <div className="overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
-              <iframe
-                title={pick(
-                  "煎饼刘地图位置：124 Camden Rd, London NW1 9EE",
-                  "Map showing Jian Bing Liu at 124 Camden Rd, London NW1 9EE"
-                )}
-                src={mapEmbedUrl}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-[380px] w-full border-0 sm:h-[440px]"
-              />
+              {mapReady ? (
+                <iframe
+                  title={pick(
+                    "煎饼刘地图位置：124 Camden Rd, London NW1 9EE",
+                    "Map showing Jian Bing Liu at 124 Camden Rd, London NW1 9EE"
+                  )}
+                  src={mapEmbedUrl}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="h-[380px] w-full border-0 sm:h-[440px]"
+                />
+              ) : (
+                <div className="flex h-[380px] w-full items-center justify-center text-sm text-ink-muted sm:h-[440px]">
+                  {pick("正在加载卡姆登路地图…", "Loading Camden Road map…")}
+                </div>
+              )}
             </div>
 
             <div className="rounded-3xl border border-kraft-deep bg-kraft/50 p-6 sm:p-8">

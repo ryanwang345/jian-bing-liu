@@ -34,14 +34,22 @@ type SocialFilter =
   | "reddit"
   | "fantuan";
 
-export function ReviewsSection() {
+interface ReviewsSectionProps {
+  initialData?: ReviewsPayload;
+}
+
+export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
   const { t, pick } = useLocale();
 
-  const [reviews, setReviews] = useState<CustomerReview[]>(initialReviews);
-  const [rating, setRating] = useState({
-    ...initialRating,
-    isLive: false,
-  });
+  const [reviews, setReviews] = useState<CustomerReview[]>(
+    initialData?.reviews ?? initialReviews
+  );
+  const [rating, setRating] = useState(
+    initialData?.rating ?? {
+      ...initialRating,
+      isLive: false,
+    }
+  );
   const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -49,6 +57,7 @@ export function ReviewsSection() {
   const [socialPage, setSocialPage] = useState(1);
 
   useEffect(() => {
+    if (initialData) return;
     let active = true;
     fetch("/api/reviews")
       .then((res) => (res.ok ? (res.json() as Promise<ReviewsPayload>) : null))
@@ -67,7 +76,7 @@ export function ReviewsSection() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [initialData]);
 
   const filteredReviews =
     reviewFilter === "all"
@@ -126,7 +135,7 @@ export function ReviewsSection() {
   return (
     <section
       id="reviews"
-      className="scroll-mt-24 border-y border-kraft-deep/80 bg-kraft/45"
+      className="cv-auto scroll-mt-24 border-y border-kraft-deep/80 bg-kraft/45"
     >
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         {/* Header + Verified Google Rating Summary */}

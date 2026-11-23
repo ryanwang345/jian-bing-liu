@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { getCalligraphyStylesheetHref } from "@/lib/fonts";
 import {
   isValidLocale,
   LOCALE_COOKIE_NAME,
@@ -41,6 +42,22 @@ interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
+function ensureCalligraphyFont(next: Locale) {
+  if (typeof document === "undefined") return;
+  if (
+    document.head.querySelector(
+      `link[data-calligraphy-locale="${next}"]`
+    )
+  ) {
+    return;
+  }
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = getCalligraphyStylesheetHref(next);
+  link.setAttribute("data-calligraphy-locale", next);
+  document.head.appendChild(link);
+}
+
 function writeLocaleCookie(next: Locale) {
   try {
     const secure =
@@ -72,6 +89,7 @@ export function LocaleProvider({
       if (isValidLocale(legacySaved)) {
         writeLocaleCookie(legacySaved);
         if (legacySaved !== initialLocale) {
+          ensureCalligraphyFont(legacySaved);
           setLocaleState(legacySaved);
           document.documentElement.lang = localeToHtmlLang(legacySaved);
         }
@@ -82,6 +100,7 @@ export function LocaleProvider({
   }, [hasSavedPreference, initialLocale]);
 
   const setLocale = useCallback((next: Locale) => {
+    ensureCalligraphyFont(next);
     setLocaleState(next);
     document.documentElement.lang = localeToHtmlLang(next);
     writeLocaleCookie(next);
