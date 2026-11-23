@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
 
@@ -14,16 +15,22 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
 
   const sizeStyles = {
     sm: {
+      logo: "h-9 w-9",
+      logoPx: 36,
       top: isZh ? "text-[10px] tracking-[0.22em]" : "text-[11px] tracking-[0.14em]",
       chinese: "text-xl leading-none",
       seal: "px-1 py-0.5 text-[10px]",
     },
     md: {
+      logo: "h-11 w-11 sm:h-12 sm:w-12",
+      logoPx: 48,
       top: isZh ? "text-[11px] tracking-[0.24em]" : "text-xs tracking-[0.16em]",
       chinese: "text-2xl sm:text-[26px] leading-none",
       seal: "px-1.5 py-0.5 text-[11px]",
     },
     lg: {
+      logo: "h-14 w-14 sm:h-16 sm:w-16",
+      logoPx: 64,
       top: isZh ? "text-xs tracking-[0.26em]" : "text-sm tracking-[0.18em]",
       chinese: "text-3xl sm:text-4xl leading-none",
       seal: "px-1.5 py-1 text-xs",
@@ -31,7 +38,21 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
   }[size];
 
   return (
-    <span className="inline-flex items-center gap-2.5">
+    <span className="inline-flex items-center gap-3">
+      <span
+        className={`relative shrink-0 overflow-hidden rounded-full bg-black shadow-xs ${sizeStyles.logo} ${
+          isLight ? "ring-1 ring-[#F0C26E]/40" : "ring-1 ring-ink/15"
+        }`}
+      >
+        <Image
+          src="/images/logo.svg"
+          alt={`${restaurant.name} (${restaurant.chineseName}) logo`}
+          width={sizeStyles.logoPx}
+          height={sizeStyles.logoPx}
+          priority
+          className="h-full w-full object-cover"
+        />
+      </span>
       <span className="flex flex-col">
         <span
           className={`font-display font-semibold ${

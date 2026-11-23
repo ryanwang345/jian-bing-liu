@@ -55,6 +55,7 @@ export function buildRestaurantJsonLd() {
     alternateName: `${restaurant.chineseName} (${restaurant.sealText})`,
     description: restaurant.description.en,
     url: SITE_URL,
+    logo: `${SITE_URL}/images/logo.svg`,
     image: [
       `${SITE_URL}/images/hero-jianbing-platter.webp`,
       `${SITE_URL}/images/beef-crepe-sleeve.webp`,
