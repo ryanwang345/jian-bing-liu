@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -11,11 +10,10 @@ import {
 } from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SocialIcon } from "@/components/SocialIcon";
-import { restaurant } from "@/data/restaurant";
+import { SocialShowcaseBand } from "@/components/SocialShowcaseBand";
 import {
   customerReviews as initialReviews,
   googleRating as initialRating,
-  socialPosts,
   type CustomerReview,
   type ReviewSource,
 } from "@/data/reviews";
@@ -23,17 +21,8 @@ import type { ReviewsPayload } from "@/lib/reviews-service";
 import { useLocale } from "@/lib/i18n";
 
 const REVIEWS_PER_PAGE = 4;
-const POSTS_PER_PAGE = 3;
 
 type ReviewFilter = "all" | ReviewSource;
-type SocialFilter =
-  | "all"
-  | "rednote"
-  | "instagram"
-  | "tiktok"
-  | "threads"
-  | "reddit"
-  | "fantuan";
 
 interface ReviewsSectionProps {
   initialData?: ReviewsPayload;
@@ -53,9 +42,6 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
   );
   const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [socialFilter, setSocialFilter] = useState<SocialFilter>("all");
-  const [socialPage, setSocialPage] = useState(1);
 
   useEffect(() => {
     if (initialData) return;
@@ -95,51 +81,23 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
     startIndex + REVIEWS_PER_PAGE
   );
 
-  const filteredPosts =
-    socialFilter === "all"
-      ? socialPosts
-      : socialPosts.filter((post) => post.platform === socialFilter);
-
-  const totalSocialPages = Math.max(
-    1,
-    Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
-  );
-  const safeSocialPage = Math.min(socialPage, totalSocialPages);
-  const socialStartIndex = (safeSocialPage - 1) * POSTS_PER_PAGE;
-  const pagePosts = filteredPosts.slice(
-    socialStartIndex,
-    socialStartIndex + POSTS_PER_PAGE
-  );
-
   const googleCount = reviews.filter((r) => r.source === "google").length;
   const igCount = reviews.filter((r) => r.source === "instagram").length;
   const ttCount = reviews.filter((r) => r.source === "tiktok").length;
   const redditCount = reviews.filter((r) => r.source === "reddit").length;
   const fantuanCount = reviews.filter((r) => r.source === "fantuan").length;
 
-  const rednotePostsCount = socialPosts.filter((p) => p.platform === "rednote").length;
-  const igPostsCount = socialPosts.filter((p) => p.platform === "instagram").length;
-  const ttPostsCount = socialPosts.filter((p) => p.platform === "tiktok").length;
-  const threadsPostsCount = socialPosts.filter((p) => p.platform === "threads").length;
-  const redditPostsCount = socialPosts.filter((p) => p.platform === "reddit").length;
-  const fantuanPostsCount = socialPosts.filter((p) => p.platform === "fantuan").length;
-
   const handleReviewFilter = (next: ReviewFilter) => {
     setReviewFilter(next);
     setCurrentPage(1);
   };
 
-  const handleSocialFilter = (next: SocialFilter) => {
-    setSocialFilter(next);
-    setSocialPage(1);
-  };
-
   return (
     <section
       id="reviews"
-      className="cv-auto scroll-mt-24 border-y border-kraft-deep/80 bg-kraft/45"
+      className="scroll-mt-24 border-y border-kraft-deep/80 bg-kraft/45"
     >
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         {/* Header + Verified Google Rating Summary */}
         <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
           <SectionHeading
@@ -417,240 +375,10 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
             </button>
           </nav>
         )}
-
-        {/* Direct-Linked Instagram, TikTok & Threads Posts (Paginated) */}
-        <div className="mt-16 border-t border-kraft-deep/80 pt-14">
-          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-            <div>
-              <h3 className="font-display text-2xl font-bold text-ink">
-                {pick(
-                  "小红书、Instagram、TikTok、Reddit 与饭团动态",
-                  "On RedNote, Instagram, TikTok, Threads, Reddit & Fantuan"
-                )}
-              </h3>
-              <p className="mt-1 text-sm text-ink-muted">
-                {pick(
-                  "小红书 1,830+ 获赞收藏 · TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★",
-                  "RedNote ID 1162231947 · 1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan"
-                )}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {restaurant.verifiedSocialLinks
-                .filter((s) => s.platform !== "google-maps")
-                .map((social) => (
-                  <a
-                    key={social.href}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white px-3.5 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"
-                  >
-                    <SocialIcon
-                      platform={social.platform}
-                      className="h-3.5 w-3.5 text-cinnabar"
-                    />
-                    {t(social.label)}
-                    <ExternalLink className="h-3 w-3 opacity-60" aria-hidden="true" />
-                  </a>
-                ))}
-            </div>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <div
-              role="group"
-              aria-label={pick("按社媒平台筛选帖子", "Filter posts by platform")}
-              className="flex flex-wrap gap-2"
-            >
-              {(
-                [
-                  {
-                    key: "all",
-                    label: pick(
-                      `全部动态 (${socialPosts.length})`,
-                      `All Posts (${socialPosts.length})`
-                    ),
-                  },
-                  {
-                    key: "rednote",
-                    label: pick(
-                      `小红书 (${rednotePostsCount})`,
-                      `RedNote (${rednotePostsCount})`
-                    ),
-                  },
-                  {
-                    key: "instagram",
-                    label: `Instagram (${igPostsCount})`,
-                  },
-                  {
-                    key: "tiktok",
-                    label: `TikTok (${ttPostsCount})`,
-                  },
-                  {
-                    key: "threads",
-                    label: `Threads (${threadsPostsCount})`,
-                  },
-                  {
-                    key: "reddit",
-                    label: `Reddit (${redditPostsCount})`,
-                  },
-                  {
-                    key: "fantuan",
-                    label: pick(
-                      `饭团 (${fantuanPostsCount})`,
-                      `Fantuan (${fantuanPostsCount})`
-                    ),
-                  },
-                ] as const
-              ).map((tab) => {
-                const active = socialFilter === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => handleSocialFilter(tab.key)}
-                    aria-pressed={active}
-                    className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
-                      active
-                        ? "bg-cinnabar text-parchment shadow-xs"
-                        : "border border-kraft-deep bg-white/80 text-ink-soft hover:bg-kraft"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            <p className="text-xs font-medium text-ink-muted">
-              {pick(
-                `第 ${socialStartIndex + 1}–${Math.min(
-                  socialStartIndex + POSTS_PER_PAGE,
-                  filteredPosts.length
-                )} 条，共 ${filteredPosts.length} 条精选动态`,
-                `Showing ${socialStartIndex + 1}–${Math.min(
-                  socialStartIndex + POSTS_PER_PAGE,
-                  filteredPosts.length
-                )} of ${filteredPosts.length} posts`
-              )}
-            </p>
-          </div>
-
-          <div className="mt-6 grid gap-5 md:grid-cols-3">
-            {pagePosts.map((post) => (
-              <a
-                key={post.id}
-                href={post.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-cinnabar/40 hover:shadow-lg"
-              >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-kraft">
-                  <Image
-                    src={post.image}
-                    alt={t(post.imageAlt)}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ink/85 px-3 py-1 text-xs font-semibold text-parchment backdrop-blur-xs">
-                    <SocialIcon
-                      platform={post.platform}
-                      className="h-3.5 w-3.5 text-[#F0C26E]"
-                    />
-                    {t(post.postType)}
-                  </span>
-                </div>
-
-                <div className="flex flex-1 flex-col justify-between p-5">
-                  <div>
-                    <p className="text-xs font-semibold text-cinnabar">
-                      {post.handle}
-                    </p>
-                    <h4 className="mt-1.5 font-display text-base font-bold text-ink transition-colors group-hover:text-cinnabar">
-                      {t(post.title)}
-                    </h4>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                      {t(post.caption)}
-                    </p>
-                  </div>
-
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-cinnabar">
-                    {post.platform === "rednote"
-                      ? pick("去小红书看煎饼刘", "Open on RedNote")
-                      : post.platform === "tiktok"
-                        ? pick("打开 TikTok 原视频", "Watch TikTok Video")
-                        : post.platform === "instagram"
-                          ? pick("打开 Instagram 原帖", "Open Instagram Post")
-                          : post.platform === "reddit"
-                            ? pick("在 Reddit 查看讨论", "Open Reddit Thread")
-                            : post.platform === "fantuan"
-                              ? pick("前往饭团外卖下单", "Order on Fantuan")
-                              : pick("打开 Threads 原帖", "Open Threads Post")}
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {totalSocialPages > 1 && (
-            <nav
-              aria-label={pick("社媒动态分页导航", "Social posts pagination")}
-              className="mt-8 flex flex-wrap items-center justify-center gap-2"
-            >
-              <button
-                type="button"
-                onClick={() => setSocialPage((p) => Math.max(1, p - 1))}
-                disabled={safeSocialPage === 1}
-                className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
-                {pick("上一页", "Previous")}
-              </button>
-
-              {Array.from({ length: totalSocialPages }, (_, idx) => idx + 1).map(
-                (pageNum) => {
-                  const isCurrent = pageNum === safeSocialPage;
-                  return (
-                    <button
-                      key={pageNum}
-                      type="button"
-                      onClick={() => setSocialPage(pageNum)}
-                      aria-current={isCurrent ? "page" : undefined}
-                      aria-label={pick(
-                        `动态第 ${pageNum} 页`,
-                        `Posts page ${pageNum}`
-                      )}
-                      className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
-                        isCurrent
-                          ? "bg-cinnabar text-parchment shadow-xs"
-                          : "border border-kraft-deep bg-white text-ink-soft hover:border-cinnabar hover:text-cinnabar"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                }
-              )}
-
-              <button
-                type="button"
-                onClick={() =>
-                  setSocialPage((p) => Math.min(totalSocialPages, p + 1))
-                }
-                disabled={safeSocialPage === totalSocialPages}
-                className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {pick("下一页", "Next")}
-                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </button>
-            </nav>
-          )}
-        </div>
       </div>
+
+      {/* Full-Bleed Edge-to-Edge Social Media Showcase Band */}
+      <SocialShowcaseBand />
     </section>
   );
 }

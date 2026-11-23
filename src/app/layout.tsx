@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileActionBar } from "@/components/MobileActionBar";
+import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { restaurant, SITE_URL } from "@/data/restaurant";
 import { getCalligraphyStylesheetHref } from "@/lib/fonts";
 import { LocaleProvider } from "@/lib/i18n";
@@ -134,6 +135,7 @@ export default async function RootLayout({
                 : "Skip to main content"}
           </a>
 
+          <ScrollProgressBar />
           <Header />
 
           <main id="main-content" className="flex-1">

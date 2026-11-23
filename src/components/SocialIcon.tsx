@@ -1,4 +1,4 @@
-import { MapPin, ShoppingBag } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { SocialLink } from "@/data/restaurant";
 
 interface SocialIconProps {
@@ -102,7 +102,23 @@ export function SocialIcon({
         </svg>
       );
     case "fantuan":
-      return <ShoppingBag className={className} aria-hidden="true" />;
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className={className}
+        >
+          <path d="M12 3.5c-3.8 0-8.2 6.8-8.2 11.4 0 3.1 2.2 4.6 5.2 4.6h6c3 0 5.2-1.5 5.2-4.6 0-4.6-4.4-11.4-8.2-11.4Z" />
+          <path d="M8.5 19.5v-3.2a1.2 1.2 0 0 1 1.2-1.2h4.6a1.2 1.2 0 0 1 1.2 1.2v3.2" />
+          <circle cx="9.6" cy="12" r="0.8" fill="currentColor" stroke="none" />
+          <circle cx="14.4" cy="12" r="0.8" fill="currentColor" stroke="none" />
+        </svg>
+      );
     case "google-maps":
       return <MapPin className={className} aria-hidden="true" />;
   }

@@ -56,22 +56,21 @@ export const restaurant = {
   // Placeholder for owner email — add a verified email address here when available.
   email: null as string | null,
   openingHoursSummary: {
-    en: "Monday – Sunday, 11:00 AM – 9:30 PM",
-    zh: "周一至周日 11:00 – 21:30",
+    en: "Mon–Wed 11:00 AM – 9:00 PM · Thu–Sun 11:00 AM – 9:30 PM",
+    zh: "周一至周三 11:00 – 21:00 · 周四至周日 11:00 – 21:30",
   },
   openingHours: [
     {
-      days: { en: "Monday – Sunday", zh: "周一至周日" },
+      days: { en: "Monday – Wednesday", zh: "周一至周三" },
+      hours: { en: "11:00 AM – 9:00 PM", zh: "11:00 – 21:00" },
+      schemaDays: ["Monday", "Tuesday", "Wednesday"],
+      opens: "11:00",
+      closes: "21:00",
+    },
+    {
+      days: { en: "Thursday – Sunday", zh: "周四至周日" },
       hours: { en: "11:00 AM – 9:30 PM", zh: "11:00 – 21:30" },
-      schemaDays: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-      ],
+      schemaDays: ["Thursday", "Friday", "Saturday", "Sunday"],
       opens: "11:00",
       closes: "21:30",
     },

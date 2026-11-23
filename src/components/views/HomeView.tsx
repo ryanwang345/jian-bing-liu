@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import { LiveOpenBadge } from "@/components/LiveOpenBadge";
+import { AppleCraftShowcase } from "@/components/motion/AppleCraftShowcase";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { Reveal } from "@/components/motion/Reveal";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ShareSpotButton } from "@/components/ShareSpotButton";
@@ -183,7 +186,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             {/* Official Social Icon Bar */}
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className="mr-1 text-xs font-medium text-ink-muted">
-                {pick("官方社媒", "Follow")}
+                {pick("关注我们", "Follow us")}
               </span>
               {restaurant.verifiedSocialLinks
                 .filter((s) => s.platform !== "google-maps")
@@ -224,8 +227,20 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   <Clock className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
                   {pick("每日营业", "Open Daily")}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold whitespace-nowrap tabular-nums text-ink">
-                  {isZh ? "11:00 – 21:30" : "11:00 AM – 9:30 PM"}
+                <dd className="mt-1 text-xs leading-snug font-semibold tabular-nums text-ink sm:text-[13px]">
+                  {isZh ? (
+                    <>
+                      {zhText("周一至三 11:00–21:00")}
+                      <br />
+                      {zhText("周四至日 11:00–21:30")}
+                    </>
+                  ) : (
+                    <>
+                      Mon–Wed 11am–9pm
+                      <br />
+                      Thu–Sun 11am–9:30pm
+                    </>
+                  )}
                 </dd>
               </div>
               <div>
@@ -245,51 +260,63 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             </dl>
           </div>
 
-          {/* Hero Photography */}
+          {/* Hero Photography with Apple-style multi-plane scroll parallax */}
           <div className="animate-fade-up-delay-1 relative lg:col-span-6">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
-              <Image
-                src="/images/hero-jianbing-platter.webp"
-                alt={pick(
-                  "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
-                  "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
-                )}
-                fill
-                priority
-                fetchPriority="high"
-                sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), 544px"
-                className="object-cover"
-              />
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-4 sm:mt-0 sm:block">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-lg sm:absolute sm:-bottom-6 sm:-left-6 sm:h-36 sm:w-48">
+            <ParallaxLayer offset={-16}>
+              <div className="animate-hero-media relative aspect-[4/3] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
                 <Image
-                  src="/images/beef-crepe-sleeve.webp"
+                  src="/images/hero-jianbing-platter.webp"
                   alt={pick(
-                    "撒满黑芝麻、装在牛皮纸袋中的热乎咸味煎饼",
-                    "Warm black-sesame Jian Bing crepe wrapped in a signature kraft sleeve"
+                    "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
+                    "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
                   )}
                   fill
-                  sizes="(max-width: 640px) 50vw, 192px"
-                  className="object-cover"
+                  priority
+                  fetchPriority="high"
+                  sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), 544px"
+                  className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03]"
                 />
               </div>
+            </ParallaxLayer>
 
-              <div className="flex flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg sm:absolute sm:-right-3 sm:-bottom-6 sm:max-w-[245px]">
-                <p
-                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                  className="font-calligraphy text-xl whitespace-nowrap text-[#F0C26E] sm:text-[22px]"
-                >
-                  {zhText("煎饼刘 · 现做现卖")}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-parchment/80">
-                  {pick(
-                    "零色素！新鲜红心火龙果与甜菜根现榨果蔬皮，清真牛鸡与素食每单现摊。",
-                    "Zero food dye — fresh dragon fruit & beetroot batters, Halal beef & chicken, spun to order."
-                  )}
-                </p>
-              </div>
+            <div className="mt-4 grid grid-cols-2 gap-4 sm:mt-0 sm:block">
+              <ParallaxLayer
+                offset={22}
+                className="sm:absolute sm:-bottom-6 sm:-left-6 sm:z-10"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-lg sm:h-36 sm:w-48">
+                  <Image
+                    src="/images/beef-crepe-sleeve.webp"
+                    alt={pick(
+                      "撒满黑芝麻、装在牛皮纸袋中的热乎咸味煎饼",
+                      "Warm black-sesame Jian Bing crepe wrapped in a signature kraft sleeve"
+                    )}
+                    fill
+                    sizes="(max-width: 640px) 50vw, 192px"
+                    className="object-cover"
+                  />
+                </div>
+              </ParallaxLayer>
+
+              <ParallaxLayer
+                offset={14}
+                className="sm:absolute sm:-right-3 sm:-bottom-6 sm:z-10 sm:max-w-[245px]"
+              >
+                <div className="flex h-full flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg">
+                  <p
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-xl whitespace-nowrap text-[#F0C26E] sm:text-[22px]"
+                  >
+                    {zhText("煎饼刘 · 现做现卖")}
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-parchment/80">
+                    {pick(
+                      "零色素！新鲜红心火龙果与甜菜根现榨果蔬皮，清真牛鸡与素食每单现摊。",
+                      "Zero food dye — fresh dragon fruit & beetroot batters, Halal beef & chicken, spun to order."
+                    )}
+                  </p>
+                </div>
+              </ParallaxLayer>
             </div>
           </div>
         </div>
@@ -300,7 +327,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
           <div className="grid gap-5 md:grid-cols-3">
             {/* Halal Diners */}
-            <div className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs transition-shadow hover:shadow-md">
+            <Reveal delay={0} className="h-full">
+            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
               <div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/10 px-3 py-1 text-xs font-semibold text-cinnabar-dark">
@@ -335,9 +363,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
+            </Reveal>
 
             {/* Asian & Chinese Street Food Lovers */}
-            <div className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs transition-shadow hover:shadow-md">
+            <Reveal delay={110} className="h-full">
+            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
               <div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-turmeric/35 bg-turmeric/15 px-3 py-1 text-xs font-semibold text-[#87560d]">
@@ -385,9 +415,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 )}
               </div>
             </div>
+            </Reveal>
 
             {/* UK Locals, Mixed Groups & Plant-Based Diners */}
-            <div className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs transition-shadow hover:shadow-md">
+            <Reveal delay={220} className="h-full">
+            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
               <div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/10 px-3 py-1 text-xs font-semibold text-jade">
@@ -422,39 +454,45 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
+      {/* Apple-Style Sticky Scroll Craft Showcase */}
+      <AppleCraftShowcase />
+
       {/* Signature Menu Highlights */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-          <SectionHeading
-            eyebrow={pick("当季热卖", "On the Menu")}
-            chineseAccent="招牌美味"
-            title={pick(
-              "热乎出锅的地道中式街头好味",
-              "Cooked hot to order on Camden Road"
-            )}
-            description={pick(
-              "精选最受欢迎的现摊咸味煎饼、慢炖牛肉饭、金黄脆底煎饺与花式甜煎饼，菜单均标注清晰实价。",
-              "Our best-selling savoury Jian Bing, slow-braised beef, crispy dumplings, and sweet crepes, all with current in-store prices."
-            )}
-          />
-          <Link
-            href="/menu"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-xs transition-all hover:border-cinnabar hover:text-cinnabar"
-          >
-            {pick("浏览完整菜单", "See Full Menu")}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        </div>
+        <Reveal>
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <SectionHeading
+              eyebrow={pick("当季热卖", "On the Menu")}
+              chineseAccent="招牌美味"
+              title={pick(
+                "热乎出锅的地道中式街头好味",
+                "Cooked hot to order on Camden Road"
+              )}
+              description={pick(
+                "精选最受欢迎的现摊咸味煎饼、慢炖牛肉饭、金黄脆底煎饺与花式甜煎饼，菜单均标注清晰实价。",
+                "Our best-selling savoury Jian Bing, slow-braised beef, crispy dumplings, and sweet crepes, all with current in-store prices."
+              )}
+            />
+            <Link
+              href="/menu"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-xs transition-all hover:border-cinnabar hover:text-cinnabar"
+            >
+              {pick("浏览完整菜单", "See Full Menu")}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </Reveal>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredMenuItems.slice(0, 6).map((item) => (
+          {featuredMenuItems.slice(0, 6).map((item, idx) => (
+            <Reveal key={item.id} delay={(idx % 3) * 95} className="h-full">
             <article
-              key={item.id}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className="apple-card group flex h-full flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white shadow-xs hover:shadow-xl"
             >
               {item.image && (
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-kraft">
@@ -502,6 +540,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 )}
               </div>
             </article>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -612,11 +651,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 href: "/menu#mains-and-rice",
                 cta: pick("查看热菜与煎饺", "See Mains & Dumplings"),
               },
-            ].map((combo) => (
+            ].map((combo, idx) => (
+              <Reveal key={combo.href} delay={idx * 100} className="h-full">
               <Link
-                key={combo.href}
                 href={combo.href}
-                className="group flex flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-white/[0.04] transition-all duration-300 hover:-translate-y-1 hover:border-[#F0C26E]/50 hover:bg-white/[0.07]"
+                className="apple-card group flex h-full flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-white/[0.04] hover:border-[#F0C26E]/50 hover:bg-white/[0.07]"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/30">
                   <Image
@@ -651,6 +690,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   </span>
                 </div>
               </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -660,7 +700,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
       <section className="cv-auto border-y border-kraft-deep/80 bg-kraft/60">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-22 lg:grid-cols-12 lg:px-8">
           <div className="grid grid-cols-12 gap-4 lg:col-span-6">
-            <div className="relative col-span-7 aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
+            <Reveal variant="scale" className="col-span-7">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
               <Image
                 src="/images/chef-lace-crepe.webp"
                 alt={pick(
@@ -669,10 +710,12 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 )}
                 fill
                 sizes="(max-width: 1024px) 60vw, 30vw"
-                className="object-cover"
+                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
               />
             </div>
+            </Reveal>
             <div className="col-span-5 flex flex-col gap-4">
+              <Reveal variant="scale" delay={120}>
               <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
                   src="/images/brand-kraft-sleeve.webp"
@@ -682,9 +725,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   )}
                   fill
                   sizes="(max-width: 1024px) 40vw, 20vw"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
                 />
               </div>
+              </Reveal>
+              <Reveal variant="scale" delay={220} className="flex flex-1 flex-col">
               <div className="relative flex-1 overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
                   src="/images/griddle-batter-egg.webp"
@@ -694,25 +739,28 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   )}
                   fill
                   sizes="(max-width: 1024px) 40vw, 20vw"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
                 />
               </div>
+              </Reveal>
             </div>
           </div>
 
           <div className="lg:col-span-6">
-            <SectionHeading
-              eyebrow={pick("创业故事", "Our Story")}
-              chineseAccent="归零创业"
-              title={t(restaurant.story.headline)}
-              description={t(restaurant.story.lead)}
-            />
+            <Reveal>
+              <SectionHeading
+                eyebrow={pick("创业故事", "Our Story")}
+                chineseAccent="归零创业"
+                title={t(restaurant.story.headline)}
+                description={t(restaurant.story.lead)}
+              />
+            </Reveal>
 
             <div className="mt-8 space-y-4">
-              {restaurant.story.pillars.map((pillar) => (
+              {restaurant.story.pillars.map((pillar, idx) => (
+                <Reveal key={pillar.chinese} delay={idx * 100}>
                 <div
-                  key={pillar.chinese}
-                  className="rounded-2xl border border-kraft-deep/80 bg-parchment/90 p-4 shadow-2xs"
+                  className="apple-card rounded-2xl border border-kraft-deep/80 bg-parchment/90 p-4 shadow-2xs hover:shadow-md"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="font-display text-base font-bold text-ink">
@@ -729,6 +777,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                     {t(pillar.description)}
                   </p>
                 </div>
+                </Reveal>
               ))}
             </div>
 
@@ -770,18 +819,18 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
 
         <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {craftGalleryStrip.map((photo) => (
+          {craftGalleryStrip.map((photo, idx) => (
+            <Reveal key={photo.src} variant="scale" delay={idx * 85}>
             <Link
-              key={photo.src}
               href="/gallery"
-              className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-kraft-deep bg-kraft shadow-xs"
+              className="apple-card group relative block aspect-[3/4] overflow-hidden rounded-2xl border border-kraft-deep bg-kraft shadow-xs hover:shadow-xl"
             >
               <Image
                 src={photo.src}
                 alt={t(photo.alt)}
                 fill
                 sizes="(max-width: 640px) 50vw, 25vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent p-4 pt-12">
                 <p className="font-display text-sm font-semibold text-parchment">
@@ -789,6 +838,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </p>
               </div>
             </Link>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -798,6 +848,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
       {/* Visit Us CTA Banner */}
       <section className="cv-auto mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 lg:px-8">
+        <Reveal variant="scale">
         <div className="relative overflow-hidden rounded-[32px] bg-ink px-6 py-12 text-parchment shadow-xl sm:px-12 sm:py-16">
           <div className="relative z-10 grid items-center gap-8 lg:grid-cols-12">
             <div className="lg:col-span-7">
@@ -816,7 +867,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-parchment/80 sm:text-base">
                 {isZh ? (
                   <>
-                    {zhText("每天 11:00 至 21:30 营业，支持到店自取外带与无接触配送（不提供堂食）。可提前致电 ")}
+                    {zhText("周一至周三 11:00–21:00、周四至周日 11:00–21:30 营业，支持到店自取外带与无接触配送（不提供堂食）。可提前致电 ")}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
@@ -827,8 +878,9 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   </>
                 ) : (
                   <>
-                    Open daily, 11:00 AM to 9:30 PM, for takeaway and no-contact
-                    delivery (no dine-in). Ring us on{" "}
+                    Open Mon–Wed 11:00 AM to 9:00 PM and Thu–Sun 11:00 AM to
+                    9:30 PM, for takeaway and no-contact delivery (no dine-in).
+                    Ring us on{" "}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
@@ -868,6 +920,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             </div>
           </div>
         </div>
+        </Reveal>
       </section>
     </>
   );

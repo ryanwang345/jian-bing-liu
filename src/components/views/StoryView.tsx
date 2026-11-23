@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink, MapPin, Star } from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SocialIcon } from "@/components/SocialIcon";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { Reveal } from "@/components/motion/Reveal";
 import { restaurant } from "@/data/restaurant";
 import { googleRating } from "@/data/reviews";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
@@ -139,8 +141,9 @@ export function StoryView() {
             </div>
           </div>
 
-          <div className="lg:col-span-6">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
+          <div className="animate-fade-up-delay-1 lg:col-span-6">
+            <ParallaxLayer offset={-18}>
+            <div className="animate-hero-media relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
               <Image
                 src="/images/chef-lace-crepe.webp"
                 alt={pick(
@@ -154,11 +157,13 @@ export function StoryView() {
                 className="object-cover"
               />
             </div>
+            </ParallaxLayer>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
+        <Reveal>
         <SectionHeading
           eyebrow={pick("铁板手艺", "On the Griddle")}
           chineseAccent="匠心工艺"
@@ -171,12 +176,13 @@ export function StoryView() {
             "Proper Jian Bing comes down to heat, speed, and crunch. Cooked right in front of you and best eaten hot."
           )}
         />
+        </Reveal>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {griddleSteps.map((item) => (
+          {griddleSteps.map((item, idx) => (
+            <Reveal key={item.chinese} delay={idx * 110} className="h-full">
             <article
-              key={item.chinese}
-              className="flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white shadow-xs"
+              className="apple-card flex h-full flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white shadow-xs hover:shadow-xl"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-kraft">
                 <Image
@@ -207,6 +213,7 @@ export function StoryView() {
                 </p>
               </div>
             </article>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -304,8 +311,8 @@ export function StoryView() {
             </h2>
             <p className="mt-2 text-sm text-ink-muted sm:text-base">
               {pick(
-                "浏览全部菜单，或每天 11:00 – 21:30 顺路光临伦敦卡姆登路 124 号。",
-                `Take a look at the menu, or pop into ${restaurant.address.street} any day between 11:00 AM and 9:30 PM.`
+                "浏览全部菜单，或周一至三 11:00–21:00、周四至日 11:00–21:30 顺路光临伦敦卡姆登路 124 号。",
+                `Take a look at the menu, or pop into ${restaurant.address.street} (Mon–Wed 11am–9pm, Thu–Sun 11am–9:30pm).`
               )}
             </p>
           </div>

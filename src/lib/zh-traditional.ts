@@ -347,6 +347,7 @@ const CHAR_MAP: Record<string, string> = {
   晒: "曬",
   钟: "鐘",
   园: "園",
+  骤: "驟",
   杂: "雜",
   鸡: "雞",
   鸭: "鴨",

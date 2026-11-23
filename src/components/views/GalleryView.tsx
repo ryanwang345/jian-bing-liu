@@ -14,7 +14,7 @@ export function GalleryView() {
     <div className="pb-20">
       <section className="kraft-grain border-b border-kraft-deep/80">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="animate-fade-up flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase">
                 <span>{pick("实拍图集", "Photo Gallery")}</span>
