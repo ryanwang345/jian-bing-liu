@@ -9,22 +9,22 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
-  const { locale } = useLocale();
+  const { locale, isZh, isTraditional, zhText, pick } = useLocale();
   const isLight = variant === "light";
 
   const sizeStyles = {
     sm: {
-      top: locale === "zh" ? "text-[10px] tracking-[0.22em]" : "text-[11px] tracking-[0.14em]",
+      top: isZh ? "text-[10px] tracking-[0.22em]" : "text-[11px] tracking-[0.14em]",
       chinese: "text-xl leading-none",
       seal: "px-1 py-0.5 text-[10px]",
     },
     md: {
-      top: locale === "zh" ? "text-[11px] tracking-[0.24em]" : "text-xs tracking-[0.16em]",
+      top: isZh ? "text-[11px] tracking-[0.24em]" : "text-xs tracking-[0.16em]",
       chinese: "text-2xl sm:text-[26px] leading-none",
       seal: "px-1.5 py-0.5 text-[11px]",
     },
     lg: {
-      top: locale === "zh" ? "text-xs tracking-[0.26em]" : "text-sm tracking-[0.18em]",
+      top: isZh ? "text-xs tracking-[0.26em]" : "text-sm tracking-[0.18em]",
       chinese: "text-3xl sm:text-4xl leading-none",
       seal: "px-1.5 py-1 text-xs",
     },
@@ -40,15 +40,15 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
             isLight ? "text-[#F0C26E]" : "text-cinnabar"
           }`}
         >
-          {locale === "zh" ? "正宗果蔬煎饼" : restaurant.name}
+          {pick("正宗果蔬煎饼", restaurant.name)}
         </span>
         <span
           className={`mt-0.5 font-calligraphy ${sizeStyles.chinese} ${
             isLight ? "text-parchment" : "text-ink"
           }`}
-          lang="zh-Hans"
+          lang={isTraditional ? "zh-Hant" : "zh-Hans"}
         >
-          {restaurant.chineseName}
+          {zhText(restaurant.chineseName)}
         </span>
       </span>
       <span
@@ -60,7 +60,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
         } shadow-xs`}
         style={{ writingMode: "vertical-rl" }}
       >
-        {restaurant.sealText}
+        {zhText(restaurant.sealText)}
       </span>
     </span>
   );

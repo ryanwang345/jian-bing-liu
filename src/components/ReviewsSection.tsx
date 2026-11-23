@@ -35,8 +35,7 @@ type SocialFilter =
   | "fantuan";
 
 export function ReviewsSection() {
-  const { locale, t } = useLocale();
-  const isZh = locale === "zh";
+  const { t, pick } = useLocale();
 
   const [reviews, setReviews] = useState<CustomerReview[]>(initialReviews);
   const [rating, setRating] = useState({
@@ -133,18 +132,16 @@ export function ReviewsSection() {
         {/* Header + Verified Google Rating Summary */}
         <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
           <SectionHeading
-            eyebrow={isZh ? "顾客真实口碑" : "What Guests Say"}
+            eyebrow={pick("顾客真实口碑", "What Guests Say")}
             chineseAccent="食客好评"
-            title={
-              isZh
-                ? "Google 4.9 高分好评与社区分享"
-                : "4.9 on Google from Camden locals"
-            }
-            description={
-              isZh
-                ? "以下评价与互动均来自真实光临卡姆登路 124 号的食客——点击任意卡片可直达 Google 地图或对应社媒原帖。"
-                : "Real reviews and posts from people who've eaten at 124 Camden Road. Click any card to view it on Google Maps, Instagram, TikTok, Reddit, or Fantuan."
-            }
+            title={pick(
+              "Google 4.9 高分好评与社区分享",
+              "4.9 on Google from Camden locals"
+            )}
+            description={pick(
+              "以下评价与互动均来自真实光临卡姆登路 124 号的食客——点击任意卡片可直达 Google 地图或对应社媒原帖。",
+              "Real reviews and posts from people who've eaten at 124 Camden Road. Click any card to view it on Google Maps, Instagram, TikTok, Reddit, or Fantuan."
+            )}
           />
 
           <a
@@ -169,13 +166,14 @@ export function ReviewsSection() {
               </div>
               <p className="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-ink-muted">
                 <span>
-                  {isZh
-                    ? `基于 Google ${rating.count} 条真实评价`
-                    : `Based on ${rating.count} Google Reviews`}
+                  {pick(
+                    `基于 Google ${rating.count} 条真实评价`,
+                    `Based on ${rating.count} Google Reviews`
+                  )}
                 </span>
                 {rating.isLive && (
                   <span className="rounded-full bg-jade/15 px-1.5 py-0.5 text-[10px] font-semibold text-jade">
-                    {isZh ? "实时同步" : "Live"}
+                    {pick("实时同步", "Live")}
                   </span>
                 )}
               </p>
@@ -191,16 +189,17 @@ export function ReviewsSection() {
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
           <div
             role="group"
-            aria-label={isZh ? "按平台筛选评论" : "Filter reviews by source"}
+            aria-label={pick("按平台筛选评论", "Filter reviews by source")}
             className="flex flex-wrap gap-2"
           >
             {(
               [
                 {
                   key: "all",
-                  label: isZh
-                    ? `全部评价 (${reviews.length})`
-                    : `All Reviews (${reviews.length})`,
+                  label: pick(
+                    `全部评价 (${reviews.length})`,
+                    `All Reviews (${reviews.length})`
+                  ),
                 },
                 {
                   key: "google",
@@ -220,9 +219,10 @@ export function ReviewsSection() {
                 },
                 {
                   key: "fantuan",
-                  label: isZh
-                    ? `饭团 (${fantuanCount})`
-                    : `Fantuan (${fantuanCount})`,
+                  label: pick(
+                    `饭团 (${fantuanCount})`,
+                    `Fantuan (${fantuanCount})`
+                  ),
                 },
               ] as const
             ).map((tab) => {
@@ -246,15 +246,16 @@ export function ReviewsSection() {
           </div>
 
           <p className="text-xs font-medium text-ink-muted">
-            {isZh
-              ? `第 ${startIndex + 1}–${Math.min(
-                  startIndex + REVIEWS_PER_PAGE,
-                  filteredReviews.length
-                )} 条，共 ${filteredReviews.length} 条精选评价`
-              : `Showing ${startIndex + 1}–${Math.min(
-                  startIndex + REVIEWS_PER_PAGE,
-                  filteredReviews.length
-                )} of ${filteredReviews.length} featured reviews`}
+            {pick(
+              `第 ${startIndex + 1}–${Math.min(
+                startIndex + REVIEWS_PER_PAGE,
+                filteredReviews.length
+              )} 条，共 ${filteredReviews.length} 条精选评价`,
+              `Showing ${startIndex + 1}–${Math.min(
+                startIndex + REVIEWS_PER_PAGE,
+                filteredReviews.length
+              )} of ${filteredReviews.length} featured reviews`
+            )}
           </p>
         </div>
 
@@ -272,11 +273,10 @@ export function ReviewsSection() {
                 <div className="flex items-center justify-between gap-3">
                   <div
                     className="flex items-center gap-0.5 text-[#E59819]"
-                    aria-label={
-                      isZh
-                        ? `${review.rating} 星好评`
-                        : `${review.rating} out of 5 stars`
-                    }
+                    aria-label={pick(
+                      `${review.rating} 星好评`,
+                      `${review.rating} out of 5 stars`
+                    )}
                   >
                     {Array.from({ length: review.rating }).map((_, i) => (
                       <Star
@@ -293,7 +293,7 @@ export function ReviewsSection() {
                           platform="instagram"
                           className="h-3 w-3 text-cinnabar"
                         />
-                        {isZh ? "Instagram 评论" : "Instagram"}
+                        {pick("Instagram 评论", "Instagram")}
                       </>
                     ) : review.source === "tiktok" ? (
                       <>
@@ -301,7 +301,7 @@ export function ReviewsSection() {
                           platform="tiktok"
                           className="h-3 w-3 text-cinnabar"
                         />
-                        {isZh ? "TikTok 评论" : "TikTok"}
+                        {pick("TikTok 评论", "TikTok")}
                       </>
                     ) : review.source === "reddit" ? (
                       <>
@@ -317,10 +317,10 @@ export function ReviewsSection() {
                           platform="fantuan"
                           className="h-3 w-3 text-cinnabar"
                         />
-                        {isZh ? "饭团外卖评价" : "Fantuan Review"}
+                        {pick("饭团外卖评价", "Fantuan Review")}
                       </>
                     ) : (
-                      <>{isZh ? "Google 真实评价" : "Google Review"}</>
+                      <>{pick("Google 真实评价", "Google Review")}</>
                     )}
                   </span>
                 </div>
@@ -342,24 +342,14 @@ export function ReviewsSection() {
                 <span className="font-semibold text-ink">{review.author}</span>
                 <span className="inline-flex items-center gap-1 font-medium text-cinnabar group-hover:text-cinnabar-dark">
                   {review.source === "instagram"
-                    ? isZh
-                      ? "打开 Instagram 原帖"
-                      : "Open Instagram Reel"
+                    ? pick("打开 Instagram 原帖", "Open Instagram Reel")
                     : review.source === "tiktok"
-                      ? isZh
-                        ? "观看 TikTok 原视频"
-                        : "Watch TikTok Video"
+                      ? pick("观看 TikTok 原视频", "Watch TikTok Video")
                       : review.source === "reddit"
-                        ? isZh
-                          ? "在 Reddit 查看原帖"
-                          : "Read on Reddit"
+                        ? pick("在 Reddit 查看原帖", "Read on Reddit")
                         : review.source === "fantuan"
-                          ? isZh
-                            ? "前往饭团外卖查看"
-                            : "View on Fantuan"
-                          : isZh
-                            ? "在 Google 地图查看"
-                            : "View on Google Maps"}
+                          ? pick("前往饭团外卖查看", "View on Fantuan")
+                          : pick("在 Google 地图查看", "View on Google Maps")}
                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </span>
               </div>
@@ -370,7 +360,7 @@ export function ReviewsSection() {
         {/* Review Pagination Controls */}
         {totalPages > 1 && (
           <nav
-            aria-label={isZh ? "评论分页导航" : "Reviews pagination"}
+            aria-label={pick("评论分页导航", "Reviews pagination")}
             className="mt-8 flex flex-wrap items-center justify-center gap-2"
           >
             <button
@@ -380,7 +370,7 @@ export function ReviewsSection() {
               className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
-              {isZh ? "上一页" : "Previous"}
+              {pick("上一页", "Previous")}
             </button>
 
             {Array.from({ length: totalPages }, (_, idx) => idx + 1).map(
@@ -392,9 +382,7 @@ export function ReviewsSection() {
                     type="button"
                     onClick={() => setCurrentPage(pageNum)}
                     aria-current={isCurrent ? "page" : undefined}
-                    aria-label={
-                      isZh ? `第 ${pageNum} 页` : `Page ${pageNum}`
-                    }
+                    aria-label={pick(`第 ${pageNum} 页`, `Page ${pageNum}`)}
                     className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
                       isCurrent
                         ? "bg-cinnabar text-parchment shadow-xs"
@@ -413,7 +401,7 @@ export function ReviewsSection() {
               disabled={safePage === totalPages}
               className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {isZh ? "下一页" : "Next"}
+              {pick("下一页", "Next")}
               <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           </nav>
@@ -424,14 +412,16 @@ export function ReviewsSection() {
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
             <div>
               <h3 className="font-display text-2xl font-bold text-ink">
-                {isZh
-                  ? "精选社媒、Reddit 讨论与饭团外卖"
-                  : "On Instagram, TikTok, Threads, Reddit & Fantuan"}
+                {pick(
+                  "精选社媒、Reddit 讨论与饭团外卖",
+                  "On Instagram, TikTok, Threads, Reddit & Fantuan"
+                )}
               </h3>
               <p className="mt-1 text-sm text-ink-muted">
-                {isZh
-                  ? "TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★ · 点击直达原帖或门店"
-                  : "1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan · Click any card to open"}
+                {pick(
+                  "TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★ · 点击直达原帖或门店",
+                  "1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan · Click any card to open"
+                )}
               </p>
             </div>
 
@@ -460,16 +450,17 @@ export function ReviewsSection() {
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div
               role="group"
-              aria-label={isZh ? "按社媒平台筛选帖子" : "Filter posts by platform"}
+              aria-label={pick("按社媒平台筛选帖子", "Filter posts by platform")}
               className="flex flex-wrap gap-2"
             >
               {(
                 [
                   {
                     key: "all",
-                    label: isZh
-                      ? `全部动态 (${socialPosts.length})`
-                      : `All Posts (${socialPosts.length})`,
+                    label: pick(
+                      `全部动态 (${socialPosts.length})`,
+                      `All Posts (${socialPosts.length})`
+                    ),
                   },
                   {
                     key: "instagram",
@@ -489,9 +480,10 @@ export function ReviewsSection() {
                   },
                   {
                     key: "fantuan",
-                    label: isZh
-                      ? `饭团 (${fantuanPostsCount})`
-                      : `Fantuan (${fantuanPostsCount})`,
+                    label: pick(
+                      `饭团 (${fantuanPostsCount})`,
+                      `Fantuan (${fantuanPostsCount})`
+                    ),
                   },
                 ] as const
               ).map((tab) => {
@@ -515,15 +507,16 @@ export function ReviewsSection() {
             </div>
 
             <p className="text-xs font-medium text-ink-muted">
-              {isZh
-                ? `第 ${socialStartIndex + 1}–${Math.min(
-                    socialStartIndex + POSTS_PER_PAGE,
-                    filteredPosts.length
-                  )} 条，共 ${filteredPosts.length} 条精选动态`
-                : `Showing ${socialStartIndex + 1}–${Math.min(
-                    socialStartIndex + POSTS_PER_PAGE,
-                    filteredPosts.length
-                  )} of ${filteredPosts.length} posts`}
+              {pick(
+                `第 ${socialStartIndex + 1}–${Math.min(
+                  socialStartIndex + POSTS_PER_PAGE,
+                  filteredPosts.length
+                )} 条，共 ${filteredPosts.length} 条精选动态`,
+                `Showing ${socialStartIndex + 1}–${Math.min(
+                  socialStartIndex + POSTS_PER_PAGE,
+                  filteredPosts.length
+                )} of ${filteredPosts.length} posts`
+              )}
             </p>
           </div>
 
@@ -568,24 +561,14 @@ export function ReviewsSection() {
 
                   <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-cinnabar">
                     {post.platform === "tiktok"
-                      ? isZh
-                        ? "打开 TikTok 原视频"
-                        : "Watch TikTok Video"
+                      ? pick("打开 TikTok 原视频", "Watch TikTok Video")
                       : post.platform === "instagram"
-                        ? isZh
-                          ? "打开 Instagram 原帖"
-                          : "Open Instagram Post"
+                        ? pick("打开 Instagram 原帖", "Open Instagram Post")
                         : post.platform === "reddit"
-                          ? isZh
-                            ? "在 Reddit 查看讨论"
-                            : "Open Reddit Thread"
+                          ? pick("在 Reddit 查看讨论", "Open Reddit Thread")
                           : post.platform === "fantuan"
-                            ? isZh
-                              ? "前往饭团外卖下单"
-                              : "Order on Fantuan"
-                            : isZh
-                              ? "打开 Threads 原帖"
-                              : "Open Threads Post"}
+                            ? pick("前往饭团外卖下单", "Order on Fantuan")
+                            : pick("打开 Threads 原帖", "Open Threads Post")}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
                 </div>
@@ -595,7 +578,7 @@ export function ReviewsSection() {
 
           {totalSocialPages > 1 && (
             <nav
-              aria-label={isZh ? "社媒动态分页导航" : "Social posts pagination"}
+              aria-label={pick("社媒动态分页导航", "Social posts pagination")}
               className="mt-8 flex flex-wrap items-center justify-center gap-2"
             >
               <button
@@ -605,7 +588,7 @@ export function ReviewsSection() {
                 className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
-                {isZh ? "上一页" : "Previous"}
+                {pick("上一页", "Previous")}
               </button>
 
               {Array.from({ length: totalSocialPages }, (_, idx) => idx + 1).map(
@@ -617,9 +600,10 @@ export function ReviewsSection() {
                       type="button"
                       onClick={() => setSocialPage(pageNum)}
                       aria-current={isCurrent ? "page" : undefined}
-                      aria-label={
-                        isZh ? `动态第 ${pageNum} 页` : `Posts page ${pageNum}`
-                      }
+                      aria-label={pick(
+                        `动态第 ${pageNum} 页`,
+                        `Posts page ${pageNum}`
+                      )}
                       className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
                         isCurrent
                           ? "bg-cinnabar text-parchment shadow-xs"
@@ -640,7 +624,7 @@ export function ReviewsSection() {
                 disabled={safeSocialPage === totalSocialPages}
                 className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {isZh ? "下一页" : "Next"}
+                {pick("下一页", "Next")}
                 <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </nav>

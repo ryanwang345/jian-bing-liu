@@ -22,8 +22,7 @@ const dietaryFilters: Array<"all" | DietaryTagKey> = [
 ];
 
 export function MenuBrowser({ categories }: MenuBrowserProps) {
-  const { locale, t } = useLocale();
-  const isZh = locale === "zh";
+  const { isZh, isTraditional, t, zhText, pick } = useLocale();
   const [activeDietary, setActiveDietary] = useState<"all" | DietaryTagKey>(
     "all"
   );
@@ -47,21 +46,20 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div
               role="group"
-              aria-label={
-                isZh ? "按饮食偏好筛选菜单" : "Filter menu by dietary preference"
-              }
+              aria-label={pick(
+                "按饮食偏好筛选菜单",
+                "Filter menu by dietary preference"
+              )}
               className="flex flex-wrap items-center gap-1.5"
             >
               <span className="mr-1 text-xs font-semibold tracking-wider text-ink-muted uppercase">
-                {isZh ? "饮食筛选：" : "Dietary:"}
+                {pick("饮食筛选：", "Dietary:")}
               </span>
               {dietaryFilters.map((filter) => {
                 const selected = activeDietary === filter;
                 const label =
                   filter === "all"
-                    ? isZh
-                      ? "全部"
-                      : "All"
+                    ? pick("全部", "All")
                     : t(dietaryLabels[filter]);
                 return (
                   <button
@@ -82,12 +80,12 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
             </div>
 
             <span className="text-xs font-medium text-ink-muted">
-              {isZh ? "快速跳转分类：" : "Jump to section:"}
+              {pick("快速跳转分类：", "Jump to section:")}
             </span>
           </div>
 
           <nav
-            aria-label={isZh ? "菜单分类导航" : "Menu categories"}
+            aria-label={pick("菜单分类导航", "Menu categories")}
             className="flex flex-wrap gap-1.5"
           >
             {filteredCategories.map((cat) => (
@@ -120,10 +118,10 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                   {t(category.title)}
                 </h2>
                 <span
-                  lang="zh-Hans"
+                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                   className="font-calligraphy text-2xl text-cinnabar"
                 >
-                  {category.chineseTitle}
+                  {zhText(category.chineseTitle)}
                 </span>
               </div>
               <p className="mt-1.5 max-w-2xl text-sm text-ink-muted sm:text-base">
@@ -175,7 +173,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                             </span>
                           ) : (
                             <span className="inline-block rounded-lg border border-dashed border-cinnabar/40 bg-cinnabar/5 px-2.5 py-1 text-xs font-semibold text-cinnabar-dark">
-                              {isZh ? "价格以店内为准" : "Price TBC"}
+                              {pick("价格以店内为准", "Price TBC")}
                             </span>
                           )}
                           {item.secondaryPrice && (
@@ -213,16 +211,17 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
         {filteredCategories.length === 0 && (
           <div className="rounded-2xl border border-kraft-deep bg-kraft/40 p-10 text-center">
             <p className="font-display text-lg font-semibold text-ink">
-              {isZh
-                ? "当前筛选条件下暂无对应菜品。"
-                : "No dishes match that filter right now."}
+              {pick(
+                "当前筛选条件下暂无对应菜品。",
+                "No dishes match that filter right now."
+              )}
             </p>
             <button
               type="button"
               onClick={() => setActiveDietary("all")}
               className="mt-4 rounded-full bg-cinnabar px-5 py-2 text-sm font-semibold text-parchment hover:bg-cinnabar-dark"
             >
-              {isZh ? "查看全部菜单" : "Show Full Menu"}
+              {pick("查看全部菜单", "Show Full Menu")}
             </button>
           </div>
         )}

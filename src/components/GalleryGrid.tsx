@@ -16,8 +16,7 @@ interface GalleryGridProps {
 }
 
 export function GalleryGrid({ categories, items }: GalleryGridProps) {
-  const { locale, t } = useLocale();
-  const isZh = locale === "zh";
+  const { t, pick } = useLocale();
   const [selectedCategory, setSelectedCategory] =
     useState<GalleryCategoryKey>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -55,9 +54,7 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
     <div>
       <div
         role="tablist"
-        aria-label={
-          isZh ? "按分类筛选美食照片" : "Filter gallery photos by category"
-        }
+        aria-label={pick("按分类筛选美食照片", "Filter gallery photos by category")}
         className="flex flex-wrap gap-2"
       >
         {categories.map((category) => {
@@ -90,11 +87,10 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
             key={item.id}
             type="button"
             onClick={() => setLightboxIndex(idx)}
-            aria-label={
-              isZh
-                ? `放大查看照片：${item.caption.zh}`
-                : `View larger photo: ${item.caption.en}`
-            }
+            aria-label={pick(
+              `放大查看照片：${item.caption.zh}`,
+              `View larger photo: ${item.caption.en}`
+            )}
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white text-left shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-kraft">
@@ -133,14 +129,15 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
             <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3.5 text-parchment">
               <div className="text-xs font-semibold tracking-wider text-[#F0C26E]">
                 {t(galleryCategoryLabels[activePhoto.category])} ·{" "}
-                {isZh
-                  ? `第 ${lightboxIndex + 1} / ${visibleItems.length} 张`
-                  : `${lightboxIndex + 1} / ${visibleItems.length}`}
+                {pick(
+                  `第 ${lightboxIndex + 1} / ${visibleItems.length} 张`,
+                  `${lightboxIndex + 1} / ${visibleItems.length}`
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => setLightboxIndex(null)}
-                aria-label={isZh ? "关闭大图预览" : "Close photo viewer"}
+                aria-label={pick("关闭大图预览", "Close photo viewer")}
                 className="rounded-full bg-parchment/10 p-2 text-parchment transition-colors hover:bg-parchment/20"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
@@ -169,7 +166,7 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
                           visibleItems.length
                       )
                     }
-                    aria-label={isZh ? "上一张照片" : "Previous photo"}
+                    aria-label={pick("上一张照片", "Previous photo")}
                     className="absolute top-1/2 left-3 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar"
                   >
                     <ChevronLeft className="h-5 w-5" aria-hidden="true" />
@@ -181,7 +178,7 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
                         (lightboxIndex + 1) % visibleItems.length
                       )
                     }
-                    aria-label={isZh ? "下一张照片" : "Next photo"}
+                    aria-label={pick("下一张照片", "Next photo")}
                     className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar"
                   >
                     <ChevronRight className="h-5 w-5" aria-hidden="true" />

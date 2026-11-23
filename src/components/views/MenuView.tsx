@@ -8,8 +8,7 @@ import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
 
 export function MenuView() {
-  const { locale } = useLocale();
-  const isZh = locale === "zh";
+  const { isZh, isTraditional, zhText, pick } = useLocale();
 
   return (
     <div className="pb-20">
@@ -18,26 +17,28 @@ export function MenuView() {
           <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
               <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase">
-                <span>{isZh ? "全部菜品" : "Our Menu"}</span>
+                <span>{pick("全部菜品", "Our Menu")}</span>
                 <span aria-hidden="true" className="text-kraft-deep">
                   ·
                 </span>
                 <span
-                  lang="zh-Hans"
+                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                   className="font-calligraphy text-lg font-normal tracking-normal text-ink"
                 >
-                  精选菜单
+                  {zhText("精选菜单")}
                 </span>
               </p>
               <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
-                {isZh
-                  ? "现点现做，地道中式街头风味"
-                  : "Fresh Chinese street food, cooked to order"}
+                {pick(
+                  "现点现做，地道中式街头风味",
+                  "Fresh Chinese street food, cooked to order"
+                )}
               </h1>
               <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
-                {isZh
-                  ? "从热乎酥脆的招牌咸味煎饼、午市简餐，到慢炖土豆牛肉、纯素日式咖喱、手工煎饺与现磨热饮，满足每一顿的想念。"
-                  : "Savoury Jian Bing, lighter lunchtime crepes, slow-braised beef with rice, vegan Japanese curry, pan-fried dumplings, and fresh drinks."}
+                {pick(
+                  "从热乎酥脆的招牌咸味煎饼、午市简餐，到慢炖土豆牛肉、纯素日式咖喱、手工煎饺与现磨热饮，满足每一顿的想念。",
+                  "Savoury Jian Bing, lighter lunchtime crepes, slow-braised beef with rice, vegan Japanese curry, pan-fried dumplings, and fresh drinks."
+                )}
               </p>
             </div>
 
@@ -49,9 +50,10 @@ export function MenuView() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full bg-cinnabar px-6 py-3 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark"
                 >
-                  {isZh
-                    ? `在线点餐（${restaurant.links.orderOnlineProvider}）`
-                    : `Order Online (${restaurant.links.orderOnlineProvider})`}
+                  {pick(
+                    `在线点餐（${restaurant.links.orderOnlineProvider}）`,
+                    `Order Online (${restaurant.links.orderOnlineProvider})`
+                  )}
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
@@ -62,7 +64,7 @@ export function MenuView() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar"
                 >
-                  {isZh ? "饭团外卖下单" : "Order on Fantuan"}
+                  {pick("饭团外卖下单", "Order on Fantuan")}
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
@@ -71,7 +73,7 @@ export function MenuView() {
                 className="inline-flex items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"
               >
                 <Phone className="h-4 w-4 text-cinnabar" aria-hidden="true" />
-                {isZh ? "致电" : "Call"} {restaurant.phone.display}
+                {pick("致电", "Call")} {restaurant.phone.display}
               </a>
             </div>
           </div>
@@ -82,9 +84,7 @@ export function MenuView() {
         <MenuBrowser categories={menuCategories} />
 
         <aside
-          aria-label={
-            isZh ? "过敏原与价格提示" : "Allergen and pricing notice"
-          }
+          aria-label={pick("过敏原与价格提示", "Allergen and pricing notice")}
           className="mt-16 rounded-2xl border border-kraft-deep bg-kraft/50 p-6 sm:p-8"
         >
           <div className="flex items-start gap-3.5">
@@ -94,38 +94,43 @@ export function MenuView() {
             />
             <div className="space-y-2 text-sm leading-relaxed text-ink-muted">
               <h2 className="font-display text-base font-bold text-ink">
-                {isZh
-                  ? "过敏原提示与价格说明"
-                  : "Allergens, dietary details & pricing notes"}
+                {pick(
+                  "过敏原提示与价格说明",
+                  "Allergens, dietary details & pricing notes"
+                )}
               </h2>
               {isZh ? (
                 <>
                   <p>
-                    本店厨房日常使用小麦/麸质、鸡蛋、芝麻、大豆、乳制品、甲壳类（鲜虾馄饨）及坚果（榛子巧克力酱）。如您对任何食材过敏，请在下单前致电{" "}
+                    {zhText(
+                      "本店厨房日常使用小麦/麸质、鸡蛋、芝麻、大豆、乳制品、甲壳类（鲜虾馄饨）及坚果（榛子巧克力酱）。如您对任何食材过敏，请在下单前致电 "
+                    )}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-ink underline decoration-cinnabar/40 underline-offset-4 hover:text-cinnabar"
                     >
                       {restaurant.phone.display}
                     </a>{" "}
-                    或在点单时告知店员。
+                    {zhText("或在点单时告知店员。")}
                   </p>
                   <p>
-                    标注<strong>「价格以店内为准」</strong>的实拍菜品，其当日售价请以门店现场或{" "}
+                    {zhText("标注")}
+                    <strong>{zhText("「价格以店内为准」")}</strong>
+                    {zhText("的实拍菜品，其当日售价请以门店现场或 ")}
                     <a
                       href={restaurant.links.orderOnline}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-semibold text-cinnabar underline underline-offset-4 hover:text-cinnabar-dark"
                     >
-                      {restaurant.links.orderOnlineProvider} 在线点餐页面
+                      {restaurant.links.orderOnlineProvider} {zhText("在线点餐页面")}
                     </a>
-                    为准。如需到店自取，可前往{" "}
+                    {zhText("为准。如需到店自取，可前往 ")}
                     <Link
                       href="/visit-us"
                       className="font-semibold text-ink underline underline-offset-4 hover:text-cinnabar"
                     >
-                      查看门店地址与营业时间
+                      {zhText("查看门店地址与营业时间")}
                     </Link>
                     。
                   </p>

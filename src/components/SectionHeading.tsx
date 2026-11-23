@@ -1,3 +1,7 @@
+"use client";
+
+import { useLocale } from "@/lib/i18n";
+
 interface SectionHeadingProps {
   eyebrow: string;
   chineseAccent?: string;
@@ -13,6 +17,7 @@ export function SectionHeading({
   description,
   align = "left",
 }: SectionHeadingProps) {
+  const { isTraditional, zhText } = useLocale();
   const isCenter = align === "center";
 
   return (
@@ -28,8 +33,11 @@ export function SectionHeading({
             <span aria-hidden="true" className="text-kraft-deep">
               ·
             </span>
-            <span className="font-calligraphy text-lg font-normal tracking-normal text-ink-soft">
-              {chineseAccent}
+            <span
+              lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+              className="font-calligraphy text-lg font-normal tracking-normal text-ink-soft"
+            >
+              {zhText(chineseAccent)}
             </span>
           </>
         )}

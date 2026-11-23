@@ -16,8 +16,7 @@ const quickLinks: Array<{ href: string; label: LocalizedText }> = [
 ];
 
 export function Footer() {
-  const { locale, t } = useLocale();
-  const isZh = locale === "zh";
+  const { isZh, t, zhText, pick } = useLocale();
 
   return (
     <footer className="border-t border-ink-soft bg-ink text-parchment/90">
@@ -27,35 +26,35 @@ export function Footer() {
             <Link
               href="/"
               className="inline-block rounded-lg"
-              aria-label={
-                isZh
-                  ? `${restaurant.chineseName} — 返回首页`
-                  : `${restaurant.name} — Home`
-              }
+              aria-label={pick(
+                `${restaurant.chineseName} — 返回首页`,
+                `${restaurant.name} — Home`
+              )}
             >
               <BrandMark variant="light" size="md" />
             </Link>
             <p className="text-sm leading-relaxed text-parchment/75">
-              {isZh
-                ? "位于伦敦卡姆登的正宗中式街头小吃，坚持手工现摊果蔬咸味煎饼、花式蕾丝甜煎饼、酥脆煎饺与家常热菜。"
-                : "Northern Chinese savoury Jian Bing, fruit-and-veg batters, pan-fried dumplings, and lacy sweet crepes on Camden Road."}
+              {pick(
+                "位于伦敦卡姆登的正宗中式街头小吃，坚持手工现摊果蔬咸味煎饼、花式蕾丝甜煎饼、酥脆煎饺与家常热菜。",
+                "Northern Chinese savoury Jian Bing, fruit-and-veg batters, pan-fried dumplings, and lacy sweet crepes on Camden Road."
+              )}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
-                {isZh ? "提供堂食" : "Dine-in"}
+                {pick("提供堂食", "Dine-in")}
               </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
-                {isZh ? "支持到店自取" : "Takeaway"}
+                {pick("支持到店自取", "Takeaway")}
               </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
-                {isZh ? "无接触配送" : "No-contact delivery"}
+                {pick("无接触配送", "No-contact delivery")}
               </span>
             </div>
           </div>
 
           <div>
             <h2 className="font-display text-base font-semibold text-[#F0C26E]">
-              {isZh ? "快速导航" : "Explore"}
+              {pick("快速导航", "Explore")}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {quickLinks.map((link) => (
@@ -77,9 +76,10 @@ export function Footer() {
                     className="inline-flex items-center gap-1.5 font-medium text-[#F0C26E] transition-colors hover:text-white"
                   >
                     <ShoppingBag className="h-3.5 w-3.5" aria-hidden="true" />
-                    {isZh
-                      ? `在线点餐（${restaurant.links.orderOnlineProvider}）`
-                      : `Order Online (${restaurant.links.orderOnlineProvider})`}
+                    {pick(
+                      `在线点餐（${restaurant.links.orderOnlineProvider}）`,
+                      `Order Online (${restaurant.links.orderOnlineProvider})`
+                    )}
                     <ExternalLink className="h-3 w-3" aria-hidden="true" />
                   </a>
                 </li>
@@ -89,7 +89,7 @@ export function Footer() {
 
           <div>
             <h2 className="font-display text-base font-semibold text-[#F0C26E]">
-              {isZh ? "门店信息" : "Visit & Contact"}
+              {pick("门店信息", "Visit & Contact")}
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-parchment/80">
               <li className="flex items-start gap-2.5">
@@ -100,7 +100,7 @@ export function Footer() {
                 <span>
                   {isZh ? (
                     <>
-                      {restaurant.address.chineseLine}
+                      {zhText(restaurant.address.chineseLine)}
                       <br />
                       {restaurant.address.street}, {restaurant.address.locality}{" "}
                       {restaurant.address.postalCode}
@@ -141,7 +141,7 @@ export function Footer() {
 
           <div>
             <h2 className="font-display text-base font-semibold text-[#F0C26E]">
-              {isZh ? "关注我们" : "Follow Us"}
+              {pick("关注我们", "Follow Us")}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {restaurant.verifiedSocialLinks.map((social) => (
@@ -176,9 +176,10 @@ export function Footer() {
                     className="inline-flex items-center gap-2 font-medium text-[#F0C26E] transition-colors hover:text-white"
                   >
                     <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    {isZh
-                      ? `官方外卖菜单（${restaurant.links.orderOnlineProvider}）`
-                      : `Order Online (${restaurant.links.orderOnlineProvider})`}
+                    {pick(
+                      `官方外卖菜单（${restaurant.links.orderOnlineProvider}）`,
+                      `Order Online (${restaurant.links.orderOnlineProvider})`
+                    )}
                     <ExternalLink className="h-3 w-3" aria-hidden="true" />
                   </a>
                 </li>
@@ -190,16 +191,18 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-parchment/15 pt-6 text-xs text-parchment/60 sm:flex-row sm:items-center">
           <p>
             &copy; {new Date().getFullYear()}{" "}
-            {isZh
-              ? `${restaurant.chineseName}（${restaurant.sealText}）`
-              : `${restaurant.name} (${restaurant.chineseName} · ${restaurant.sealText})`}
+            {pick(
+              `${restaurant.chineseName}（${restaurant.sealText}）`,
+              `${restaurant.name} (${restaurant.chineseName} · ${restaurant.sealText})`
+            )}
             {" · "}
             {restaurant.address.street}, {restaurant.address.postalCode}
           </p>
           <p>
-            {isZh
-              ? "堂食、外带与配送 · 菜品供应及价格以门店实际为准"
-              : "Dine-in, takeaway & delivery · Prices & availability subject to in-store confirmation."}
+            {pick(
+              "堂食、外带与配送 · 菜品供应及价格以门店实际为准",
+              "Dine-in, takeaway & delivery · Prices & availability subject to in-store confirmation."
+            )}
           </p>
         </div>
       </div>

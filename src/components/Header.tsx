@@ -17,49 +17,47 @@ const navItems: Array<{ href: string; label: LocalizedText }> = [
 ];
 
 function LanguageToggle() {
-  const { locale, setLocale } = useLocale();
+  const { locale, setLocale, pick } = useLocale();
+
+  const options: Array<{ code: "en" | "zh" | "zh-Hant"; label: string; title: string }> = [
+    { code: "en", label: "EN", title: "English" },
+    { code: "zh", label: "简", title: "简体中文" },
+    { code: "zh-Hant", label: "繁", title: "繁體中文" },
+  ];
 
   return (
     <div
       role="group"
-      aria-label={locale === "zh" ? "切换语言" : "Switch language"}
+      aria-label={pick("切换语言", "Switch language")}
       className="inline-flex items-center rounded-full border border-kraft-deep bg-kraft/60 p-0.5 text-xs font-semibold"
     >
       <Globe
         className="mx-1.5 hidden h-3.5 w-3.5 text-ink-muted sm:block"
         aria-hidden="true"
       />
-      <button
-        type="button"
-        onClick={() => setLocale("en")}
-        aria-pressed={locale === "en"}
-        className={`rounded-full px-2.5 py-1 transition-colors ${
-          locale === "en"
-            ? "bg-ink text-parchment shadow-2xs"
-            : "text-ink-soft hover:text-ink"
-        }`}
-      >
-        EN
-      </button>
-      <button
-        type="button"
-        onClick={() => setLocale("zh")}
-        aria-pressed={locale === "zh"}
-        className={`rounded-full px-2.5 py-1 transition-colors ${
-          locale === "zh"
-            ? "bg-ink text-parchment shadow-2xs"
-            : "text-ink-soft hover:text-ink"
-        }`}
-      >
-        中文
-      </button>
+      {options.map((opt) => (
+        <button
+          key={opt.code}
+          type="button"
+          title={opt.title}
+          onClick={() => setLocale(opt.code)}
+          aria-pressed={locale === opt.code}
+          className={`rounded-full px-2.5 py-1 transition-colors ${
+            locale === opt.code
+              ? "bg-ink text-parchment shadow-2xs"
+              : "text-ink-soft hover:text-ink"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
     </div>
   );
 }
 
 export function Header() {
   const pathname = usePathname();
-  const { locale, t } = useLocale();
+  const { t, pick } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -81,17 +79,16 @@ export function Header() {
         <Link
           href="/"
           className="group rounded-lg py-0.5 transition-opacity hover:opacity-90"
-          aria-label={
-            locale === "zh"
-              ? `${restaurant.chineseName}（${restaurant.sealText}）— 返回首页`
-              : `${restaurant.name} — Home`
-          }
+          aria-label={pick(
+            `${restaurant.chineseName}（${restaurant.sealText}）— 返回首页`,
+            `${restaurant.name} — Home`
+          )}
         >
           <BrandMark size="md" variant="dark" />
         </Link>
 
         <nav
-          aria-label={locale === "zh" ? "主导航" : "Primary navigation"}
+          aria-label={pick("主导航", "Primary navigation")}
           className="hidden items-center gap-1 md:flex"
         >
           {navItems.map((item) => {
@@ -124,14 +121,13 @@ export function Header() {
               href={restaurant.links.orderOnline}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={
-                locale === "zh"
-                  ? `前往 ${restaurant.links.orderOnlineProvider} 在线点餐（新窗口打开）`
-                  : `Order Online via ${restaurant.links.orderOnlineProvider} (opens in a new tab)`
-              }
+              aria-label={pick(
+                `前往 ${restaurant.links.orderOnlineProvider} 在线点餐（新窗口打开）`,
+                `Order Online via ${restaurant.links.orderOnlineProvider} (opens in a new tab)`
+              )}
               className="inline-flex items-center gap-1.5 rounded-full bg-cinnabar px-4 py-2 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-md"
             >
-              {locale === "zh" ? "在线点餐" : "Order Online"}
+              {pick("在线点餐", "Order Online")}
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           )}
@@ -147,12 +143,8 @@ export function Header() {
             aria-controls="mobile-navigation-drawer"
             aria-label={
               mobileOpen
-                ? locale === "zh"
-                  ? "关闭导航菜单"
-                  : "Close navigation menu"
-                : locale === "zh"
-                  ? "打开导航菜单"
-                  : "Open navigation menu"
+                ? pick("关闭导航菜单", "Close navigation menu")
+                : pick("打开导航菜单", "Open navigation menu")
             }
             className="inline-flex items-center justify-center rounded-full border border-kraft-deep bg-kraft/70 p-2.5 text-ink transition-colors hover:bg-kraft"
           >
@@ -171,7 +163,7 @@ export function Header() {
           className="border-t border-kraft-deep bg-parchment px-4 pt-3 pb-6 shadow-lg md:hidden"
         >
           <nav
-            aria-label={locale === "zh" ? "移动端导航" : "Mobile navigation"}
+            aria-label={pick("移动端导航", "Mobile navigation")}
             className="flex flex-col gap-1"
           >
             {navItems.map((item) => {
@@ -205,9 +197,10 @@ export function Header() {
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-cinnabar px-5 py-3 text-sm font-semibold text-parchment shadow-sm transition-colors hover:bg-cinnabar-dark"
               >
-                {locale === "zh"
-                  ? `前往 ${restaurant.links.orderOnlineProvider} 在线点餐`
-                  : `Order Online via ${restaurant.links.orderOnlineProvider}`}
+                {pick(
+                  `前往 ${restaurant.links.orderOnlineProvider} 在线点餐`,
+                  `Order Online via ${restaurant.links.orderOnlineProvider}`
+                )}
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
               </a>
             )}
@@ -227,7 +220,7 @@ export function Header() {
                 className="flex items-center justify-center gap-1.5 rounded-xl border border-kraft-deep bg-kraft/50 px-3 py-2.5 font-medium text-ink"
               >
                 <MapPin className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
-                {locale === "zh" ? "路线导航" : "Directions"}
+                {pick("路线导航", "Directions")}
               </a>
             </div>
           </div>

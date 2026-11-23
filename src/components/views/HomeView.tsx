@@ -57,8 +57,7 @@ const craftGalleryStrip: Array<{
 ];
 
 export function HomeView() {
-  const { locale, t } = useLocale();
-  const isZh = locale === "zh";
+  const { isZh, isTraditional, t, zhText, pick } = useLocale();
 
   return (
     <>
@@ -68,24 +67,25 @@ export function HomeView() {
           <div className="animate-fade-up lg:col-span-6">
             <div className="inline-flex items-center gap-2.5 rounded-full border border-cinnabar/25 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-cinnabar shadow-xs">
               <span
-                lang="zh-Hans"
+                lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                 className="font-calligraphy text-base font-normal text-ink"
               >
-                {restaurant.chineseTagline}
+                {zhText(restaurant.chineseTagline)}
               </span>
               <span aria-hidden="true" className="text-kraft-deep">
                 |
               </span>
               <span className={isZh ? "tracking-wider" : "tracking-wide uppercase"}>
-                {isZh ? "伦敦卡姆登" : "Camden, London"}
+                {pick("伦敦卡姆登", "Camden, London")}
               </span>
             </div>
 
             {isZh ? (
               <h1 className="mt-5 font-display text-4xl leading-[1.2] tracking-[0.03em] text-ink sm:text-[3.2rem]">
-                铁板现摊，
+                {zhText("铁板现摊，")}
                 <br />
-                热乎酥香的<span className="text-cinnabar">果蔬煎饼</span>
+                {zhText("热乎酥香的")}
+                <span className="text-cinnabar">{zhText("果蔬煎饼")}</span>
               </h1>
             ) : (
               <h1 className="mt-5 font-display text-4xl leading-[1.06] font-medium tracking-[-0.025em] text-ink sm:text-5xl lg:text-[3.6rem]">
@@ -105,7 +105,7 @@ export function HomeView() {
                 className="inline-flex items-center gap-2 rounded-full bg-cinnabar px-6 py-3.5 text-sm font-semibold text-parchment shadow-md transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-lg"
               >
                 <UtensilsCrossed className="h-4 w-4" aria-hidden="true" />
-                {isZh ? "查看菜单" : "View Menu"}
+                {pick("查看菜单", "View Menu")}
               </Link>
 
               <Link
@@ -113,7 +113,7 @@ export function HomeView() {
                 className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-parchment px-6 py-3.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-ink hover:text-parchment"
               >
                 <MapPin className="h-4 w-4" aria-hidden="true" />
-                {isZh ? "来店指南" : "Visit Us"}
+                {pick("来店指南", "Visit Us")}
               </Link>
 
               {restaurant.links.orderOnline && (
@@ -123,7 +123,7 @@ export function HomeView() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-cinnabar underline decoration-cinnabar/40 underline-offset-4 transition-colors hover:text-cinnabar-dark hover:decoration-cinnabar"
                 >
-                  {isZh ? "在线点餐" : "Order Online"}
+                  {pick("在线点餐", "Order Online")}
                   <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
               )}
@@ -133,7 +133,7 @@ export function HomeView() {
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                   <MapPin className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
-                  {isZh ? "门店地址" : "Location"}
+                  {pick("门店地址", "Location")}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-ink">
                   {restaurant.address.street}, {restaurant.address.postalCode}
@@ -142,7 +142,7 @@ export function HomeView() {
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                   <Clock className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
-                  {isZh ? "每日营业" : "Open Daily"}
+                  {pick("每日营业", "Open Daily")}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold tabular-nums text-ink">
                   {isZh ? "11:00 – 21:30" : "11:00 AM – 9:30 PM"}
@@ -151,7 +151,7 @@ export function HomeView() {
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                   <Phone className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
-                  {isZh ? "堂食 · 外带 · 配送" : "Dine-In · Takeaway"}
+                  {pick("堂食 · 外带 · 配送", "Dine-In · Takeaway")}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold tabular-nums text-ink">
                   <a
@@ -170,11 +170,10 @@ export function HomeView() {
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
               <Image
                 src="/images/hero-jianbing-platter.jpg"
-                alt={
-                  isZh
-                    ? "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋"
-                    : "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
-                }
+                alt={pick(
+                  "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
+                  "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
+                )}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -186,11 +185,10 @@ export function HomeView() {
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-lg sm:absolute sm:-bottom-6 sm:-left-6 sm:h-36 sm:w-48">
                 <Image
                   src="/images/beef-crepe-sleeve.jpg"
-                  alt={
-                    isZh
-                      ? "撒满黑芝麻、装在牛皮纸袋中的热乎咸味煎饼"
-                      : "Warm black-sesame Jian Bing crepe wrapped in a signature kraft sleeve"
-                  }
+                  alt={pick(
+                    "撒满黑芝麻、装在牛皮纸袋中的热乎咸味煎饼",
+                    "Warm black-sesame Jian Bing crepe wrapped in a signature kraft sleeve"
+                  )}
                   fill
                   sizes="(max-width: 640px) 50vw, 192px"
                   className="object-cover"
@@ -199,15 +197,16 @@ export function HomeView() {
 
               <div className="flex flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg sm:absolute sm:-right-3 sm:-bottom-6 sm:max-w-[235px]">
                 <p
-                  lang="zh-Hans"
+                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                   className="font-calligraphy text-2xl text-[#F0C26E]"
                 >
-                  煎饼刘 · 现做现卖
+                  {zhText("煎饼刘 · 现做现卖")}
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-parchment/80">
-                  {isZh
-                    ? "清真牛肉鸡肉煎饼、天然果蔬素食饼皮、手工煎饺与慢炖家常菜，每单现点现做。"
-                    : "Halal beef & chicken crepes, natural veg batters, and pan-fried dumplings cooked to order."}
+                  {pick(
+                    "清真牛肉鸡肉煎饼、天然果蔬素食饼皮、手工煎饺与慢炖家常菜，每单现点现做。",
+                    "Halal beef & chicken crepes, natural veg batters, and pan-fried dumplings cooked to order."
+                  )}
                 </p>
               </div>
             </div>
@@ -219,24 +218,22 @@ export function HomeView() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
-            eyebrow={isZh ? "当季热卖" : "On the Menu"}
+            eyebrow={pick("当季热卖", "On the Menu")}
             chineseAccent="招牌美味"
-            title={
-              isZh
-                ? "热乎出锅的地道中式街头好味"
-                : "Cooked hot to order on Camden Road"
-            }
-            description={
-              isZh
-                ? "精选最受欢迎的现摊咸味煎饼、慢炖牛肉饭、金黄脆底煎饺与花式甜煎饼，菜单均标注清晰实价。"
-                : "Our best-selling savoury Jian Bing, slow-braised beef, crispy dumplings, and sweet crepes, all with current in-store prices."
-            }
+            title={pick(
+              "热乎出锅的地道中式街头好味",
+              "Cooked hot to order on Camden Road"
+            )}
+            description={pick(
+              "精选最受欢迎的现摊咸味煎饼、慢炖牛肉饭、金黄脆底煎饺与花式甜煎饼，菜单均标注清晰实价。",
+              "Our best-selling savoury Jian Bing, slow-braised beef, crispy dumplings, and sweet crepes, all with current in-store prices."
+            )}
           />
           <Link
             href="/menu"
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-xs transition-all hover:border-cinnabar hover:text-cinnabar"
           >
-            {isZh ? "浏览完整菜单" : "See Full Menu"}
+            {pick("浏览完整菜单", "See Full Menu")}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
@@ -304,11 +301,10 @@ export function HomeView() {
             <div className="relative col-span-7 aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
               <Image
                 src="/images/chef-lace-crepe.jpg"
-                alt={
-                  isZh
-                    ? "煎饼刘主厨在卡姆登厨房里微笑展示刚出锅的手工蕾丝煎饼"
-                    : "Chef at Jian Bing Liu in Camden smiling while lifting a freshly made lace crepe in the kitchen"
-                }
+                alt={pick(
+                  "煎饼刘主厨在卡姆登厨房里微笑展示刚出锅的手工蕾丝煎饼",
+                  "Chef at Jian Bing Liu in Camden smiling while lifting a freshly made lace crepe in the kitchen"
+                )}
                 fill
                 sizes="(max-width: 1024px) 60vw, 30vw"
                 className="object-cover"
@@ -318,11 +314,10 @@ export function HomeView() {
               <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
                   src="/images/brand-kraft-sleeve.jpg"
-                  alt={
-                    isZh
-                      ? "印有煎饼刘毛笔书法与爱民朱红印章的招牌牛皮纸袋"
-                      : "Jian Bing Liu kraft crepe wrapper stamped with red script, Chinese calligraphy 煎饼刘, and our 爱民 seal"
-                  }
+                  alt={pick(
+                    "印有煎饼刘毛笔书法与爱民朱红印章的招牌牛皮纸袋",
+                    "Jian Bing Liu kraft crepe wrapper stamped with red script, Chinese calligraphy 煎饼刘, and our 爱民 seal"
+                  )}
                   fill
                   sizes="(max-width: 1024px) 40vw, 20vw"
                   className="object-cover"
@@ -331,11 +326,10 @@ export function HomeView() {
               <div className="relative flex-1 overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
                   src="/images/griddle-batter-egg.jpg"
-                  alt={
-                    isZh
-                      ? "圆铁板上正在摊匀的彩色果蔬面糊与新鲜鸡蛋"
-                      : "Swirling colourful vegetable batter and fresh egg on the round Jian Bing griddle"
-                  }
+                  alt={pick(
+                    "圆铁板上正在摊匀的彩色果蔬面糊与新鲜鸡蛋",
+                    "Swirling colourful vegetable batter and fresh egg on the round Jian Bing griddle"
+                  )}
                   fill
                   sizes="(max-width: 1024px) 40vw, 20vw"
                   className="object-cover"
@@ -346,7 +340,7 @@ export function HomeView() {
 
           <div className="lg:col-span-6">
             <SectionHeading
-              eyebrow={isZh ? "品牌故事" : "Our Story"}
+              eyebrow={pick("品牌故事", "Our Story")}
               chineseAccent="匠心手作"
               title={t(restaurant.story.headline)}
               description={t(restaurant.story.lead)}
@@ -363,10 +357,10 @@ export function HomeView() {
                       {t(pillar.title)}
                     </h3>
                     <span
-                      lang="zh-Hans"
+                      lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                       className="font-calligraphy text-lg text-cinnabar"
                     >
-                      {pillar.chinese}
+                      {zhText(pillar.chinese)}
                     </span>
                   </div>
                   <p className="mt-1 text-sm leading-relaxed text-ink-muted">
@@ -381,7 +375,7 @@ export function HomeView() {
                 href="/our-story"
                 className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-parchment transition-all hover:-translate-y-0.5 hover:bg-cinnabar"
               >
-                {isZh ? "了解更多故事" : "Read Our Story"}
+                {pick("了解更多故事", "Read Our Story")}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
@@ -393,24 +387,22 @@ export function HomeView() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
-            eyebrow={isZh ? "后厨实拍" : "From the Kitchen"}
+            eyebrow={pick("后厨实拍", "From the Kitchen")}
             chineseAccent="色香俱全"
-            title={
-              isZh
-                ? "真实出餐，每一份都热气腾腾"
-                : "Real food, straight off the griddle"
-            }
-            description={
-              isZh
-                ? "镜头直击伦敦卡姆登厨房——从天然果蔬咸味煎饼到手工花式蕾丝甜筒、金黄春卷与五香茶叶蛋。"
-                : "Photos from behind our Camden counter: savoury fruit-and-veg crepes, hand-piped lace cones, crisp spring rolls, and tea eggs."
-            }
+            title={pick(
+              "真实出餐，每一份都热气腾腾",
+              "Real food, straight off the griddle"
+            )}
+            description={pick(
+              "镜头直击伦敦卡姆登厨房——从天然果蔬咸味煎饼到手工花式蕾丝甜筒、金黄春卷与五香茶叶蛋。",
+              "Photos from behind our Camden counter: savoury fruit-and-veg crepes, hand-piped lace cones, crisp spring rolls, and tea eggs."
+            )}
           />
           <Link
             href="/gallery"
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-xs transition-all hover:border-cinnabar hover:text-cinnabar"
           >
-            {isZh ? "查看全部图集" : "See All Photos"}
+            {pick("查看全部图集", "See All Photos")}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
@@ -448,27 +440,30 @@ export function HomeView() {
           <div className="relative z-10 grid items-center gap-8 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <p className="text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
-                {isZh
-                  ? "伦敦卡姆登路 · 堂食、外带与配送"
-                  : "Camden Road · Dine-In, Takeaway & Delivery"}
+                {pick(
+                  "伦敦卡姆登路 · 堂食、外带与配送",
+                  "Camden Road · Dine-In, Takeaway & Delivery"
+                )}
               </p>
               <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
-                {isZh
-                  ? "欢迎路过卡姆登路 124 号，或线上下单热乎送到家。"
-                  : `Drop by ${restaurant.address.street}, or order it hot to your door.`}
+                {pick(
+                  "欢迎路过卡姆登路 124 号，或线上下单热乎送到家。",
+                  `Drop by ${restaurant.address.street}, or order it hot to your door.`
+                )}
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-parchment/80 sm:text-base">
                 {isZh ? (
                   <>
-                    每天 11:00 至 21:30 营业，提供堂食、到店自取与无接触外卖配送。可提前致电{" "}
+                    {zhText("每天 11:00 至 21:30 营业，提供堂食、到店自取与无接触外卖配送。可提前致电 ")}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
                     >
                       {restaurant.phone.display}
                     </a>{" "}
-                    咨询，或直接通过 {restaurant.links.orderOnlineProvider}{" "}
-                    平台在线点单。
+                    {zhText("咨询，或直接通过 ")}
+                    {restaurant.links.orderOnlineProvider}{" "}
+                    {zhText("平台在线点单。")}
                   </>
                 ) : (
                   <>
@@ -494,7 +489,7 @@ export function HomeView() {
                 className="inline-flex items-center gap-2 rounded-full bg-[#F0C26E] px-6 py-3.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-white"
               >
                 <MapPin className="h-4 w-4" aria-hidden="true" />
-                {isZh ? "获取地图导航" : "Get Directions"}
+                {pick("获取地图导航", "Get Directions")}
               </a>
 
               {restaurant.links.orderOnline && (
@@ -504,7 +499,7 @@ export function HomeView() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-parchment/30 bg-cinnabar px-6 py-3.5 text-sm font-semibold text-parchment transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark"
                 >
-                  {isZh ? "在线点餐" : "Order Online"}
+                  {pick("在线点餐", "Order Online")}
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}

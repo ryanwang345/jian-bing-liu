@@ -16,8 +16,7 @@ import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
 
 export function VisitView() {
-  const { locale, t } = useLocale();
-  const isZh = locale === "zh";
+  const { isZh, isTraditional, t, zhText, pick } = useLocale();
   const mapEmbedUrl = `https://maps.google.com/maps?q=${restaurant.links.googleMapsEmbedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
 
   return (
@@ -26,24 +25,25 @@ export function VisitView() {
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="max-w-2xl">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase">
-              <span>{isZh ? "位置与联系" : "Visit & Contact"}</span>
+              <span>{pick("位置与联系", "Visit & Contact")}</span>
               <span aria-hidden="true" className="text-kraft-deep">
                 ·
               </span>
               <span
-                lang="zh-Hans"
+                lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                 className="font-calligraphy text-lg font-normal tracking-normal text-ink"
               >
-                来店指南
+                {zhText("来店指南")}
               </span>
             </p>
             <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
-              {isZh ? "在伦敦卡姆登路找到我们" : "Find us on Camden Road"}
+              {pick("在伦敦卡姆登路找到我们", "Find us on Camden Road")}
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
-              {isZh
-                ? "欢迎到店堂食或外带热乎现摊煎饼，也支持卡姆登及周边伦敦区域无接触配送。"
-                : "Pop in for a seat, pick up a hot takeaway, or order no-contact delivery across Camden and nearby North London."}
+              {pick(
+                "欢迎到店堂食或外带热乎现摊煎饼，也支持卡姆登及周边伦敦区域无接触配送。",
+                "Pop in for a seat, pick up a hot takeaway, or order no-contact delivery across Camden and nearby North London."
+              )}
             </p>
           </div>
         </div>
@@ -59,14 +59,15 @@ export function VisitView() {
                 </span>
                 <div>
                   <h2 className="font-display text-lg font-bold text-ink">
-                    {isZh ? "门店地址" : "Address"}
+                    {pick("门店地址", "Address")}
                   </h2>
                   <address className="mt-1.5 not-italic text-sm leading-relaxed text-ink-muted">
                     {isZh ? (
                       <>
-                        {restaurant.chineseName}（{restaurant.sealText}）
+                        {zhText(restaurant.chineseName)}（
+                        {zhText(restaurant.sealText)}）
                         <br />
-                        {restaurant.address.chineseLine}
+                        {zhText(restaurant.address.chineseLine)}
                         <br />
                         {restaurant.address.street},{" "}
                         {restaurant.address.locality}{" "}
@@ -94,7 +95,7 @@ export function VisitView() {
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-cinnabar px-5 py-2.5 text-sm font-semibold text-parchment shadow-xs transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark"
                   >
                     <Navigation className="h-4 w-4" aria-hidden="true" />
-                    {isZh ? "谷歌地图路线导航" : "Get Directions"}
+                    {pick("谷歌地图路线导航", "Get Directions")}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </a>
                 </div>
@@ -108,7 +109,7 @@ export function VisitView() {
                 </span>
                 <div className="w-full">
                   <h2 className="font-display text-lg font-bold text-ink">
-                    {isZh ? "营业时间" : "Opening Hours"}
+                    {pick("营业时间", "Opening Hours")}
                   </h2>
                   <dl className="mt-3 space-y-2 text-sm">
                     {restaurant.openingHours.map((row) => (
@@ -126,9 +127,10 @@ export function VisitView() {
                     ))}
                   </dl>
                   <p className="mt-3 text-xs text-ink-muted">
-                    {isZh
-                      ? "节假日营业时间可能略有调整，如临近打烊前来店，建议提前致电确认。"
-                      : "Bank holiday hours can vary, so give us a quick ring if you're heading over late."}
+                    {pick(
+                      "节假日营业时间可能略有调整，如临近打烊前来店，建议提前致电确认。",
+                      "Bank holiday hours can vary, so give us a quick ring if you're heading over late."
+                    )}
                   </p>
                 </div>
               </div>
@@ -141,12 +143,13 @@ export function VisitView() {
                 </span>
                 <div className="w-full">
                   <h2 className="font-display text-lg font-bold text-ink">
-                    {isZh ? "联系电话与在线点餐" : "Phone & Ordering"}
+                    {pick("联系电话与在线点餐", "Phone & Ordering")}
                   </h2>
                   <p className="mt-1.5 text-sm text-ink-muted">
-                    {isZh
-                      ? "欢迎致电咨询菜品或提前预约到店自取："
-                      : "Ring the shop for questions or to order for collection:"}
+                    {pick(
+                      "欢迎致电咨询菜品或提前预约到店自取：",
+                      "Ring the shop for questions or to order for collection:"
+                    )}
                   </p>
                   <a
                     href={restaurant.phone.href}
@@ -164,9 +167,10 @@ export function VisitView() {
                         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-parchment transition-colors hover:bg-cinnabar"
                       >
                         <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-                        {isZh
-                          ? `前往 ${restaurant.links.orderOnlineProvider} 在线点餐`
-                          : `Order Online via ${restaurant.links.orderOnlineProvider}`}
+                        {pick(
+                          `前往 ${restaurant.links.orderOnlineProvider} 在线点餐`,
+                          `Order Online via ${restaurant.links.orderOnlineProvider}`
+                        )}
                         <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                       </a>
                       {restaurant.links.fantuanOrder && (
@@ -177,7 +181,7 @@ export function VisitView() {
                           className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-kraft-deep bg-kraft/50 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"
                         >
                           <ShoppingBag className="h-4 w-4 text-cinnabar" aria-hidden="true" />
-                          {isZh ? "前往饭团外卖下单" : "Order on Fantuan Delivery"}
+                          {pick("前往饭团外卖下单", "Order on Fantuan Delivery")}
                           <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                         </a>
                       )}
@@ -192,7 +196,7 @@ export function VisitView() {
                     <span>
                       {isZh ? (
                         <>
-                          也可以在{" "}
+                          {zhText("也可以在 ")}
                           <a
                             href="https://www.instagram.com/jian_bing_liu/"
                             target="_blank"
@@ -201,7 +205,7 @@ export function VisitView() {
                           >
                             Instagram (@jian_bing_liu)
                           </a>{" "}
-                          或{" "}
+                          {zhText("或 ")}
                           <a
                             href="https://www.tiktok.com/@jianbingliu.uk"
                             target="_blank"
@@ -210,7 +214,7 @@ export function VisitView() {
                           >
                             TikTok (@jianbingliu.uk)
                           </a>{" "}
-                          给我们留言咨询。
+                          {zhText("给我们留言咨询。")}
                         </>
                       ) : (
                         <>
@@ -245,11 +249,10 @@ export function VisitView() {
           <div className="space-y-6 lg:col-span-7">
             <div className="overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
               <iframe
-                title={
-                  isZh
-                    ? "煎饼刘地图位置：124 Camden Rd, London NW1 9EE"
-                    : "Map showing Jian Bing Liu at 124 Camden Rd, London NW1 9EE"
-                }
+                title={pick(
+                  "煎饼刘地图位置：124 Camden Rd, London NW1 9EE",
+                  "Map showing Jian Bing Liu at 124 Camden Rd, London NW1 9EE"
+                )}
                 src={mapEmbedUrl}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -259,12 +262,13 @@ export function VisitView() {
 
             <div className="rounded-3xl border border-kraft-deep bg-kraft/50 p-6 sm:p-8">
               <h2 className="font-display text-xl font-bold text-ink">
-                {isZh ? "用餐与配送方式" : "Service Information"}
+                {pick("用餐与配送方式", "Service Information")}
               </h2>
               <p className="mt-1.5 text-sm text-ink-muted">
-                {isZh
-                  ? "煎饼刘现点现做，欢迎到店堂食趁热享用，也支持到店外带与无接触配送。"
-                  : "Walk in for a seat, grab a takeaway on the go, or order no-contact delivery. Everything is cooked fresh to order."}
+                {pick(
+                  "煎饼刘现点现做，欢迎到店堂食趁热享用，也支持到店外带与无接触配送。",
+                  "Walk in for a seat, grab a takeaway on the go, or order no-contact delivery. Everything is cooked fresh to order."
+                )}
               </p>
 
               <ul className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -273,27 +277,27 @@ export function VisitView() {
                     className="h-5 w-5 shrink-0 text-jade"
                     aria-hidden="true"
                   />
-                  {isZh ? "提供堂食" : "Dine-in"}
+                  {pick("提供堂食", "Dine-in")}
                 </li>
                 <li className="flex items-center gap-2.5 rounded-2xl border border-jade/25 bg-white px-4 py-3 text-sm font-semibold text-ink">
                   <CheckCircle2
                     className="h-5 w-5 shrink-0 text-jade"
                     aria-hidden="true"
                   />
-                  {isZh ? "支持到店自取" : "Takeaway"}
+                  {pick("支持到店自取", "Takeaway")}
                 </li>
                 <li className="flex items-center gap-2.5 rounded-2xl border border-jade/25 bg-white px-4 py-3 text-sm font-semibold text-ink">
                   <CheckCircle2
                     className="h-5 w-5 shrink-0 text-jade"
                     aria-hidden="true"
                   />
-                  {isZh ? "无接触配送" : "No-contact delivery"}
+                  {pick("无接触配送", "No-contact delivery")}
                 </li>
               </ul>
 
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-kraft-deep/80 pt-5 text-sm">
                 <span className="text-ink-muted">
-                  {isZh ? "人均参考消费：" : "Typical spend: "}
+                  {pick("人均参考消费：", "Typical spend: ")}
                   <strong className="font-semibold text-ink">
                     {isZh
                       ? restaurant.priceRange
@@ -304,21 +308,20 @@ export function VisitView() {
                   href="/menu"
                   className="font-semibold text-cinnabar underline underline-offset-4 hover:text-cinnabar-dark"
                 >
-                  {isZh
-                    ? "查看完整菜单与价格 →"
-                    : "See full menu & prices →"}
+                  {pick("查看完整菜单与价格 →", "See full menu & prices →")}
                 </Link>
               </div>
             </div>
 
             <div className="rounded-3xl border border-kraft-deep bg-white p-6 shadow-xs sm:p-7">
               <h2 className="font-display text-lg font-bold text-ink">
-                {isZh ? "关注我们的官方社交媒体" : "Follow Us"}
+                {pick("关注我们的官方社交媒体", "Follow Us")}
               </h2>
               <p className="mt-1 text-sm text-ink-muted">
-                {isZh
-                  ? "查看最新出餐短视频、当季新品与卡姆登门店日常："
-                  : "Daily clips from the griddle, seasonal sweet crepes, and news from Camden Road:"}
+                {pick(
+                  "查看最新出餐短视频、当季新品与卡姆登门店日常：",
+                  "Daily clips from the griddle, seasonal sweet crepes, and news from Camden Road:"
+                )}
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
                 {restaurant.verifiedSocialLinks
