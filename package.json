@@ -13,12 +13,6 @@
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "workerd"
-    ]
-  },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.18",
     "lucide-react": "^0.511.0",

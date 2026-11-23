@@ -12,7 +12,7 @@ RUN apk add --no-cache libc6-compat \
   && corepack prepare pnpm@11.0.9 --activate
 
 FROM base AS deps
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Keep pnpm store across dependency-layer rebuilds. Limit network concurrency
 # and retry transient registry failures. The optional extra-ca secret supports
 # TLS-inspecting networks without copying any certificate into the final image.
