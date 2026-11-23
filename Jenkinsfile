@@ -83,6 +83,7 @@ spec:
   environment {
     IMAGE_REPO = 'jian-bing-liu'
     NEXT_TELEMETRY_DISABLED = '1'
+    SITE_URL = "${params.NEXT_PUBLIC_SITE_URL ?: 'https://jianbingliu.uk'}"
   }
 
   stages {
@@ -108,7 +109,7 @@ spec:
             corepack prepare pnpm@11.0.9 --activate
             pnpm typecheck
             pnpm lint
-            NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL}" pnpm build
+            NEXT_PUBLIC_SITE_URL="${SITE_URL:-https://jianbingliu.uk}" pnpm build
           '''
         }
       }
@@ -161,7 +162,7 @@ spec:
                 --frontend=dockerfile.v0 \
                 --local "context=${WORKSPACE}" \
                 --local "dockerfile=${WORKSPACE}" \
-                --opt "build-arg:NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}" \
+                --opt "build-arg:NEXT_PUBLIC_SITE_URL=${SITE_URL:-https://jianbingliu.uk}" \
                 --output "$OUTPUT"
 
               if [ -s "${WORKSPACE}/extra-ca.crt" ]; then
