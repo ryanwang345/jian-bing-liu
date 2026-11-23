@@ -19,11 +19,11 @@ const griddleSteps: Array<{
 }> = [
   {
     step: { en: "Step 01", zh: "第一步" },
-    title: { en: "Swirled on Cast Iron", zh: "热铁板手工摊饼" },
+    title: { en: "Natural Batter on Cast Iron", zh: "鲜榨果蔬糊热铁板现摊" },
     chinese: "摊面糊",
     description: {
-      en: "Fresh savoury or naturally coloured fruit-and-veg batter is poured onto a hot round griddle and spread paper-thin with cracked egg.",
-      zh: "在烧至恰到好处的圆铁板上淋入鲜调面糊或天然果蔬面糊，迅速均匀摊开并打入鲜蛋，激出焦香。",
+      en: "Fresh red dragon fruit, beetroot, and spinach batters (zero food dye) are poured onto sizzling cast iron and spread paper-thin with cracked egg.",
+      zh: "零色素！新鲜红心火龙果、甜菜根与菠菜现榨调成的果蔬面糊淋上热铁板，迅速摊圆磕入鲜蛋，激出麦香与蛋香。",
     },
     image: "/images/griddle-batter-egg.webp",
     alt: {
@@ -70,7 +70,7 @@ export function StoryView() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:px-8">
           <div className="lg:col-span-6">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase">
-              <span>{pick("品牌故事", "Our Story")}</span>
+              <span>{pick("创业故事", "Our Story")}</span>
               <span aria-hidden="true" className="text-kraft-deep">
                 ·
               </span>
@@ -78,7 +78,7 @@ export function StoryView() {
                 lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                 className="font-calligraphy text-lg font-normal tracking-normal text-ink"
               >
-                {zhText("关于煎饼刘")}
+                {zhText("归零创业")}
               </span>
             </p>
             <h1 className="mt-2 font-display text-4xl leading-[1.12] font-medium tracking-[-0.025em] text-ink sm:text-5xl">
@@ -132,8 +132,8 @@ export function StoryView() {
               </div>
               <p className="mt-2.5 text-xs leading-relaxed text-ink-muted">
                 {pick(
-                  "每一张煎饼都由店主亲手现摊，配自家熬制酱料与秘制辣椒油，欢迎在 Instagram（@jian_bing_liu）、TikTok（@jianbingliu.uk）与 Threads 关注我们的日常出餐。",
-                  "Every crepe is cooked to order by hand with homemade sauces and chilli oil. Follow @jian_bing_liu on Instagram & Threads and @jianbingliu.uk on TikTok for daily clips from the counter."
+                  "每一张煎饼都由刘阿姨亲手现摊，配鲜榨果蔬面糊与自制辣椒油。欢迎在小红书（煎饼刘 · ID: 1162231947）、Instagram（@jian_bing_liu）与 TikTok（@jianbingliu.uk）看我们的厨房日常。",
+                  "Every crepe is spun by hand with natural fruit-and-veg batters and homemade chilli oil. Follow our kitchen clips on RedNote (ID: 1162231947), Instagram (@jian_bing_liu), and TikTok (@jianbingliu.uk)."
                 )}
               </p>
             </div>

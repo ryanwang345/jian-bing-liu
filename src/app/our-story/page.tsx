@@ -4,7 +4,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "Our Story",
   description:
-    "The story behind Jian Bing Liu (煎饼刘) on Camden Road: hand-spread savoury Jian Bing, natural fruit-and-veg batters, and crisp lace sweet crepes cooked to order.",
+    "Retired in China, started from zero in London — third time lucky. Hand-spun Jian Bing with natural dragon fruit & beetroot batters on Camden Road, Halal & vegan friendly.",
   path: "/our-story",
   image: "/images/chef-lace-crepe.webp",
 });

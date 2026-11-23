@@ -70,7 +70,8 @@ export function buildRestaurantJsonLd() {
         (s) =>
           s.platform === "instagram" ||
           s.platform === "threads" ||
-          s.platform === "tiktok"
+          s.platform === "tiktok" ||
+          s.platform === "rednote"
       )
       .map((s) => s.href),
     aggregateRating: {

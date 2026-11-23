@@ -61,6 +61,24 @@ export function SocialIcon({
           <path d="M14 3c.7 2.8 2.8 4.8 6 5" />
         </svg>
       );
+    case "rednote":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className={className}
+        >
+          <path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H19v17.5a2 2 0 0 1-2 2H7.5A2.5 2.5 0 0 1 5 19V4.5Z" />
+          <path d="M5 18.5A2.5 2.5 0 0 1 7.5 16H19" />
+          <path d="M9.5 7.5h5" />
+          <path d="M9.5 11h3.5" />
+        </svg>
+      );
     case "reddit":
       return (
         <svg

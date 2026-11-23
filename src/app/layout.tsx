@@ -4,6 +4,7 @@ import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MobileActionBar } from "@/components/MobileActionBar";
 import { restaurant, SITE_URL } from "@/data/restaurant";
 import { getCalligraphyStylesheetHref } from "@/lib/fonts";
 import { LocaleProvider } from "@/lib/i18n";
@@ -49,7 +50,10 @@ export const metadata: Metadata = {
     "Halal Chinese food Camden",
     "Vegetarian Chinese street food London",
     "Vegan Japanese curry Camden",
+    "Dragon fruit Jian Bing London",
     "伦敦煎饼果子",
+    "伦敦煎饼刘",
+    "小红书煎饼刘",
   ],
   openGraph: {
     type: "website",
@@ -137,6 +141,7 @@ export default async function RootLayout({
           </main>
 
           <Footer />
+          <MobileActionBar />
         </LocaleProvider>
       </body>
     </html>

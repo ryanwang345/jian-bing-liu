@@ -16,6 +16,7 @@ export interface SocialLink {
     | "instagram"
     | "threads"
     | "tiktok"
+    | "rednote"
     | "reddit"
     | "fantuan"
     | "google-maps";
@@ -31,12 +32,12 @@ export const restaurant = {
   sealText: "爱民",
   chineseTagline: "正宗风味 · 果蔬煎饼",
   description: {
-    en: "Chinese street food on Camden Road, London. Freshly made savoury Jian Bing crepes, lace sweet crepes, pan-fried dumplings, braised beef rice, and house-made soya milk. Eat in, takeaway, or delivery.",
-    zh: "位于伦敦卡姆登的正宗中式街头小吃店——现摊果蔬咸味煎饼、手工花式蕾丝甜煎饼、酥脆煎饺、慢炖热菜及现磨饮品，支持堂食、到店自取与外卖配送。",
+    en: "Handmade Northern Chinese Jian Bing on Camden Road, London. Natural dragon fruit & beetroot batters with zero food dye, Halal beef & chicken, veggie & vegan choices, dumplings, and lace sweet crepes. Rated 4.9★ on Google.",
+    zh: "国内退休后来伦敦三次归零创业，扎根卡姆登路的暖心煎饼小店！鲜切红心火龙果与甜菜根现榨天然果蔬饼皮，清真牛鸡与素食纯素皆全，Google 4.9★ 好评，支持堂食、外带与配送。",
   },
   shortIntro: {
-    en: "At our Camden Road shop, every Jian Bing is made fresh on the griddle with thin fruit-and-veg batter, egg, house sauce, and crispy fillings. We also serve pan-fried dumplings, braised beef rice, and sweet crepes.",
-    zh: "藏在伦敦卡姆登路上的暖心烟火气，煎饼刘坚持手工现摊每一张果蔬煎饼——薄脆带焦香的饼皮、秘制咸香酱料、清脆时蔬与酥脆薄脆层层叠起，还有花式蕾丝甜筒、热腾腾的炖菜与手工煎饺，把熟悉的中国街头好味道带到北伦敦。",
+    en: "After retiring in China, Mrs Liu started from zero in London — third time lucky. On Camden Road, every Jian Bing is spun hot to order with real dragon fruit and beetroot batters, crispy wonton cracker, Halal beef or chicken, and homemade chilli oil.",
+    zh: "在国内退休后来到伦敦，第三次把自己归零创业。扎根卡姆登路守着热铁板，坚持鲜切红心火龙果与甜菜根现榨和面、不加色素，清真牛鸡与素食纯素一桌全搞定，每一口都是滚烫酥脆的中国烟火气。",
   },
   priceRange: "£10–20",
   address: {
@@ -109,6 +110,12 @@ export const restaurant = {
       platform: "tiktok",
     },
     {
+      label: { en: "RedNote", zh: "小红书" },
+      handle: "ID: 1162231947",
+      href: "https://www.xiaohongshu.com/search_result?keyword=1162231947",
+      platform: "rednote",
+    },
+    {
       label: { en: "Reddit", zh: "Reddit 社区" },
       handle: "r/LondonFood",
       href: "https://www.reddit.com/r/LondonFood/comments/1qmx85b/highly_recommend_jian_bing_liu_in_camden/",
@@ -129,50 +136,50 @@ export const restaurant = {
   ] as SocialLink[],
   story: {
     headline: {
-      en: "Hot off the iron griddle on Camden Road",
-      zh: "伦敦卡姆登，铁板现摊的热乎烟火气",
+      en: "Retired in China. Started from zero in London — third time lucky.",
+      zh: "国内退休，在伦敦第三次归零创业",
     },
     lead: {
-      en: "Every Jian Bing starts on a hot round griddle: fresh batter spread thin by hand, cracked egg, house savoury sauce, plenty of greens and crunch, folded straight into our brown paper sleeve stamped with our 爱民 seal.",
-      zh: "在煎饼刘，每一张煎饼都从一口烧得恰到好处的圆铁板开始——手工摊开细腻面糊、磕入鲜蛋、刷上秘制酱料、铺满鲜脆配菜与金黄酥脆，最后趁热装进印有「煎饼刘 · 爱民」印章的牛皮纸袋里。",
+      en: "Every Jian Bing on Camden Road is still made the honest way: real fruit and veg blended straight into the batter, cracked egg on sizzling cast iron, crisp wonton cracker, and folded hot into our brown paper sleeve stamped with our 爱民 seal.",
+      zh: "在卡姆登路守着一块热铁板，不加色素、不图省事——新鲜红心火龙果与甜菜根现切现榨和面，磕蛋刷秘制酱、铺满爽脆薄脆与青菜，趁热装进印有「煎饼刘 · 爱民」朱印的牛皮纸袋里。",
     },
     paragraphs: [
       {
-        en: "Good Jian Bing is all about texture. Soft, eggy batter straight off the iron, crisp fried onions and cracker crunch inside, cool shredded veg, and rich savoury sauce folded together while it is still piping hot.",
-        zh: "延续中国街头早餐摊最迷人的层次感，我们讲究刚出锅那一瞬间的口感反差：柔韧带蛋香的饼皮、咔滋作响的酥脆洋葱与脆片、清爽解腻的生菜与蔬菜丝，再由自家调制的秘制酱汁裹在一起，每一口都热乎满足。",
+        en: "After retiring in China and settling in the UK, Mrs Liu decided to start from scratch for the third time in her life — bringing real Northern Chinese street food to London. What began with one round cast-iron griddle has grown into a beloved Camden neighbourhood spot with over 280 five-star reviews on Google.",
+        zh: "在国内退休定居英国后，刘阿姨决定人生第三次把自己归零，把最地道的中国果蔬煎饼与街头小吃带到伦敦。从一口圆铁板起步，慢慢做成卡姆登街坊与伦敦食客口口相传的小店，在 Google 收获了 280 多条五星好评。",
       },
       {
-        en: "We make Halal beef, Halal chicken, and veggie crepes using naturally coloured fruit-and-vegetable batters (果蔬煎饼), plus hand-piped lace sweet crepes. Beyond the griddle, the kitchen turns out slow-braised beef with rice, Japanese-style curries, pan-fried dumplings, wonton soups, and hot soya milk.",
-        zh: "除了经典的清真牛肉、清真鸡肉和素食果蔬煎饼，我们还用天然果蔬调出色彩鲜亮的饼皮，并手工挤出精致的花式蕾丝甜煎饼；店内同时供应慢炖牛肉饭、日式咖喱、手工煎饺、鲜汤馄饨和现磨豆浆、黑芝麻糊等熟悉的家常味道。",
+        en: "No artificial colouring, ever. Our pink and green batters get their colour straight from fresh red dragon fruit, beetroot, and spinach — then meet crisp fried onions, savoury house sauce, homemade chilli oil, and hand-piped lace sweet crepes cooked right in front of you.",
+        zh: "绝不靠食用色素讨巧：粉色与翠绿的饼皮，来自后厨每天现切鲜榨的红心火龙果、甜菜根与新鲜菠菜。配上自家熬制咸香酱、秘制辣椒油和现炸薄脆，旁边还有手工挤制的花式蕾丝甜筒、慢炖牛肉饭、纯素咖喱与现磨豆浆。",
       },
       {
-        en: "Whether you grab a table inside on Camden Road, take one away for the walk, or order delivery across North London, everything is cooked fresh when you order.",
-        zh: "我们扎根伦敦卡姆登路，提供温馨堂食、到店外带与无接触配送，坚持每一单现点现做，无论坐下来趁热品尝、逛街随手带走还是宅家解馋，都能吃到这一口热气腾腾的中国味。",
+        en: "Whether you are a UCL or CSM student missing home, a Camden local grabbing a £6.50 lunch crepe, or a group mixing Halal beef, veggie, and vegan orders, pull up a chair inside or take one hot for the walk.",
+        zh: "不管是想念家乡味的留子、下班顺路买份 £6.5 午市煎饼的伦敦本地客，还是清真搭子与素食朋友一起聚餐，只要铁板还热着，我们就在卡姆登路 124 号现点现摊，等你趁热来吃。",
       },
     ],
     pillars: [
       {
-        title: { en: "Cooked to Order", zh: "铁板现点现摊" },
-        chinese: "现做现卖",
+        title: { en: "Real Dragon Fruit & Beetroot Batters", zh: "鲜切果蔬现榨 · 零色素" },
+        chinese: "果蔬现榨",
         description: {
-          en: "Every Jian Bing and sweet lace crepe is poured, spread, and folded hot when you order.",
-          zh: "每一张咸味煎饼与花式蕾丝甜煎饼都在下单后现摊现叠，保证拿到手时依然酥脆滚烫。",
+          en: "Fresh red dragon fruit, beetroot, and spinach blended straight into the batter — natural colour, light crisp edge, zero food dye.",
+          zh: "新鲜红心火龙果、甜菜根与菠菜现切榨汁和面，色泽自然清香，外圈微脆、里头软韧。",
         },
       },
       {
-        title: { en: "Natural Fruit & Veg Batters", zh: "天然果蔬饼皮" },
-        chinese: "果蔬煎饼",
+        title: { en: "4.9★ Camden Favourite", zh: "伦敦卡姆登 4.9★ 口碑" },
+        chinese: "匠心手作",
         description: {
-          en: "Naturally coloured batters filled with crisp lettuce, spring onions, spinach, and shredded veg.",
-          zh: "精选新鲜菠菜、生菜、葱花与爽脆时蔬，色彩自然明亮，清爽不油腻。",
+          en: "Started from scratch after retirement and now backed by 280+ five-star Google reviews across RedNote, TikTok, Instagram, and r/LondonFood.",
+          zh: "退休赴英归零创业一路走来，收获 Google 280+ 五星好评与小红书、TikTok、Instagram 食客口口相传。",
         },
       },
       {
-        title: { en: "Halal, Veggie & Vegan", zh: "清真与素食兼顾" },
-        chinese: "丰富口味",
+        title: { en: "Halal, Veggie & Vegan at One Table", zh: "清真、素食与纯素一桌共享" },
+        chinese: "丰俭由人",
         description: {
-          en: "Halal beef and chicken fillings sit alongside veggie crepes, pan-fried veg dumplings, and vegan Japanese curry.",
-          zh: "既有清真牛肉、清真鸡肉招牌口味，也贴心准备了素食煎饼、素煎饺与纯素日式咖喱。",
+          en: "Halal beef and chicken Jian Bing and beef dumplings sit alongside veggie crepes, veg dumplings, and vegan Japanese curry.",
+          zh: "清真牛肉/鸡肉煎饼与牛肉煎饺之外，同时备齐蛋奶素煎饼、素煎饺与纯素日式咖喱，聚餐不踩雷。",
         },
       },
     ],

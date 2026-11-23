@@ -28,6 +28,7 @@ const POSTS_PER_PAGE = 3;
 type ReviewFilter = "all" | ReviewSource;
 type SocialFilter =
   | "all"
+  | "rednote"
   | "instagram"
   | "tiktok"
   | "threads"
@@ -116,6 +117,7 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
   const redditCount = reviews.filter((r) => r.source === "reddit").length;
   const fantuanCount = reviews.filter((r) => r.source === "fantuan").length;
 
+  const rednotePostsCount = socialPosts.filter((p) => p.platform === "rednote").length;
   const igPostsCount = socialPosts.filter((p) => p.platform === "instagram").length;
   const ttPostsCount = socialPosts.filter((p) => p.platform === "tiktok").length;
   const threadsPostsCount = socialPosts.filter((p) => p.platform === "threads").length;
@@ -422,14 +424,14 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
             <div>
               <h3 className="font-display text-2xl font-bold text-ink">
                 {pick(
-                  "精选社媒、Reddit 讨论与饭团外卖",
-                  "On Instagram, TikTok, Threads, Reddit & Fantuan"
+                  "小红书、Instagram、TikTok、Reddit 与饭团动态",
+                  "On RedNote, Instagram, TikTok, Threads, Reddit & Fantuan"
                 )}
               </h3>
               <p className="mt-1 text-sm text-ink-muted">
                 {pick(
-                  "TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★ · 点击直达原帖或门店",
-                  "1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan · Click any card to open"
+                  "小红书 1,830+ 获赞收藏 · TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★",
+                  "RedNote ID 1162231947 · 1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan"
                 )}
               </p>
             </div>
@@ -469,6 +471,13 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
                     label: pick(
                       `全部动态 (${socialPosts.length})`,
                       `All Posts (${socialPosts.length})`
+                    ),
+                  },
+                  {
+                    key: "rednote",
+                    label: pick(
+                      `小红书 (${rednotePostsCount})`,
+                      `RedNote (${rednotePostsCount})`
                     ),
                   },
                   {
@@ -569,15 +578,17 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
                   </div>
 
                   <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-cinnabar">
-                    {post.platform === "tiktok"
-                      ? pick("打开 TikTok 原视频", "Watch TikTok Video")
-                      : post.platform === "instagram"
-                        ? pick("打开 Instagram 原帖", "Open Instagram Post")
-                        : post.platform === "reddit"
-                          ? pick("在 Reddit 查看讨论", "Open Reddit Thread")
-                          : post.platform === "fantuan"
-                            ? pick("前往饭团外卖下单", "Order on Fantuan")
-                            : pick("打开 Threads 原帖", "Open Threads Post")}
+                    {post.platform === "rednote"
+                      ? pick("去小红书看煎饼刘", "Open on RedNote")
+                      : post.platform === "tiktok"
+                        ? pick("打开 TikTok 原视频", "Watch TikTok Video")
+                        : post.platform === "instagram"
+                          ? pick("打开 Instagram 原帖", "Open Instagram Post")
+                          : post.platform === "reddit"
+                            ? pick("在 Reddit 查看讨论", "Open Reddit Thread")
+                            : post.platform === "fantuan"
+                              ? pick("前往饭团外卖下单", "Order on Fantuan")
+                              : pick("打开 Threads 原帖", "Open Threads Post")}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
                 </div>

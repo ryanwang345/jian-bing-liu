@@ -19,7 +19,7 @@ export function Footer() {
   const { isZh, t, zhText, pick } = useLocale();
 
   return (
-    <footer className="border-t border-ink-soft bg-ink text-parchment/90">
+    <footer className="border-t border-ink-soft bg-ink pb-20 text-parchment/90 md:pb-0">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
@@ -35,8 +35,8 @@ export function Footer() {
             </Link>
             <p className="text-sm leading-relaxed text-parchment/75">
               {pick(
-                "位于伦敦卡姆登的正宗中式街头小吃，坚持手工现摊果蔬咸味煎饼、花式蕾丝甜煎饼、酥脆煎饺与家常热菜。",
-                "Northern Chinese savoury Jian Bing, fruit-and-veg batters, pan-fried dumplings, and lacy sweet crepes on Camden Road."
+                "国内退休后赴英三次归零创业，扎根伦敦卡姆登路！鲜榨红心火龙果与甜菜根果蔬煎饼，清真牛鸡与素食皆全，现点现摊。",
+                "Handmade Northern Chinese Jian Bing on Camden Road — natural dragon fruit & beetroot batters, Halal beef & chicken, and veggie & vegan favourites."
               )}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">

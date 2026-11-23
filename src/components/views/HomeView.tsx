@@ -15,8 +15,11 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { DietaryBadge } from "@/components/DietaryBadge";
+import { LiveOpenBadge } from "@/components/LiveOpenBadge";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SectionHeading } from "@/components/SectionHeading";
+import { ShareSpotButton } from "@/components/ShareSpotButton";
+import { SocialIcon } from "@/components/SocialIcon";
 import { featuredMenuItems } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
@@ -74,33 +77,38 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
       <section className="kraft-grain relative overflow-hidden border-b border-kraft-deep/80">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:py-20">
           <div className="animate-fade-up lg:col-span-6">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-cinnabar/25 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-cinnabar shadow-xs">
-              <span
-                lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                className="font-calligraphy text-base font-normal text-ink"
-              >
-                {zhText(restaurant.chineseTagline)}
-              </span>
-              <span aria-hidden="true" className="text-kraft-deep">
-                |
-              </span>
-              <span className={isZh ? "tracking-wider" : "tracking-wide uppercase"}>
-                {pick("伦敦卡姆登", "Camden, London")}
-              </span>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-cinnabar/25 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-cinnabar shadow-xs">
+                <span
+                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                  className="font-calligraphy text-base font-normal text-ink"
+                >
+                  {zhText(restaurant.chineseTagline)}
+                </span>
+                <span aria-hidden="true" className="text-kraft-deep">
+                  |
+                </span>
+                <span
+                  className={isZh ? "tracking-wider" : "tracking-wide uppercase"}
+                >
+                  {pick("伦敦卡姆登", "Camden, London")}
+                </span>
+              </div>
+              <LiveOpenBadge />
             </div>
 
             {isZh ? (
               <h1 className="mt-5 font-display text-4xl leading-[1.2] tracking-[0.03em] text-ink sm:text-[3.2rem]">
-                {zhText("铁板现摊，")}
+                {zhText("鲜榨果蔬皮，")}
                 <br />
-                {zhText("热乎酥香的")}
-                <span className="text-cinnabar">{zhText("果蔬煎饼")}</span>
+                {zhText("铁板现摊的")}
+                <span className="text-cinnabar">{zhText("热乎煎饼")}</span>
               </h1>
             ) : (
-              <h1 className="mt-5 font-display text-4xl leading-[1.06] font-medium tracking-[-0.025em] text-ink sm:text-5xl lg:text-[3.6rem]">
+              <h1 className="mt-5 font-display text-4xl leading-[1.06] font-medium tracking-[-0.025em] text-ink sm:text-5xl lg:text-[3.55rem]">
                 Hot, crisp{" "}
-                <em className="italic font-medium text-cinnabar">Jian Bing</em>{" "}
-                folded straight off the griddle.
+                <em className="italic font-medium text-cinnabar">Jian Bing</em>,
+                spun fresh with real fruit &amp; veg.
               </h1>
             )}
 
@@ -152,7 +160,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   {initialReviews?.rating.score ?? "4.9"}
                 </span>
                 <span className="text-ink-muted">
-                  ({initialReviews?.rating.count ?? 286}{" "}
+                  ({initialReviews?.rating.count ?? 287}{" "}
                   {pick("Google 好评", "Google Reviews")})
                 </span>
               </a>
@@ -239,7 +247,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 />
               </div>
 
-              <div className="flex flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg sm:absolute sm:-right-3 sm:-bottom-6 sm:max-w-[235px]">
+              <div className="flex flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg sm:absolute sm:-right-3 sm:-bottom-6 sm:max-w-[245px]">
                 <p
                   lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                   className="font-calligraphy text-xl whitespace-nowrap text-[#F0C26E] sm:text-[22px]"
@@ -248,8 +256,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-parchment/80">
                   {pick(
-                    "清真牛肉鸡肉煎饼、天然果蔬素食饼皮、手工煎饺与慢炖家常菜，每单现点现做。",
-                    "Halal beef & chicken crepes, natural veg batters, and pan-fried dumplings cooked to order."
+                    "零色素！新鲜红心火龙果与甜菜根现榨果蔬皮，清真牛鸡与素食每单现摊。",
+                    "Zero food dye — fresh dragon fruit & beetroot batters, Halal beef & chicken, spun to order."
                   )}
                 </p>
               </div>
@@ -279,14 +287,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </div>
                 <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
                   {pick(
-                    "清真牛肉与鸡肉，现点现摊",
-                    "Halal beef & chicken, cooked fresh"
+                    "清真牛肉与鸡肉，午市 £6.5 起",
+                    "Halal beef & chicken, lunch from £6.50"
                   )}
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                   {pick(
-                    "招牌牛肉煎饼、鸡肉煎饼、午市简餐及脆底牛肉煎饺均采用清真肉类食材，菜单支持一键筛选全部清真菜品。",
-                    "Our signature Beef & Chicken Jian Bing, lunch specials, and pan-fried beef dumplings use Halal meat. Filter the menu in one tap."
+                    "招牌牛肉煎饼、鸡肉煎饼（£10）、午市简餐（£6.5）及脆底牛肉煎饺（£1/只）均采用清真肉类食材，支持一键筛选全部清真菜品。",
+                    "Signature Halal Beef & Chicken Jian Bing (£10), £6.50 lunch crepes, and £1 pan-fried beef dumplings. Filter all Halal dishes in one tap."
                   )}
                 </p>
               </div>
@@ -316,14 +324,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </div>
                 <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
                   {pick(
-                    "酥脆煎饼配热豆浆，熟悉的中国胃",
-                    "Real Northern Chinese street food in NW1"
+                    "火龙果现榨果蔬皮，留子中国胃认证",
+                    "Natural dragon fruit batter & real crunch"
                   )}
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                   {pick(
-                    "热铁板现摊果蔬饼皮、自家熬制酱料与辣椒油，搭配现磨豆浆、手磨黑芝麻糊与杨枝甘露，并支持饭团外卖（4.5 ★）下单。",
-                    "Hand-spread fruit-and-veg batters, homemade savoury sauce and chilli oil, hot soya milk, mango sago, and Fantuan delivery (4.5 ★)."
+                    "不是色素！后厨鲜切红心火龙果、甜菜根现打调糊，配现炸薄脆、自制辣椒油与热豆浆；就在 UCL/CSM 附近，支持饭团外卖（4.5 ★）。",
+                    "Zero food dye — fresh dragon fruit and beetroot blended straight into the batter, with crispy cracker, homemade chilli oil, soya milk, and Fantuan (4.5 ★)."
                   )}
                 </p>
               </div>
@@ -469,6 +477,156 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
+      {/* Editorial Dark-Lacquer Band: First-Time Ordering Guide & Social Buzz */}
+      <section className="cv-auto relative overflow-hidden border-y border-kraft-deep/80 bg-ink text-parchment">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_20%,rgba(201,134,31,0.16),transparent_55%),radial-gradient(ellipse_at_85%_85%,rgba(184,37,28,0.14),transparent_50%)]"
+        />
+        <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
+          <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
+                <span>{pick("进店必点指南", "First Time Here?")}</span>
+                <span aria-hidden="true" className="text-parchment/30">
+                  ·
+                </span>
+                <span
+                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                  className="font-calligraphy text-lg font-normal tracking-normal text-parchment/90 normal-case"
+                >
+                  {zhText("人气搭配")}
+                </span>
+              </div>
+              <h2 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] text-parchment sm:text-4xl">
+                {pick(
+                  "不知道怎么点？三套人气搭配直接抄作业",
+                  "Three ways Londoners order at the counter"
+                )}
+              </h2>
+              <p className="mt-3 text-base leading-relaxed text-parchment/75">
+                {pick(
+                  "不管你是刷到小红书、TikTok、Instagram 还是 Reddit 慕名而来，这三套高人气组合闭眼点都不会出错。",
+                  "Spotted us on TikTok, Instagram, RedNote, or r/LondonFood? Start with one of these crowd favourites — all spun hot to order."
+                )}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5">
+              <ShareSpotButton variant="dark" />
+              <a
+                href="https://www.xiaohongshu.com/search_result?keyword=1162231947"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-parchment/25 bg-white/10 px-4 py-2 text-xs font-semibold text-parchment transition-colors hover:border-[#F0C26E] hover:text-[#F0C26E]"
+              >
+                <SocialIcon platform="rednote" className="h-3.5 w-3.5" />
+                {pick("小红书 1162231947", "RedNote · 1162231947")}
+              </a>
+              <a
+                href="#reviews"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#F0C26E]/40 bg-[#F0C26E]/10 px-4 py-2 text-xs font-semibold text-[#F0C26E] transition-colors hover:bg-[#F0C26E] hover:text-ink"
+              >
+                <SocialIcon platform="tiktok" className="h-3.5 w-3.5" />
+                {pick("1.8万+ 播放热门实拍", "18K+ TikTok Views")}
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                tag: pick("招牌咸口 · 清真可选", "The Classic · Halal"),
+                title: pick("牛肉 / 鸡肉煎饼 + 热豆浆", "Beef or Chicken Jian Bing + Soya Milk"),
+                price: "£10 + £2",
+                desc: pick(
+                  "双蛋果蔬饼皮刷自家秘制酱，配酥脆薄脆与清真肉馅，再捧一杯温热现磨豆浆，最地道的街头组合。",
+                  "Two-egg savoury crepe brushed with house sauce, crispy fried onions, Halal beef or chicken, and hot classic soya milk."
+                ),
+                image: "/images/beef-crepe-sleeve.webp",
+                alt: pick(
+                  "牛皮纸袋里撒满黑芝麻的热乎招牌牛肉煎饼",
+                  "Warm black-sesame Halal Beef Jian Bing crepe in a brown paper sleeve"
+                ),
+                href: "/menu?diet=halal",
+                cta: pick("查看清真煎饼", "See Halal Crepes"),
+              },
+              {
+                tag: pick("高颜值打卡甜品", "The Sweet Hit"),
+                title: pick("花式蕾丝甜筒 / 榛子巧克力甜煎饼", "Fancy Lace Cone or Nutella Crepe"),
+                price: pick("£4 起", "From £4"),
+                desc: pick(
+                  "手工挤制粉色蕾丝脆边卷成甜筒，装满绵密奶油与鲜果，或来一份热乎拉丝的榛子巧克力草莓甜煎饼。",
+                  "Hand-piped pink lace crepe cone packed with whipped cream and fruit, or a warm Nutella crepe straight off the iron."
+                ),
+                image: "/images/fancy-lace-dessert-cone.webp",
+                alt: pick(
+                  "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与饼干棒",
+                  "Hand-piped pink lace sweet crepe cone with cream, strawberries, and biscuit sticks"
+                ),
+                href: "/menu#sweet-crepes-and-desserts",
+                cta: pick("看甜煎饼菜单", "See Sweet Crepes"),
+              },
+              {
+                tag: pick("暖胃热菜 · 含纯素", "Hot Bowls & Dumplings"),
+                title: pick("慢炖牛肉饭 / 纯素咖喱 + 脆底煎饺", "Braised Beef or Vegan Curry + Dumplings"),
+                price: "£7.95 – £12.95",
+                desc: pick(
+                  "软烂入味的土豆胡萝卜炖牛肉或醇香纯素日式咖喱配白米饭，再加几只 £1 起的金黄脆底煎饺，管饱又暖胃。",
+                  "Slow-braised beef or Vegan Japanese Curry with steamed white rice, plus golden pan-fried beef or veggie dumplings from £1."
+                ),
+                image: "/images/braised-beef-rice.webp",
+                alt: pick(
+                  "慢炖土豆胡萝卜牛肉配热腾腾的白米饭",
+                  "Slow-braised beef with potatoes, carrots, and steamed white rice"
+                ),
+                href: "/menu#mains-and-rice",
+                cta: pick("查看热菜与煎饺", "See Mains & Dumplings"),
+              },
+            ].map((combo) => (
+              <Link
+                key={combo.href}
+                href={combo.href}
+                className="group flex flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-white/[0.04] transition-all duration-300 hover:-translate-y-1 hover:border-[#F0C26E]/50 hover:bg-white/[0.07]"
+              >
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/30">
+                  <Image
+                    src={combo.image}
+                    alt={combo.alt}
+                    fill
+                    sizes="(max-width: 768px) calc(100vw - 2rem), 356px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span className="absolute top-3 left-3 rounded-full bg-ink/85 px-3 py-1 text-[11px] font-semibold text-[#F0C26E] backdrop-blur-xs">
+                    {combo.tag}
+                  </span>
+                  <span className="absolute right-3 bottom-3 rounded-full bg-parchment/95 px-2.5 py-1 font-sans text-xs font-semibold tabular-nums text-ink">
+                    {combo.price}
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col justify-between p-6">
+                  <div>
+                    <h3 className="font-display text-xl font-medium text-parchment transition-colors group-hover:text-[#F0C26E]">
+                      {combo.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-parchment/75">
+                      {combo.desc}
+                    </p>
+                  </div>
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F0C26E]">
+                    {combo.cta}
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Our Story & Craft Editorial Band */}
       <section className="cv-auto border-y border-kraft-deep/80 bg-kraft/60">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-22 lg:grid-cols-12 lg:px-8">
@@ -515,8 +673,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
           <div className="lg:col-span-6">
             <SectionHeading
-              eyebrow={pick("品牌故事", "Our Story")}
-              chineseAccent="匠心手作"
+              eyebrow={pick("创业故事", "Our Story")}
+              chineseAccent="归零创业"
               title={t(restaurant.story.headline)}
               description={t(restaurant.story.lead)}
             />
@@ -656,7 +814,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3 lg:col-span-5 lg:justify-end">
+            <div className="flex flex-wrap items-center gap-3 lg:col-span-5 lg:justify-end">
               <a
                 href={restaurant.links.googleMapsDirections}
                 target="_blank"
@@ -678,6 +836,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
+
+              <ShareSpotButton variant="dark" />
             </div>
           </div>
         </div>

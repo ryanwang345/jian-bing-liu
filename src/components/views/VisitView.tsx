@@ -12,6 +12,8 @@ import {
   Phone,
   ShoppingBag,
 } from "lucide-react";
+import { LiveOpenBadge } from "@/components/LiveOpenBadge";
+import { ShareSpotButton } from "@/components/ShareSpotButton";
 import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
@@ -115,9 +117,12 @@ export function VisitView() {
                   <Clock className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <div className="w-full">
-                  <h2 className="font-display text-lg font-bold text-ink">
-                    {pick("营业时间", "Opening Hours")}
-                  </h2>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h2 className="font-display text-lg font-bold text-ink">
+                      {pick("营业时间", "Opening Hours")}
+                    </h2>
+                    <LiveOpenBadge />
+                  </div>
                   <dl className="mt-3 space-y-2 text-sm">
                     {restaurant.openingHours.map((row) => (
                       <div
@@ -205,6 +210,15 @@ export function VisitView() {
                         <>
                           {zhText("也可以在 ")}
                           <a
+                            href="https://www.xiaohongshu.com/search_result?keyword=1162231947"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
+                          >
+                            {zhText("小红书 (ID: 1162231947)")}
+                          </a>
+                          {zhText("、")}
+                          <a
                             href="https://www.instagram.com/jian_bing_liu/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -226,6 +240,15 @@ export function VisitView() {
                       ) : (
                         <>
                           Prefer messaging? Reach us on{" "}
+                          <a
+                            href="https://www.xiaohongshu.com/search_result?keyword=1162231947"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
+                          >
+                            RedNote (ID: 1162231947)
+                          </a>
+                          ,{" "}
                           <a
                             href="https://www.instagram.com/jian_bing_liu/"
                             target="_blank"
@@ -327,9 +350,12 @@ export function VisitView() {
             </div>
 
             <div className="rounded-3xl border border-kraft-deep bg-white p-6 shadow-xs sm:p-7">
-              <h2 className="font-display text-lg font-bold text-ink">
-                {pick("关注我们的官方社交媒体", "Follow Us")}
-              </h2>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="font-display text-lg font-bold text-ink">
+                  {pick("关注我们的官方社交媒体", "Follow Us")}
+                </h2>
+                <ShareSpotButton variant="light" />
+              </div>
               <p className="mt-1 text-sm text-ink-muted">
                 {pick(
                   "查看最新出餐短视频、当季新品与卡姆登门店日常：",

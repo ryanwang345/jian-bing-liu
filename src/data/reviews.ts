@@ -20,7 +20,7 @@ export interface CustomerReview {
 
 export interface SocialPost {
   id: string;
-  platform: "instagram" | "tiktok" | "threads" | "reddit" | "fantuan";
+  platform: "instagram" | "tiktok" | "rednote" | "threads" | "reddit" | "fantuan";
   handle: string;
   postType: LocalizedText;
   title: LocalizedText;
@@ -39,9 +39,12 @@ export const FANTUAN_STORE_URL =
 export const REDDIT_RECOMMEND_URL =
   "https://www.reddit.com/r/LondonFood/comments/1qmx85b/highly_recommend_jian_bing_liu_in_camden/";
 
+export const REDNOTE_PROFILE_URL =
+  "https://www.xiaohongshu.com/search_result?keyword=1162231947";
+
 export const googleRating = {
   score: "4.9",
-  count: 286,
+  count: 287,
   reviewsUrl: GOOGLE_MAPS_PLACE_URL,
 };
 
@@ -386,6 +389,46 @@ export const customerReviews: CustomerReview[] = [
  * Direct verified post/reel/video links on Jian Bing Liu's official Instagram, TikTok, and Threads.
  */
 export const socialPosts: SocialPost[] = [
+  {
+    id: "xhs-founder-story",
+    platform: "rednote",
+    handle: "煎饼刘 · ID: 1162231947",
+    postType: { en: "RedNote · Founder Story", zh: "小红书 · 创业日常" },
+    title: {
+      en: "Retired in China, Starting From Zero in London on Camden Road",
+      zh: "退休后来伦敦第三次归零创业，守着铁板把中国味道带到英国",
+    },
+    caption: {
+      en: "Mrs Liu shares daily life behind the Camden griddle on RedNote (1,830+ likes & saves) — thanking guests for 280+ five-star reviews.",
+      zh: "国内退休后赴英归零创业，用一块热铁板摊出正宗果蔬煎饼与可丽饼，谢谢大家的捧场与五星好评！",
+    },
+    href: REDNOTE_PROFILE_URL,
+    image: "/images/chef-lace-crepe.webp",
+    imageAlt: {
+      en: "Mrs Liu smiling behind the griddle at Jian Bing Liu in Camden",
+      zh: "煎饼刘老板娘在卡姆登厨房微笑展示手工煎饼",
+    },
+  },
+  {
+    id: "xhs-dragonfruit-beetroot",
+    platform: "rednote",
+    handle: "煎饼刘 · ID: 1162231947",
+    postType: { en: "RedNote · Natural Batter", zh: "小红书 · 鲜榨果蔬皮" },
+    title: {
+      en: "Fresh Red Dragon Fruit & Beetroot Batters — Zero Food Dye",
+      zh: "伦敦煎饼刘｜鲜切红心火龙果与甜菜根现榨果蔬煎饼",
+    },
+    caption: {
+      en: "Behind-the-scenes prep on RedNote showing fresh red dragon fruit and beetroot sliced in the kitchen for naturally pink Jian Bing batters.",
+      zh: "不是食用色素！后厨每天现切新鲜红心火龙果与甜菜根榨汁调面糊，色泽自然清香，配酥脆薄脆超满足。",
+    },
+    href: REDNOTE_PROFILE_URL,
+    image: "/images/veggie-crepe-griddle.webp",
+    imageAlt: {
+      en: "Naturally pink and green fruit-and-vegetable batter crepe on the hot griddle",
+      zh: "热铁板上天然红心火龙果与蔬果汁调色的果蔬煎饼",
+    },
+  },
   {
     id: "ig-heyjojoeats-reel",
     platform: "instagram",
