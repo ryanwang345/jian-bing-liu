@@ -66,12 +66,17 @@ spec:
     booleanParam(
       name: 'PUSH_IMAGE',
       defaultValue: true,
-      description: 'Build and push Docker image to Docker Hub using rootless BuildKit'
+      description: 'Build and push Docker image to Docker Hub on main branch using rootless BuildKit'
     )
     string(
       name: 'NEXT_PUBLIC_SITE_URL',
       defaultValue: 'https://jianbingliu.uk',
       description: 'Public canonical site URL baked into metadata and structured data'
+    )
+    choice(
+      name: 'AUTO_DEPLOY_ENV',
+      choices: ['staging', 'prod', 'none'],
+      description: 'Automatically trigger JianBingLiu-Deploy after pushing an image on main'
     )
   }
 
@@ -111,7 +116,11 @@ spec:
 
     stage('Build & Push Image') {
       when {
-        expression { return params.PUSH_IMAGE != false }
+        expression {
+          def branch = (env.BRANCH_NAME ?: env.GIT_BRANCH ?: '').replaceFirst('^origin/', '')
+          def isMain = (branch == 'main' || branch == '')
+          return isMain && params.PUSH_IMAGE != false
+        }
       }
       steps {
         withCredentials([
@@ -164,11 +173,35 @@ spec:
 
               echo "=========================================================="
               echo "[CI] Published ${IMAGE}:${BUILD_NUMBER} and ${IMAGE}:latest"
-              echo "[CI] Update tag in ProjectDesk-GitOps:"
-              echo "     ./scripts/update-jian-bing-liu-tag.sh ${BUILD_NUMBER} staging"
               echo "=========================================================="
             '''
           }
+        }
+      }
+    }
+
+    stage('Trigger Deployment') {
+      when {
+        expression {
+          def branch = (env.BRANCH_NAME ?: env.GIT_BRANCH ?: '').replaceFirst('^origin/', '')
+          def isMain = (branch == 'main' || branch == '')
+          def targetEnv = params.AUTO_DEPLOY_ENV ?: 'staging'
+          return isMain && params.PUSH_IMAGE != false && targetEnv != 'none'
+        }
+      }
+      steps {
+        script {
+          def targetEnv = params.AUTO_DEPLOY_ENV ?: 'staging'
+          echo "=========================================================="
+          echo "[CI] Automatically triggering JianBingLiu-Deploy..."
+          echo "[CI] Target Env: ${targetEnv}"
+          echo "[CI] Image Tag:  ${env.BUILD_NUMBER}"
+          echo "=========================================================="
+
+          build job: 'JianBingLiu-Deploy', wait: false, parameters: [
+            string(name: 'IMAGE_TAG', value: "${env.BUILD_NUMBER}"),
+            string(name: 'TARGET_ENV', value: targetEnv)
+          ]
         }
       }
     }

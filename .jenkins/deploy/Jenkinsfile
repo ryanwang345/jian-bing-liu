@@ -1,0 +1,142 @@
+pipeline {
+  agent {
+    kubernetes {
+      cloud 'local-k8s'
+      defaultContainer 'git'
+      yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+    - name: git
+      image: alpine/git:2.47.2
+      command: ['cat']
+      tty: true
+      resources:
+        requests:
+          memory: 64Mi
+          cpu: 50m
+        limits:
+          memory: 256Mi
+'''
+    }
+  }
+
+  options {
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+  }
+
+  parameters {
+    string(
+      name: 'IMAGE_TAG',
+      defaultValue: '',
+      description: 'Docker image tag to deploy (e.g. build number or rollback tag)'
+    )
+    choice(
+      name: 'TARGET_ENV',
+      choices: ['staging', 'prod'],
+      description: 'Target deployment environment in ProjectDesk-GitOps'
+    )
+  }
+
+  stages {
+    stage('Update GitOps Image Tag') {
+      steps {
+        withCredentials([
+          string(
+            credentialsId: 'GITHUB_TOKEN',
+            variable: 'GITHUB_TOKEN'
+          )
+        ]) {
+          container('git') {
+            sh '''
+              set +x
+              set -eu
+
+              TAG="${IMAGE_TAG:-}"
+              ENV="${TARGET_ENV:-staging}"
+
+              if [ -z "$TAG" ]; then
+                echo "[Deploy] Error: IMAGE_TAG parameter is required." >&2
+                exit 1
+              fi
+
+              if [ "$ENV" != "staging" ] && [ "$ENV" != "prod" ]; then
+                echo "[Deploy] Error: Unsupported TARGET_ENV: ${ENV}" >&2
+                exit 1
+              fi
+
+              WORKDIR=$(mktemp -d /tmp/jianbingliu-gitops.XXXXXX)
+              ASKPASS=$(mktemp /tmp/git-askpass.XXXXXX)
+              trap 'rm -rf "$WORKDIR" "$ASKPASS"' EXIT
+
+              chmod 700 "$ASKPASS"
+              cat > "$ASKPASS" <<'EOF'
+#!/bin/sh
+echo "$GITHUB_TOKEN"
+EOF
+
+              export GIT_ASKPASS="$ASKPASS"
+              export GIT_TERMINAL_PROMPT=0
+
+              REMOTE="https://x-access-token@github.com/ryanwang345/ProjectDesk-GitOps.git"
+
+              git clone --quiet --depth=1 --branch main "$REMOTE" "$WORKDIR"
+              cd "$WORKDIR"
+              git config user.name "Jenkins CI"
+              git config user.email "jenkins@ryanwang.dev"
+
+              for attempt in 1 2 3; do
+                echo "[Deploy] Attempt ${attempt}: Syncing latest main from ProjectDesk-GitOps..."
+                git fetch --quiet "$REMOTE" main
+                git checkout --quiet --force -B release-tag FETCH_HEAD
+
+                VALUES="helm/jian-bing-liu/values-${ENV}.yaml"
+                if [ ! -f "$VALUES" ]; then
+                  echo "[Deploy] Error: Missing ${VALUES} in ProjectDesk-GitOps!" >&2
+                  exit 1
+                fi
+
+                echo "[Deploy] Updating web.tag in ${VALUES} -> ${TAG}"
+                awk -v tag="$TAG" '
+                  /^[^ ]/ { section=$1 }
+                  section == "web:" && $1 == "tag:" {
+                    q=sprintf("%c",34)
+                    print "  tag: " q tag q
+                    next
+                  }
+                  { print }
+                ' "$VALUES" > "${VALUES}.new"
+                mv "${VALUES}.new" "$VALUES"
+                git add "$VALUES"
+
+                if git diff --cached --quiet; then
+                  echo "[Deploy] ${VALUES} already at tag ${TAG}. Nothing to update."
+                  exit 0
+                fi
+
+                git commit --quiet -m "release(jian-bing-liu/${ENV}): update web image tag to ${TAG}"
+
+                if git push "$REMOTE" HEAD:main; then
+                  echo "=========================================================="
+                  echo "[Deploy] SUCCESS: jian-bing-liu (${ENV}) updated to tag ${TAG}"
+                  echo "[Deploy] ArgoCD will auto-sync into jian-bing-liu-${ENV}."
+                  echo "=========================================================="
+                  exit 0
+                fi
+
+                echo "[Deploy] Push rejected on attempt ${attempt}. Retrying in 3s..."
+                sleep 3
+              done
+
+              echo "[Deploy] Push failed after 3 attempts." >&2
+              exit 1
+            '''
+          }
+        }
+      }
+    }
+  }
+}
