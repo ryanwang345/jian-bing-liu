@@ -40,12 +40,14 @@ const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
   variable: "--font-noto-sans-sc",
   display: "swap",
+  preload: false,
 });
 
 const notoSansTC = Noto_Sans_TC({
   subsets: ["latin"],
   variable: "--font-noto-sans-tc",
   display: "swap",
+  preload: false,
 });
 
 const maShanZheng = Ma_Shan_Zheng({
@@ -53,6 +55,7 @@ const maShanZheng = Ma_Shan_Zheng({
   weight: "400",
   variable: "--font-ma-shan-zheng",
   display: "swap",
+  preload: false,
 });
 
 const lxgwWenKaiTC = LXGW_WenKai_TC({
@@ -60,6 +63,7 @@ const lxgwWenKaiTC = LXGW_WenKai_TC({
   weight: ["400", "700"],
   variable: "--font-lxgw-wenkai-tc",
   display: "swap",
+  preload: false,
 });
 
 const yujiBoku = Yuji_Boku({
@@ -67,6 +71,7 @@ const yujiBoku = Yuji_Boku({
   weight: "400",
   variable: "--font-yuji-boku",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
