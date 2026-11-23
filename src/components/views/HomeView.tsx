@@ -180,14 +180,43 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </Link>
             </div>
 
-            <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1.15fr]">
+            {/* Official Social Icon Bar */}
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-xs font-medium text-ink-muted">
+                {pick("官方社媒", "Follow")}
+              </span>
+              {restaurant.verifiedSocialLinks
+                .filter((s) => s.platform !== "google-maps")
+                .map((social) => (
+                  <a
+                    key={social.href}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`${t(social.label)} · ${social.handle}`}
+                    aria-label={`${t(social.label)} ${social.handle}`}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-kraft-deep bg-white/85 text-ink shadow-2xs transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:bg-cinnabar hover:text-parchment"
+                  >
+                    <SocialIcon platform={social.platform} className="h-4 w-4" />
+                  </a>
+                ))}
+            </div>
+
+            <dl className="mt-7 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1.15fr]">
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
                   <MapPin className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
                   {pick("门店地址", "Location")}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold whitespace-nowrap text-ink">
-                  {restaurant.address.street}, {restaurant.address.postalCode}
+                  <a
+                    href={restaurant.links.googleMapsDirections}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-kraft-deep underline-offset-4 transition-colors hover:text-cinnabar hover:decoration-cinnabar"
+                  >
+                    {restaurant.address.street}, {restaurant.address.postalCode}
+                  </a>
                 </dd>
               </div>
               <div>

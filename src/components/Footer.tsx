@@ -97,7 +97,12 @@ export function Footer() {
                   className="mt-0.5 h-4 w-4 shrink-0 text-[#F0C26E]"
                   aria-hidden="true"
                 />
-                <span>
+                <a
+                  href={restaurant.links.googleMapsDirections}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-[#F0C26E]"
+                >
                   {isZh ? (
                     <>
                       {zhText(restaurant.address.chineseLine)}
@@ -115,7 +120,7 @@ export function Footer() {
                       {restaurant.address.country}
                     </>
                   )}
-                </span>
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone
