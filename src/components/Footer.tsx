@@ -1,17 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { Clock, ExternalLink, MapPin, Phone, ShoppingBag } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
+import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
+import { useLocale, type LocalizedText } from "@/lib/i18n";
 
-const quickLinks = [
-  { href: "/", label: "Home" },
-  { href: "/menu", label: "Menu" },
-  { href: "/our-story", label: "Our Story" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/visit-us", label: "Visit Us" },
+const quickLinks: Array<{ href: string; label: LocalizedText }> = [
+  { href: "/", label: { en: "Home", zh: "首页" } },
+  { href: "/menu", label: { en: "Menu", zh: "精选菜单" } },
+  { href: "/our-story", label: { en: "Our Story", zh: "品牌故事" } },
+  { href: "/gallery", label: { en: "Gallery", zh: "美食图集" } },
+  { href: "/visit-us", label: { en: "Visit Us", zh: "来店指南" } },
 ];
 
 export function Footer() {
+  const { locale, t } = useLocale();
+  const isZh = locale === "zh";
+
   return (
     <footer className="border-t border-ink-soft bg-ink text-parchment/90">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
@@ -20,28 +27,32 @@ export function Footer() {
             <Link
               href="/"
               className="inline-block rounded-lg"
-              aria-label={`${restaurant.name} — Home`}
+              aria-label={
+                isZh
+                  ? `${restaurant.chineseName} — 返回首页`
+                  : `${restaurant.name} — Home`
+              }
             >
               <BrandMark variant="light" size="md" />
             </Link>
             <p className="text-sm leading-relaxed text-parchment/75">
-              Authentic Chinese savoury Jian Bing crepes, fruit-and-vegetable
-              batters, handmade dumplings, and delicate lace sweet crepes in
-              Camden, London.
+              {isZh
+                ? "位于伦敦卡姆登的正宗中式街头小吃，坚持手工现摊果蔬咸味煎饼、花式蕾丝甜煎饼、酥脆煎饺与家常热菜。"
+                : "Authentic Chinese savoury Jian Bing crepes, fruit-and-vegetable batters, handmade dumplings, and delicate lace sweet crepes in Camden, London."}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
-                Takeaway
+                {isZh ? "支持到店自取" : "Takeaway"}
               </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
-                No-contact delivery
+                {isZh ? "无接触配送" : "No-contact delivery"}
               </span>
             </div>
           </div>
 
           <div>
             <h2 className="font-display text-base font-semibold text-[#F0C26E]">
-              Explore
+              {isZh ? "快速导航" : "Explore"}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {quickLinks.map((link) => (
@@ -50,7 +61,7 @@ export function Footer() {
                     href={link.href}
                     className="text-parchment/80 transition-colors hover:text-[#F0C26E]"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -63,7 +74,9 @@ export function Footer() {
                     className="inline-flex items-center gap-1.5 font-medium text-[#F0C26E] transition-colors hover:text-white"
                   >
                     <ShoppingBag className="h-3.5 w-3.5" aria-hidden="true" />
-                    Order Online ({restaurant.links.orderOnlineProvider})
+                    {isZh
+                      ? `在线点餐（${restaurant.links.orderOnlineProvider}）`
+                      : `Order Online (${restaurant.links.orderOnlineProvider})`}
                     <ExternalLink className="h-3 w-3" aria-hidden="true" />
                   </a>
                 </li>
@@ -73,7 +86,7 @@ export function Footer() {
 
           <div>
             <h2 className="font-display text-base font-semibold text-[#F0C26E]">
-              Visit &amp; Contact
+              {isZh ? "门店信息" : "Visit & Contact"}
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-parchment/80">
               <li className="flex items-start gap-2.5">
@@ -82,11 +95,23 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <span>
-                  {restaurant.address.street}
-                  <br />
-                  {restaurant.address.locality} {restaurant.address.postalCode}
-                  <br />
-                  {restaurant.address.country}
+                  {isZh ? (
+                    <>
+                      {restaurant.address.chineseLine}
+                      <br />
+                      {restaurant.address.street}, {restaurant.address.locality}{" "}
+                      {restaurant.address.postalCode}
+                    </>
+                  ) : (
+                    <>
+                      {restaurant.address.street}
+                      <br />
+                      {restaurant.address.locality}{" "}
+                      {restaurant.address.postalCode}
+                      <br />
+                      {restaurant.address.country}
+                    </>
+                  )}
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
@@ -106,14 +131,14 @@ export function Footer() {
                   className="mt-0.5 h-4 w-4 shrink-0 text-[#F0C26E]"
                   aria-hidden="true"
                 />
-                <span>{restaurant.openingHoursSummary}</span>
+                <span>{t(restaurant.openingHoursSummary)}</span>
               </li>
             </ul>
           </div>
 
           <div>
             <h2 className="font-display text-base font-semibold text-[#F0C26E]">
-              Verified Links
+              {isZh ? "关注我们" : "Follow Us"}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {restaurant.verifiedSocialLinks.map((social) => (
@@ -122,44 +147,57 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-parchment/85 transition-colors hover:text-[#F0C26E]"
+                    className="group inline-flex items-center gap-2 text-parchment/85 transition-colors hover:text-[#F0C26E]"
                   >
-                    {social.label}
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    <SocialIcon
+                      platform={social.platform}
+                      className="h-4 w-4 shrink-0 text-[#F0C26E]"
+                    />
+                    <span>{t(social.label)}</span>
+                    <span className="text-xs text-parchment/55 group-hover:text-[#F0C26E]/80">
+                      {social.handle}
+                    </span>
+                    <ExternalLink
+                      className="h-3 w-3 opacity-60"
+                      aria-hidden="true"
+                    />
                   </a>
                 </li>
               ))}
               {restaurant.links.orderOnline && (
-                <li>
+                <li className="pt-1">
                   <a
                     href={restaurant.links.orderOnline}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-parchment/85 transition-colors hover:text-[#F0C26E]"
+                    className="inline-flex items-center gap-2 font-medium text-[#F0C26E] transition-colors hover:text-white"
                   >
-                    Official Ordering Menu ({restaurant.links.orderOnlineProvider})
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    {isZh
+                      ? `官方外卖菜单（${restaurant.links.orderOnlineProvider}）`
+                      : `Order Online (${restaurant.links.orderOnlineProvider})`}
+                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
                   </a>
                 </li>
               )}
             </ul>
-            <p className="mt-4 rounded-xl border border-parchment/15 bg-parchment/5 p-3 text-xs leading-relaxed text-parchment/65">
-              <strong className="font-semibold text-parchment/85">
-                Social accounts:
-              </strong>{" "}
-              No official Instagram or TikTok handle was supplied yet. Add
-              verified links in <code className="text-[#F0C26E]">src/data/restaurant.ts</code>.
-            </p>
           </div>
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-parchment/15 pt-6 text-xs text-parchment/60 sm:flex-row sm:items-center">
           <p>
-            &copy; {new Date().getFullYear()} {restaurant.name} (
-            <span lang="zh-Hans">{restaurant.chineseName}</span>).{" "}
-            {restaurant.address.street}, {restaurant.address.postalCode}.
+            &copy; {new Date().getFullYear()}{" "}
+            {isZh
+              ? `${restaurant.chineseName}（${restaurant.sealText}）`
+              : `${restaurant.name} (${restaurant.chineseName} · ${restaurant.sealText})`}
+            {" · "}
+            {restaurant.address.street}, {restaurant.address.postalCode}
           </p>
-          <p>Takeaway &amp; delivery kitchen · Prices &amp; availability subject to in-store confirmation.</p>
+          <p>
+            {isZh
+              ? "专注外带与配送 · 菜品供应及价格以门店实际为准"
+              : "Takeaway & delivery kitchen · Prices & availability subject to in-store confirmation."}
+          </p>
         </div>
       </div>
     </footer>

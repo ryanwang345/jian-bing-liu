@@ -3,27 +3,36 @@
 import { useState } from "react";
 import Image from "next/image";
 import { DietaryBadge } from "@/components/DietaryBadge";
-import type { DietaryTag, MenuCategory } from "@/data/menu";
+import {
+  dietaryLabels,
+  type DietaryTagKey,
+  type MenuCategory,
+} from "@/data/menu";
+import { useLocale } from "@/lib/i18n";
 
 interface MenuBrowserProps {
   categories: MenuCategory[];
 }
 
-const dietaryFilters: Array<"All" | DietaryTag> = [
-  "All",
-  "Halal",
-  "Vegetarian",
-  "Vegan",
+const dietaryFilters: Array<"all" | DietaryTagKey> = [
+  "all",
+  "halal",
+  "vegetarian",
+  "vegan",
 ];
 
 export function MenuBrowser({ categories }: MenuBrowserProps) {
-  const [activeDietary, setActiveDietary] = useState<"All" | DietaryTag>("All");
+  const { locale, t } = useLocale();
+  const isZh = locale === "zh";
+  const [activeDietary, setActiveDietary] = useState<"all" | DietaryTagKey>(
+    "all"
+  );
 
   const filteredCategories = categories
     .map((category) => ({
       ...category,
       items:
-        activeDietary === "All"
+        activeDietary === "all"
           ? category.items
           : category.items.filter((item) =>
               item.dietary?.includes(activeDietary)
@@ -33,20 +42,27 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
 
   return (
     <div>
-      {/* Sticky filter & category jump bar */}
       <div className="sticky top-[69px] z-30 -mx-4 border-y border-kraft-deep/80 bg-parchment/95 px-4 py-3.5 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div
               role="group"
-              aria-label="Filter menu by dietary preference"
+              aria-label={
+                isZh ? "按饮食偏好筛选菜单" : "Filter menu by dietary preference"
+              }
               className="flex flex-wrap items-center gap-1.5"
             >
               <span className="mr-1 text-xs font-semibold tracking-wider text-ink-muted uppercase">
-                Dietary:
+                {isZh ? "饮食筛选：" : "Dietary:"}
               </span>
               {dietaryFilters.map((filter) => {
                 const selected = activeDietary === filter;
+                const label =
+                  filter === "all"
+                    ? isZh
+                      ? "全部"
+                      : "All"
+                    : t(dietaryLabels[filter]);
                 return (
                   <button
                     key={filter}
@@ -59,19 +75,19 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                         : "border border-kraft-deep bg-white/80 text-ink-soft hover:bg-kraft"
                     }`}
                   >
-                    {filter}
+                    {label}
                   </button>
                 );
               })}
             </div>
 
             <span className="text-xs font-medium text-ink-muted">
-              Jump to section:
+              {isZh ? "快速跳转分类：" : "Jump to section:"}
             </span>
           </div>
 
           <nav
-            aria-label="Menu categories"
+            aria-label={isZh ? "菜单分类导航" : "Menu categories"}
             className="flex flex-wrap gap-1.5"
           >
             {filteredCategories.map((cat) => (
@@ -80,21 +96,20 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                 href={`#${cat.id}`}
                 className="rounded-full border border-kraft-deep bg-kraft/50 px-3 py-1 text-xs font-semibold text-ink-soft transition-colors hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
               >
-                {cat.title}
+                {t(cat.title)}
               </a>
             ))}
           </nav>
         </div>
       </div>
 
-      {/* Category sections */}
       <div className="mt-12 space-y-16">
         {filteredCategories.map((category) => (
           <section
             key={category.id}
             id={category.id}
             aria-labelledby={`${category.id}-heading`}
-            className="scroll-mt-36"
+            className="scroll-mt-40"
           >
             <div className="border-b border-kraft-deep pb-4">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -102,7 +117,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                   id={`${category.id}-heading`}
                   className="font-display text-2xl font-bold text-ink sm:text-3xl"
                 >
-                  {category.title}
+                  {t(category.title)}
                 </h2>
                 <span
                   lang="zh-Hans"
@@ -112,7 +127,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                 </span>
               </div>
               <p className="mt-1.5 max-w-2xl text-sm text-ink-muted sm:text-base">
-                {category.subtitle}
+                {t(category.subtitle)}
               </p>
             </div>
 
@@ -126,7 +141,9 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                     <div className="relative h-48 w-full shrink-0 overflow-hidden bg-kraft sm:h-auto sm:w-40">
                       <Image
                         src={item.image}
-                        alt={item.imageAlt || item.name}
+                        alt={
+                          item.imageAlt ? t(item.imageAlt) : t(item.name)
+                        }
                         fill
                         sizes="(max-width: 640px) 100vw, 160px"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -139,9 +156,9 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <h3 className="font-display text-lg font-bold text-ink">
-                            {item.name}
+                            {t(item.name)}
                           </h3>
-                          {item.chineseName && (
+                          {!isZh && item.chineseName && (
                             <p
                               lang="zh-Hans"
                               className="text-xs font-medium text-ink-muted"
@@ -158,19 +175,19 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                             </span>
                           ) : (
                             <span className="inline-block rounded-lg border border-dashed border-cinnabar/40 bg-cinnabar/5 px-2.5 py-1 text-xs font-semibold text-cinnabar-dark">
-                              Price TBC
+                              {isZh ? "价格以店内为准" : "Price TBC"}
                             </span>
                           )}
                           {item.secondaryPrice && (
                             <p className="mt-1 text-[11px] font-medium text-ink-muted">
-                              {item.secondaryPrice}
+                              {t(item.secondaryPrice)}
                             </p>
                           )}
                         </div>
                       </div>
 
                       <p className="mt-2.5 text-sm leading-relaxed text-ink-muted">
-                        {item.description}
+                        {t(item.description)}
                       </p>
                     </div>
 
@@ -181,7 +198,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                         ))}
                         {item.note && (
                           <span className="text-xs italic text-ink-muted">
-                            {item.note}
+                            {t(item.note)}
                           </span>
                         )}
                       </div>
@@ -196,14 +213,16 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
         {filteredCategories.length === 0 && (
           <div className="rounded-2xl border border-kraft-deep bg-kraft/40 p-10 text-center">
             <p className="font-display text-lg font-semibold text-ink">
-              No dishes match that filter right now.
+              {isZh
+                ? "当前筛选条件下暂无对应菜品。"
+                : "No dishes match that filter right now."}
             </p>
             <button
               type="button"
-              onClick={() => setActiveDietary("All")}
+              onClick={() => setActiveDietary("all")}
               className="mt-4 rounded-full bg-cinnabar px-5 py-2 text-sm font-semibold text-parchment hover:bg-cinnabar-dark"
             >
-              Show Full Menu
+              {isZh ? "查看全部菜单" : "Show Full Menu"}
             </button>
           </div>
         )}

@@ -18,7 +18,7 @@ export function SectionHeading({
   return (
     <div className={isCenter ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       <div
-        className={`inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase ${
+        className={`inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] text-cinnabar ${
           isCenter ? "justify-center" : ""
         }`}
       >
@@ -28,10 +28,7 @@ export function SectionHeading({
             <span aria-hidden="true" className="text-kraft-deep">
               ·
             </span>
-            <span
-              lang="zh-Hans"
-              className="font-calligraphy text-base font-normal tracking-normal text-ink-soft"
-            >
+            <span className="font-calligraphy text-lg font-normal tracking-normal text-ink-soft">
               {chineseAccent}
             </span>
           </>

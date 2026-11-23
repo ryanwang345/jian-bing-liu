@@ -1,4 +1,7 @@
+"use client";
+
 import { restaurant } from "@/data/restaurant";
+import { useLocale } from "@/lib/i18n";
 
 interface BrandMarkProps {
   variant?: "dark" | "light";
@@ -6,21 +9,22 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
+  const { locale } = useLocale();
   const isLight = variant === "light";
 
   const sizeStyles = {
     sm: {
-      latin: "text-[11px] tracking-[0.14em]",
+      top: locale === "zh" ? "text-[10px] tracking-[0.22em]" : "text-[11px] tracking-[0.14em]",
       chinese: "text-xl leading-none",
       seal: "px-1 py-0.5 text-[10px]",
     },
     md: {
-      latin: "text-xs tracking-[0.16em]",
+      top: locale === "zh" ? "text-[11px] tracking-[0.24em]" : "text-xs tracking-[0.16em]",
       chinese: "text-2xl sm:text-[26px] leading-none",
       seal: "px-1.5 py-0.5 text-[11px]",
     },
     lg: {
-      latin: "text-sm tracking-[0.18em]",
+      top: locale === "zh" ? "text-xs tracking-[0.26em]" : "text-sm tracking-[0.18em]",
       chinese: "text-3xl sm:text-4xl leading-none",
       seal: "px-1.5 py-1 text-xs",
     },
@@ -30,14 +34,16 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
     <span className="inline-flex items-center gap-2.5">
       <span className="flex flex-col">
         <span
-          className={`font-display font-semibold uppercase ${sizeStyles.latin} ${
+          className={`font-display font-semibold ${
+            locale === "en" ? "uppercase" : ""
+          } ${sizeStyles.top} ${
             isLight ? "text-[#F0C26E]" : "text-cinnabar"
           }`}
         >
-          {restaurant.name}
+          {locale === "zh" ? "正宗果蔬煎饼" : restaurant.name}
         </span>
         <span
-          className={`font-calligraphy ${sizeStyles.chinese} ${
+          className={`mt-0.5 font-calligraphy ${sizeStyles.chinese} ${
             isLight ? "text-parchment" : "text-ink"
           }`}
           lang="zh-Hans"

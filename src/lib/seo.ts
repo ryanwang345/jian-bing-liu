@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { restaurant, SITE_URL } from "@/data/restaurant";
+import { googleRating } from "@/data/reviews";
 
 interface PageMetadataOptions {
   title: string;
@@ -51,8 +52,8 @@ export function buildRestaurantJsonLd() {
     "@context": "https://schema.org",
     "@type": "Restaurant",
     name: restaurant.name,
-    alternateName: restaurant.chineseName,
-    description: restaurant.description,
+    alternateName: `${restaurant.chineseName} (${restaurant.sealText})`,
+    description: restaurant.description.en,
     url: SITE_URL,
     image: [
       `${SITE_URL}/images/hero-jianbing-platter.jpg`,
@@ -64,10 +65,20 @@ export function buildRestaurantJsonLd() {
     priceRange: restaurant.priceRange,
     acceptsReservations: false,
     hasMenu: `${SITE_URL}/menu`,
+    sameAs: restaurant.verifiedSocialLinks
+      .filter((s) => s.platform !== "google-maps")
+      .map((s) => s.href),
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: googleRating.score,
+      reviewCount: String(googleRating.count),
+      bestRating: "5",
+      worstRating: "1",
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: restaurant.address.street,
-      addressLocality: "London",
+      addressLocality: restaurant.address.locality,
       addressRegion: "Greater London",
       postalCode: restaurant.address.postalCode,
       addressCountry: restaurant.address.countryCode,

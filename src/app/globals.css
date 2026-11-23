@@ -11,9 +11,14 @@
   --color-cinnabar-dark: #921b14;
   --color-turmeric: #c9861f;
   --color-jade: #2b593c;
-  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-plus-jakarta), var(--font-noto-sans-sc), "PingFang SC", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), var(--font-noto-serif-sc), "Songti SC", Georgia, serif;
   --font-calligraphy: var(--font-ma-shan-zheng), "STKaiti", "KaiTi", serif;
+}
+
+html[lang="zh-Hans"] {
+  --font-sans: var(--font-noto-sans-sc), var(--font-plus-jakarta), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-noto-serif-sc), var(--font-fraunces), "Songti SC", "STSong", Georgia, serif;
 }
 
 @layer base {
