@@ -14,7 +14,7 @@ export interface SocialLink {
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  "https://jianbingliucamden.co.uk";
+  "https://jianbingliu.uk";
 
 export const restaurant = {
   name: "Jian Bing Liu",
