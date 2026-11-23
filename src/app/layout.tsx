@@ -14,14 +14,12 @@ import { buildRestaurantJsonLd } from "@/lib/seo";
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-ibm-plex-sans",
   display: "swap",
 });
 
 const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-newsreader",
   display: "swap",
@@ -29,14 +27,13 @@ const newsreader = Newsreader({
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-noto-sans-sc",
   display: "swap",
 });
 
 const maShanZheng = Ma_Shan_Zheng({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: "400",
   variable: "--font-ma-shan-zheng",
   display: "swap",
 });
