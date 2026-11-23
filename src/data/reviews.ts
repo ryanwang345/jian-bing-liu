@@ -400,7 +400,7 @@ export const socialPosts: SocialPost[] = [
       zh: "卡姆登路人气实拍：满馅叉烧咸煎饼搭配焦糖布蕾奶油水果甜煎饼。",
     },
     href: "https://www.instagram.com/heyjojoeats/reel/Ddy_R9APhZs/",
-    image: "/images/hero-jianbing-platter.jpg",
+    image: "/images/hero-jianbing-platter.webp",
     imageAlt: {
       en: "Freshly sliced savoury Jian Bing featured on Instagram Reel",
       zh: "Instagram 短视频展示的现摊咸味煎饼",
@@ -420,7 +420,7 @@ export const socialPosts: SocialPost[] = [
       zh: "用天然火龙果汁和菠菜汁现场调色摊饼，烤鸭、牛肉、鸡肉多种招牌馅料任选！",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7672559024713272598",
-    image: "/images/veggie-crepe-griddle.jpg",
+    image: "/images/veggie-crepe-griddle.webp",
     imageAlt: {
       en: "Colourful dragon fruit and spinach Jian Bing on the griddle",
       zh: "铁板上的火龙果菠菜双色果蔬煎饼",
@@ -440,7 +440,7 @@ export const socialPosts: SocialPost[] = [
       zh: "无剪辑直拍：热铁板摊面糊、磕鲜蛋、刷秘制酱、加满脆料一气呵成。",
     },
     href: "https://www.instagram.com/gina_liu__/reel/DbQNKmfN9vH/",
-    image: "/images/griddle-batter-egg.jpg",
+    image: "/images/griddle-batter-egg.webp",
     imageAlt: {
       en: "Swirling batter and egg on the round Jian Bing griddle",
       zh: "圆铁板上现摊煎饼面糊与鸡蛋",
@@ -460,7 +460,7 @@ export const socialPosts: SocialPost[] = [
       zh: "390+ 点赞置顶视频，感受卡姆登人气煎饼档口的热闹烟火气。",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7671489076666682646",
-    image: "/images/fancy-lace-dessert-cone.jpg",
+    image: "/images/fancy-lace-dessert-cone.webp",
     imageAlt: {
       en: "Hand-piped fancy lace dessert cone from Jian Bing Liu TikTok",
       zh: "煎饼刘 TikTok 置顶视频展示的花式蕾丝甜筒",
@@ -480,7 +480,7 @@ export const socialPosts: SocialPost[] = [
       zh: "1.54 万播放推荐：清真牛肉/鸡肉煎饼与现做中式街头小吃，欢迎关注打卡。",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7678046964440714518",
-    image: "/images/beef-crepe-sleeve.jpg",
+    image: "/images/beef-crepe-sleeve.webp",
     imageAlt: {
       en: "Warm sesame-crusted Halal beef Jian Bing in a kraft sleeve",
       zh: "装在牛皮纸袋里撒满黑芝麻的清真牛肉煎饼",
@@ -500,7 +500,7 @@ export const socialPosts: SocialPost[] = [
       zh: "就在 CSM 和 UCL 附近，真材实料分量足，还有现磨豆浆、杨枝甘露、煎饺与甜煎饼！",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7559103569085975830",
-    image: "/images/golden-sesame-jianbing.jpg",
+    image: "/images/golden-sesame-jianbing.webp",
     imageAlt: {
       en: "Golden sesame Jian Bing sliced in half showing crisp fillings",
       zh: "切开展示丰富内馅的金黄黑芝麻煎饼",
@@ -520,7 +520,7 @@ export const socialPosts: SocialPost[] = [
       zh: "新鲜草莓搭配细腻奶油与现摊焦香甜饼皮，颜值与口感双在线。",
     },
     href: "https://www.instagram.com/jian_bing_liu/p/DPrmEAQjZRl/",
-    image: "/images/nutella-strawberry-crepe.jpg",
+    image: "/images/nutella-strawberry-crepe.webp",
     imageAlt: {
       en: "Strawberry sweet crepe post on Jian Bing Liu Instagram",
       zh: "煎饼刘 Instagram 草莓甜煎饼贴文",
@@ -540,7 +540,7 @@ export const socialPosts: SocialPost[] = [
       zh: "每日新鲜食材现做，咸味果蔬煎饼与花式甜煎饼一次满足。",
     },
     href: "https://www.instagram.com/ruff.leah/reel/DF3YvDIoAyH/",
-    image: "/images/folded-rainbow-crepe.jpg",
+    image: "/images/folded-rainbow-crepe.webp",
     imageAlt: {
       en: "Colourful savoury crepe folded warm on the griddle",
       zh: "热铁板上折叠中的彩色果蔬煎饼",
@@ -560,7 +560,7 @@ export const socialPosts: SocialPost[] = [
       zh: "官方 Threads 分享的后厨现摊与热乎外带出品瞬间。",
     },
     href: "https://www.threads.com/@jian_bing_liu/post/DOnN-zOiucB",
-    image: "/images/jianbing-apron-hero.jpg",
+    image: "/images/jianbing-apron-hero.webp",
     imageAlt: {
       en: "Freshly folded Jian Bing held in front of the Jian Bing Liu apron",
       zh: "煎饼刘围裙前新鲜出锅的咸味煎饼",
@@ -580,7 +580,7 @@ export const socialPosts: SocialPost[] = [
       zh: "点击查看官方 Threads 草莓甜煎饼贴文，也欢迎留言告诉我们你最爱的配料！",
     },
     href: "https://www.threads.com/@jian_bing_liu/post/DPrmEVEjduI",
-    image: "/images/lace-crepe-sheet.jpg",
+    image: "/images/lace-crepe-sheet.webp",
     imageAlt: {
       en: "Hand-piped pink lace crepe sheet in the Camden kitchen",
       zh: "卡姆登厨房里的手工粉色蕾丝甜煎饼皮",
@@ -600,7 +600,7 @@ export const socialPosts: SocialPost[] = [
       zh: "伦敦食客在 r/LondonFood 热烈讨论，盛赞煎饼刘是北京之外最地道的中式煎饼与自制辣椒油。",
     },
     href: REDDIT_RECOMMEND_URL,
-    image: "/images/beef-crepe-sleeve.jpg",
+    image: "/images/beef-crepe-sleeve.webp",
     imageAlt: {
       en: "Warm black-sesame Jian Bing crepe wrapped in a kraft sleeve",
       zh: "装在牛皮纸袋里撒满黑芝麻的咸味煎饼",
@@ -620,7 +620,7 @@ export const socialPosts: SocialPost[] = [
       zh: "被伦敦本地吃货力荐为卡姆登必打卡的北方中式街头风味宝藏小店。",
     },
     href: "https://www.reddit.com/r/LondonFood/comments/1vkvncd/best_authentic_chinese_food_in_london/",
-    image: "/images/braised-beef-rice.jpg",
+    image: "/images/braised-beef-rice.webp",
     imageAlt: {
       en: "Slow-braised beef with carrots, potatoes, and steamed white rice",
       zh: "慢炖土豆胡萝卜牛肉配热白米饭",
@@ -640,7 +640,7 @@ export const socialPosts: SocialPost[] = [
       zh: "在饭团外卖一键下单全套招牌果蔬煎饼、卤肘子/烤鸭煎饼、盖饭、鲜汤馄饨与饮品，查看最新评价与满减优惠。",
     },
     href: FANTUAN_STORE_URL,
-    image: "/images/beef-dumplings-plate.jpg",
+    image: "/images/beef-dumplings-plate.webp",
     imageAlt: {
       en: "Golden pan-fried beef dumplings plated with house dipping sauce",
       zh: "金黄酥脆的牛肉煎饺配秘制蘸汁",

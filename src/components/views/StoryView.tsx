@@ -25,7 +25,7 @@ const griddleSteps: Array<{
       en: "Fresh savoury or naturally coloured fruit-and-veg batter is poured onto a hot round griddle and spread paper-thin with cracked egg.",
       zh: "在烧至恰到好处的圆铁板上淋入鲜调面糊或天然果蔬面糊，迅速均匀摊开并打入鲜蛋，激出焦香。",
     },
-    image: "/images/griddle-batter-egg.jpg",
+    image: "/images/griddle-batter-egg.webp",
     alt: {
       en: "Fresh vegetable batter and cracked egg cooking evenly across a seasoned cast-iron Jian Bing griddle",
       zh: "圆铁板上正在均匀摊开的彩色果蔬面糊与鲜蛋",
@@ -39,7 +39,7 @@ const griddleSteps: Array<{
       en: "We brush on our savoury homemade sauce and pile on crisp lettuce, spring onions, crispy fried onions, and your choice of Halal beef, chicken, or veggies.",
       zh: "刷上自家调制的咸香酱汁，铺满脆生菜、香葱、酥脆炸洋葱，再按口味加入清真牛肉、鸡肉或爽脆时蔬。",
     },
-    image: "/images/folded-rainbow-crepe.jpg",
+    image: "/images/folded-rainbow-crepe.webp",
     alt: {
       en: "Colourful savoury Jian Bing crepe layered with fresh greens and folded warm on the griddle",
       zh: "热铁板上刷好酱、铺满青菜并折起一半的果蔬煎饼",
@@ -53,7 +53,7 @@ const griddleSteps: Array<{
       en: "Folded straight into our 煎饼刘 (爱民) brown paper sleeve while the eggy crepe is still soft and the centre is piping hot and crisp.",
       zh: "迅速折好装入印有「煎饼刘 · 爱民」印章的暖黄牛皮纸袋，每一口都是外柔内脆的热乎满足。",
     },
-    image: "/images/jianbing-apron-hero.jpg",
+    image: "/images/jianbing-apron-hero.webp",
     alt: {
       en: "Generously filled Jian Bing wrapped in a kraft sleeve held in front of the embroidered Jian Bing Liu apron",
       zh: "装在牛皮纸袋里饱满厚实的咸味煎饼，背景为印有煎饼刘与爱民印章的黑色围裙",
@@ -142,7 +142,7 @@ export function StoryView() {
           <div className="lg:col-span-6">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
               <Image
-                src="/images/chef-lace-crepe.jpg"
+                src="/images/chef-lace-crepe.webp"
                 alt={pick(
                   "煎饼刘主厨身穿印有煎饼刘字样的围裙，面带微笑展示刚出锅的手工粉色蕾丝煎饼",
                   "Jian Bing Liu chef smiling in branded black apron and red sleeve while holding a freshly griddled pink lace crepe"
@@ -230,7 +230,7 @@ export function StoryView() {
             <figure className="overflow-hidden rounded-2xl border border-kraft-deep bg-white shadow-xs">
               <div className="relative aspect-square w-full bg-kraft">
                 <Image
-                  src="/images/brand-kraft-sleeve.jpg"
+                  src="/images/brand-kraft-sleeve.webp"
                   alt={pick(
                     "印有毛笔书法煎饼刘与朱红爱民印章的牛皮纸袋",
                     "Jian Bing Liu kraft crepe wrapper stamped with red script, black brush calligraphy 煎饼刘, and our vermilion 爱民 seal"
@@ -251,7 +251,7 @@ export function StoryView() {
             <figure className="overflow-hidden rounded-2xl border border-kraft-deep bg-white shadow-xs">
               <div className="relative aspect-square w-full bg-kraft">
                 <Image
-                  src="/images/banner-fruit-veg-crepe.jpg"
+                  src="/images/banner-fruit-veg-crepe.webp"
                   alt={pick(
                     "正宗风味果蔬煎饼传统红旗前手捧热气腾腾的现摊煎饼",
                     "Freshly folded savoury Jian Bing held in front of the traditional red and gold 果蔬煎饼 banner"
@@ -272,7 +272,7 @@ export function StoryView() {
             <figure className="overflow-hidden rounded-2xl border border-kraft-deep bg-white shadow-xs">
               <div className="relative aspect-square w-full bg-kraft">
                 <Image
-                  src="/images/lace-crepe-sheet.jpg"
+                  src="/images/lace-crepe-sheet.webp"
                   alt={pick(
                     "刚摊好的金黄甜饼皮，边缘手工挤满粉色花式蕾丝脆边",
                     "Freshly griddled golden crepe trimmed with delicate hand-piped pink lattice lace"

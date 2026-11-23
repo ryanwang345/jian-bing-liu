@@ -13,7 +13,7 @@ export function buildPageMetadata({
   title,
   description,
   path = "/",
-  image = "/images/hero-jianbing-platter.jpg",
+  image = "/images/og-cover.jpg",
 }: PageMetadataOptions): Metadata {
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
   return {
@@ -56,9 +56,9 @@ export function buildRestaurantJsonLd() {
     description: restaurant.description.en,
     url: SITE_URL,
     image: [
-      `${SITE_URL}/images/hero-jianbing-platter.jpg`,
-      `${SITE_URL}/images/beef-crepe-sleeve.jpg`,
-      `${SITE_URL}/images/chef-lace-crepe.jpg`,
+      `${SITE_URL}/images/hero-jianbing-platter.webp`,
+      `${SITE_URL}/images/beef-crepe-sleeve.webp`,
+      `${SITE_URL}/images/chef-lace-crepe.webp`,
     ],
     telephone: restaurant.phone.schema,
     servesCuisine: ["Chinese", "Chinese Street Food", "Jian Bing"],

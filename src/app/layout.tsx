@@ -55,9 +55,9 @@ export const metadata: Metadata = {
     description: restaurant.description.en,
     images: [
       {
-        url: "/images/hero-jianbing-platter.jpg",
-        width: 1600,
-        height: 1067,
+        url: "/images/og-cover.jpg",
+        width: 1200,
+        height: 630,
         alt: "Freshly griddled Jian Bing savoury crepe at Jian Bing Liu in Camden, London",
       },
     ],
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${restaurant.name} (${restaurant.chineseName}) — Camden, London`,
     description: restaurant.description.en,
-    images: ["/images/hero-jianbing-platter.jpg"],
+    images: ["/images/og-cover.jpg"],
   },
 };
 

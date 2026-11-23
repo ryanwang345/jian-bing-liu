@@ -52,7 +52,7 @@ export const menuCategories: MenuCategory[] = [
         price: "£10.00",
         dietary: ["halal"],
         featured: true,
-        image: "/images/beef-crepe-sleeve.jpg",
+        image: "/images/beef-crepe-sleeve.webp",
         imageAlt: {
           en: "Freshly griddled Beef Jian Bing crepe sprinkled with black sesame seeds in a kraft paper sleeve",
           zh: "刚出锅撒满黑芝麻的招牌牛肉煎饼，包裹着酥脆配料装在牛皮纸袋中",
@@ -69,7 +69,7 @@ export const menuCategories: MenuCategory[] = [
         price: "£10.00",
         dietary: ["halal"],
         featured: true,
-        image: "/images/hero-jianbing-platter.jpg",
+        image: "/images/hero-jianbing-platter.webp",
         imageAlt: {
           en: "Signature herb-studded Chicken Jian Bing crepe sliced in half on a plate beside a Jian Bing Liu kraft sleeve",
           zh: "切开展示丰富内馅的招牌果蔬鸡肉煎饼，摆放在白色餐盘上，旁有煎饼刘牛皮纸袋",
@@ -86,7 +86,7 @@ export const menuCategories: MenuCategory[] = [
         price: "£6.00",
         dietary: ["vegetarian"],
         featured: true,
-        image: "/images/veggie-crepe-griddle.jpg",
+        image: "/images/veggie-crepe-griddle.webp",
         imageAlt: {
           en: "Colourful fruit-and-vegetable batter Veggie Lover Jian Bing crepe topped with fresh greens on the griddle",
           zh: "铁板上刚摊好的彩色果蔬面糊煎饼，铺满翠绿蔬菜与香葱",
@@ -113,7 +113,7 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.50",
         dietary: ["halal"],
-        image: "/images/chicken-crepe-sleeve.jpg",
+        image: "/images/chicken-crepe-sleeve.webp",
         imageAlt: {
           en: "Warm golden Jian Bing crepe folded into a kraft takeaway sleeve",
           zh: "热气腾腾装在牛皮纸袋中的金黄煎饼",
@@ -129,7 +129,7 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.50",
         dietary: ["halal"],
-        image: "/images/golden-sesame-jianbing.jpg",
+        image: "/images/golden-sesame-jianbing.webp",
         imageAlt: {
           en: "Golden sesame-crusted Chicken Jian Bing crepe sliced to show fresh shredded vegetables",
           zh: "表面撒满黑芝麻的金黄煎饼，对半切开露出鲜脆蔬菜丝与酥脆内馅",
@@ -145,7 +145,7 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£4.00",
         dietary: ["vegetarian"],
-        image: "/images/folded-rainbow-crepe.jpg",
+        image: "/images/folded-rainbow-crepe.webp",
         imageAlt: {
           en: "Freshly folded vegetable-batter crepe sizzling on the hot griddle",
           zh: "铁板上正在折叠的彩色果蔬面糊煎饼",
@@ -173,7 +173,7 @@ export const menuCategories: MenuCategory[] = [
         price: "£11.95",
         secondaryPrice: { en: "£12.95 with rice", zh: "配米饭 £12.95" },
         featured: true,
-        image: "/images/braised-beef-rice.jpg",
+        image: "/images/braised-beef-rice.webp",
         imageAlt: {
           en: "Tender braised beef with potatoes and carrots served alongside heart-shaped steamed white rice",
           zh: "色泽诱人的土豆胡萝卜炖牛肉，搭配心形热腾腾的白米饭",
@@ -202,7 +202,7 @@ export const menuCategories: MenuCategory[] = [
         secondaryPrice: { en: "£7.95 with rice", zh: "配米饭 £7.95" },
         dietary: ["vegan"],
         featured: true,
-        image: "/images/vegan-japanese-curry.jpg",
+        image: "/images/vegan-japanese-curry.webp",
         imageAlt: {
           en: "Golden Vegan Japanese Curry with chunky potatoes and carrots served next to heart-shaped steamed rice",
           zh: "浓郁金黄的纯素土豆胡萝卜日式咖喱配心形白米饭",
@@ -272,7 +272,7 @@ export const menuCategories: MenuCategory[] = [
         price: "£1.00",
         dietary: ["halal"],
         featured: true,
-        image: "/images/beef-dumplings-plate.jpg",
+        image: "/images/beef-dumplings-plate.webp",
         imageAlt: {
           en: "Golden crispy pan-fried beef dumplings plated on a red dish with dipping sauce and fresh greens",
           zh: "红色餐盘上金黄酥脆的牛肉煎饺，配秘制蘸料与新鲜生菜",
@@ -288,7 +288,7 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£1.50",
         dietary: ["vegetarian"],
-        image: "/images/veggie-dumplings-ring.jpg",
+        image: "/images/veggie-dumplings-ring.webp",
         imageAlt: {
           en: "Ring of golden crispy vegetarian dumplings arranged on a red plate",
           zh: "围成一圈的金黄酥脆素煎饺摆放在红盘中",
@@ -304,7 +304,7 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£1.00",
         dietary: ["vegetarian"],
-        image: "/images/spiced-tea-eggs.jpg",
+        image: "/images/spiced-tea-eggs.webp",
         imageAlt: {
           en: "Whole Chinese tea eggs steeping in rich dark spiced tea marinade",
           zh: "浸泡在浓郁红茶卤汁里的整颗五香茶叶蛋",
@@ -324,7 +324,7 @@ export const menuCategories: MenuCategory[] = [
           zh: "价格以店内或在线点餐页面为准",
         },
         dietary: ["vegetarian"],
-        image: "/images/veg-spring-rolls.jpg",
+        image: "/images/veg-spring-rolls.webp",
         imageAlt: {
           en: "Crispy golden vegetarian spring rolls sliced open on a heart-shaped plate",
           zh: "心形白盘上切开的金黄酥脆素春卷",
@@ -352,7 +352,7 @@ export const menuCategories: MenuCategory[] = [
         price: "£4.00",
         dietary: ["vegetarian"],
         featured: true,
-        image: "/images/nutella-strawberry-crepe.jpg",
+        image: "/images/nutella-strawberry-crepe.webp",
         imageAlt: {
           en: "Folded sweet crepe topped with sliced strawberries, banana, whipped cream, and chocolate drizzle on a wooden heart board",
           zh: "木质心形盘上的折叠甜煎饼，铺满鲜草莓、香蕉片、奶油与巧克力酱",
@@ -397,7 +397,7 @@ export const menuCategories: MenuCategory[] = [
           zh: "当季配料与价格请以店内为准",
         },
         dietary: ["vegetarian"],
-        image: "/images/fancy-lace-dessert-cone.jpg",
+        image: "/images/fancy-lace-dessert-cone.webp",
         imageAlt: {
           en: "Pink lace dessert crepe cone filled with whipped cream, fresh strawberry, matcha biscuit sticks, and teddy cookies",
           zh: "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜草莓、抹茶饼干棒和小熊饼干",

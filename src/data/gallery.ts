@@ -36,7 +36,7 @@ export const galleryCategories: GalleryCategoryKey[] = [
 export const galleryItems: GalleryItem[] = [
   {
     id: "hero-platter",
-    src: "/images/hero-jianbing-platter.jpg",
+    src: "/images/hero-jianbing-platter.webp",
     alt: {
       en: "Herb-studded savoury Jian Bing crepe sliced on a white plate beside the Jian Bing Liu kraft sleeve",
       zh: "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
@@ -51,7 +51,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "chef-lace-crepe",
-    src: "/images/chef-lace-crepe.jpg",
+    src: "/images/chef-lace-crepe.webp",
     alt: {
       en: "Chef at Jian Bing Liu smiling in branded black apron while lifting a freshly cooked lacy pink-edged crepe",
       zh: "煎饼刘主厨身穿印有煎饼刘字样的黑色围裙，面带微笑举起刚摊好的粉色蕾丝边煎饼",
@@ -66,7 +66,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "beef-crepe-sleeve",
-    src: "/images/beef-crepe-sleeve.jpg",
+    src: "/images/beef-crepe-sleeve.webp",
     alt: {
       en: "Sesame-crusted savoury Jian Bing loaded with crispy fried layers and fresh lettuce inside a warm kraft sleeve",
       zh: "撒满黑芝麻、夹满酥脆配料与生菜的咸味煎饼装在暖黄色牛皮纸袋里",
@@ -81,7 +81,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "nutella-strawberry-crepe",
-    src: "/images/nutella-strawberry-crepe.jpg",
+    src: "/images/nutella-strawberry-crepe.webp",
     alt: {
       en: "Sweet folded crepe topped with fresh sliced strawberries, banana, whipped cream, and dark chocolate drizzle on a wooden heart board",
       zh: "心形木盘上的折叠甜煎饼，铺满鲜草莓、香蕉片、淡奶油与巧克力酱",
@@ -96,7 +96,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "veggie-crepe-griddle",
-    src: "/images/veggie-crepe-griddle.jpg",
+    src: "/images/veggie-crepe-griddle.webp",
     alt: {
       en: "Naturally tinted pink and green fruit-and-vegetable batter crepe topped with herbs on the hot cast-iron griddle",
       zh: "热圆铁板上自然调色的粉绿双色果蔬面糊煎饼，铺满鲜嫩蔬菜与香葱",
@@ -111,7 +111,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "beef-dumplings-plate",
-    src: "/images/beef-dumplings-plate.jpg",
+    src: "/images/beef-dumplings-plate.webp",
     alt: {
       en: "Crispy pan-fried golden dumplings served on a red lacquer-style plate with dipping sauce and fresh salad leaves",
       zh: "红盘上金黄酥脆的牛肉煎饺，搭配秘制蘸料与新鲜生菜",
@@ -126,7 +126,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "jianbing-apron-hero",
-    src: "/images/jianbing-apron-hero.jpg",
+    src: "/images/jianbing-apron-hero.webp",
     alt: {
       en: "Loaded savoury Jian Bing crepe held in a kraft wrapper in front of the embroidered Pancake Liu 煎饼刘 apron",
       zh: "牛皮纸袋中满满当当的咸味煎饼，背景为印有煎饼刘与爱民印章的黑色围裙",
@@ -141,7 +141,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "fancy-lace-dessert-cone",
-    src: "/images/fancy-lace-dessert-cone.jpg",
+    src: "/images/fancy-lace-dessert-cone.webp",
     alt: {
       en: "Hand-piped pink lace crepe cone overflowing with whipped cream, fresh fruit, matcha biscuit sticks, and bear biscuits",
       zh: "粉色蕾丝边甜筒煎饼，装满奶油、鲜草莓、抹茶饼干棒与可爱小熊饼干",
@@ -156,7 +156,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "golden-sesame-jianbing",
-    src: "/images/golden-sesame-jianbing.jpg",
+    src: "/images/golden-sesame-jianbing.webp",
     alt: {
       en: "Close-up of a golden egg-brushed Jian Bing speckled with black sesame seeds and sliced to reveal shredded fillings",
       zh: "金黄蛋香饼皮撒满黑芝麻，切开露出脆嫩蔬菜与满满内馅",
@@ -171,7 +171,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "braised-beef-rice",
-    src: "/images/braised-beef-rice.jpg",
+    src: "/images/braised-beef-rice.webp",
     alt: {
       en: "Slow-braised beef with carrots and potatoes served alongside heart-shaped steamed white rice on a white platter",
       zh: "白瓷长盘上软烂入味的土豆胡萝卜炖牛肉配心形白米饭",
@@ -186,7 +186,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "vegan-japanese-curry",
-    src: "/images/vegan-japanese-curry.jpg",
+    src: "/images/vegan-japanese-curry.webp",
     alt: {
       en: "Rich golden vegan Japanese curry with chunky potatoes and carrots paired with heart-shaped steamed white rice",
       zh: "浓郁金黄的土豆胡萝卜纯素日式咖喱搭配心形热米饭",
@@ -201,7 +201,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "brand-kraft-sleeve",
-    src: "/images/brand-kraft-sleeve.jpg",
+    src: "/images/brand-kraft-sleeve.webp",
     alt: {
       en: "Close-up of the Jian Bing Liu kraft paper sleeve featuring red script, black calligraphy 煎饼刘, and our vermilion 爱民 seal",
       zh: "煎饼刘牛皮纸袋近景，印有毛笔书法煎饼刘与朱红爱民印章",
@@ -216,7 +216,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "veg-spring-rolls",
-    src: "/images/veg-spring-rolls.jpg",
+    src: "/images/veg-spring-rolls.webp",
     alt: {
       en: "Crispy golden-brown vegetarian spring rolls cut diagonally on a white heart-shaped plate with fresh herbs",
       zh: "心形白盘上斜切摆盘的金黄酥炸素春卷与鲜绿点缀",
@@ -231,7 +231,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "folded-rainbow-crepe",
-    src: "/images/folded-rainbow-crepe.jpg",
+    src: "/images/folded-rainbow-crepe.webp",
     alt: {
       en: "Colourful fruit-and-vegetable crepe partially folded over savoury sauce and fresh herbs on a hot round griddle",
       zh: "圆铁板上刚刷好秘制酱、撒满青菜并折起一半的果蔬煎饼",
@@ -246,7 +246,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "spiced-tea-eggs",
-    src: "/images/spiced-tea-eggs.jpg",
+    src: "/images/spiced-tea-eggs.webp",
     alt: {
       en: "Whole tea eggs gently simmering in a stainless steel pan filled with dark aromatic tea and soy marinade",
       zh: "不锈钢保温盆里浸泡在深色五香红茶卤汁中的整颗茶叶蛋",
@@ -261,7 +261,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "lace-crepe-sheet",
-    src: "/images/lace-crepe-sheet.jpg",
+    src: "/images/lace-crepe-sheet.webp",
     alt: {
       en: "Delicate golden crepe bordered with hand-piped pink lattice lace edges held vertically in the Camden kitchen",
       zh: "在厨房里展示的整张金黄甜饼皮，边缘带有手工挤出的粉色蕾丝花边",
@@ -276,7 +276,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "griddle-batter-egg",
-    src: "/images/griddle-batter-egg.jpg",
+    src: "/images/griddle-batter-egg.webp",
     alt: {
       en: "Fresh egg and swirling fruit-and-vegetable batter cooking evenly across a round cast-iron griddle",
       zh: "圆铁板上刚摊开的彩色果蔬面糊与鲜蛋",
@@ -291,7 +291,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "crispy-dumplings-row",
-    src: "/images/crispy-dumplings-row.jpg",
+    src: "/images/crispy-dumplings-row.webp",
     alt: {
       en: "Row of golden crisp pan-fried dumplings neatly arranged on a bright orange carrot-shaped serving dish",
       zh: "橙色胡萝卜造型长盘上整齐排列的金黄酥脆煎饺",

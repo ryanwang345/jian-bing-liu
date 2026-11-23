@@ -24,7 +24,7 @@ const craftGalleryStrip: Array<{
   label: LocalizedText;
 }> = [
   {
-    src: "/images/veggie-crepe-griddle.jpg",
+    src: "/images/veggie-crepe-griddle.webp",
     alt: {
       en: "Colourful fruit-and-vegetable batter crepe topped with herbs and shredded fillings on the hot griddle",
       zh: "热铁板上天然调色的彩色果蔬面糊煎饼，铺满鲜绿青菜与香葱",
@@ -32,7 +32,7 @@ const craftGalleryStrip: Array<{
     label: { en: "Fruit & Veg Batter", zh: "天然果蔬面糊" },
   },
   {
-    src: "/images/fancy-lace-dessert-cone.jpg",
+    src: "/images/fancy-lace-dessert-cone.webp",
     alt: {
       en: "Hand-piped pink lace dessert crepe cone with whipped cream, fresh fruit, and biscuit sticks",
       zh: "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与抹茶饼干棒",
@@ -40,7 +40,7 @@ const craftGalleryStrip: Array<{
     label: { en: "Fancy Lace Cones", zh: "花式蕾丝甜筒" },
   },
   {
-    src: "/images/veg-spring-rolls.jpg",
+    src: "/images/veg-spring-rolls.webp",
     alt: {
       en: "Golden crispy vegetarian spring rolls served on a heart-shaped plate",
       zh: "心形白盘上金黄酥脆的传统素春卷",
@@ -48,7 +48,7 @@ const craftGalleryStrip: Array<{
     label: { en: "Crispy Street Snacks", zh: "酥香街头小吃" },
   },
   {
-    src: "/images/spiced-tea-eggs.jpg",
+    src: "/images/spiced-tea-eggs.webp",
     alt: {
       en: "Spiced Chinese tea eggs steeping in dark soy and aromatic black tea marinade",
       zh: "浓郁红茶五香卤汁里浸泡的整颗茶叶蛋",
@@ -134,31 +134,31 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               )}
             </div>
 
-            <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1fr]">
+            <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1.15fr]">
               <div>
-                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
-                  <MapPin className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
+                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
                   {pick("门店地址", "Location")}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold text-ink">
+                <dd className="mt-1 text-sm font-semibold whitespace-nowrap text-ink">
                   {restaurant.address.street}, {restaurant.address.postalCode}
                 </dd>
               </div>
               <div>
-                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
-                  <Clock className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
+                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
                   {pick("每日营业", "Open Daily")}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold tabular-nums text-ink">
+                <dd className="mt-1 text-sm font-semibold whitespace-nowrap tabular-nums text-ink">
                   {isZh ? "11:00 – 21:30" : "11:00 AM – 9:30 PM"}
                 </dd>
               </div>
               <div>
-                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
-                  <Phone className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
+                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
+                  <Phone className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
                   {pick("堂食 · 外带 · 配送", "Dine-In · Takeaway")}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold tabular-nums text-ink">
+                <dd className="mt-1 text-sm font-semibold whitespace-nowrap tabular-nums text-ink">
                   <a
                     href={restaurant.phone.href}
                     className="hover:text-cinnabar"
@@ -174,7 +174,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
           <div className="animate-fade-up-delay-1 relative lg:col-span-6">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
               <Image
-                src="/images/hero-jianbing-platter.jpg"
+                src="/images/hero-jianbing-platter.webp"
                 alt={pick(
                   "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
                   "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
@@ -190,7 +190,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             <div className="mt-4 grid grid-cols-2 gap-4 sm:mt-0 sm:block">
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-lg sm:absolute sm:-bottom-6 sm:-left-6 sm:h-36 sm:w-48">
                 <Image
-                  src="/images/beef-crepe-sleeve.jpg"
+                  src="/images/beef-crepe-sleeve.webp"
                   alt={pick(
                     "撒满黑芝麻、装在牛皮纸袋中的热乎咸味煎饼",
                     "Warm black-sesame Jian Bing crepe wrapped in a signature kraft sleeve"
@@ -306,7 +306,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
           <div className="grid grid-cols-12 gap-4 lg:col-span-6">
             <div className="relative col-span-7 aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
               <Image
-                src="/images/chef-lace-crepe.jpg"
+                src="/images/chef-lace-crepe.webp"
                 alt={pick(
                   "煎饼刘主厨在卡姆登厨房里微笑展示刚出锅的手工蕾丝煎饼",
                   "Chef at Jian Bing Liu in Camden smiling while lifting a freshly made lace crepe in the kitchen"
@@ -319,7 +319,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             <div className="col-span-5 flex flex-col gap-4">
               <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
-                  src="/images/brand-kraft-sleeve.jpg"
+                  src="/images/brand-kraft-sleeve.webp"
                   alt={pick(
                     "印有煎饼刘毛笔书法与爱民朱红印章的招牌牛皮纸袋",
                     "Jian Bing Liu kraft crepe wrapper stamped with red script, Chinese calligraphy 煎饼刘, and our 爱民 seal"
@@ -331,7 +331,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </div>
               <div className="relative flex-1 overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
-                  src="/images/griddle-batter-egg.jpg"
+                  src="/images/griddle-batter-egg.webp"
                   alt={pick(
                     "圆铁板上正在摊匀的彩色果蔬面糊与新鲜鸡蛋",
                     "Swirling colourful vegetable batter and fresh egg on the round Jian Bing griddle"
