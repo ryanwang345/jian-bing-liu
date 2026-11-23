@@ -26,7 +26,13 @@ const REVIEWS_PER_PAGE = 4;
 const POSTS_PER_PAGE = 3;
 
 type ReviewFilter = "all" | ReviewSource;
-type SocialFilter = "all" | "instagram" | "tiktok" | "threads";
+type SocialFilter =
+  | "all"
+  | "instagram"
+  | "tiktok"
+  | "threads"
+  | "reddit"
+  | "fantuan";
 
 export function ReviewsSection() {
   const { locale, t } = useLocale();
@@ -99,10 +105,14 @@ export function ReviewsSection() {
   const googleCount = reviews.filter((r) => r.source === "google").length;
   const igCount = reviews.filter((r) => r.source === "instagram").length;
   const ttCount = reviews.filter((r) => r.source === "tiktok").length;
+  const redditCount = reviews.filter((r) => r.source === "reddit").length;
+  const fantuanCount = reviews.filter((r) => r.source === "fantuan").length;
 
   const igPostsCount = socialPosts.filter((p) => p.platform === "instagram").length;
   const ttPostsCount = socialPosts.filter((p) => p.platform === "tiktok").length;
   const threadsPostsCount = socialPosts.filter((p) => p.platform === "threads").length;
+  const redditPostsCount = socialPosts.filter((p) => p.platform === "reddit").length;
+  const fantuanPostsCount = socialPosts.filter((p) => p.platform === "fantuan").length;
 
   const handleReviewFilter = (next: ReviewFilter) => {
     setReviewFilter(next);
@@ -204,6 +214,16 @@ export function ReviewsSection() {
                   key: "tiktok",
                   label: `TikTok (${ttCount})`,
                 },
+                {
+                  key: "reddit",
+                  label: `Reddit (${redditCount})`,
+                },
+                {
+                  key: "fantuan",
+                  label: isZh
+                    ? `饭团 (${fantuanCount})`
+                    : `Fantuan (${fantuanCount})`,
+                },
               ] as const
             ).map((tab) => {
               const active = reviewFilter === tab.key;
@@ -283,6 +303,22 @@ export function ReviewsSection() {
                         />
                         {isZh ? "TikTok 评论" : "TikTok"}
                       </>
+                    ) : review.source === "reddit" ? (
+                      <>
+                        <SocialIcon
+                          platform="reddit"
+                          className="h-3 w-3 text-cinnabar"
+                        />
+                        Reddit · r/LondonFood
+                      </>
+                    ) : review.source === "fantuan" ? (
+                      <>
+                        <SocialIcon
+                          platform="fantuan"
+                          className="h-3 w-3 text-cinnabar"
+                        />
+                        {isZh ? "饭团外卖评价" : "Fantuan Review"}
+                      </>
                     ) : (
                       <>{isZh ? "Google 真实评价" : "Google Review"}</>
                     )}
@@ -313,9 +349,17 @@ export function ReviewsSection() {
                       ? isZh
                         ? "观看 TikTok 原视频"
                         : "Watch TikTok Video"
-                      : isZh
-                        ? "在 Google 地图查看"
-                        : "View on Google Maps"}
+                      : review.source === "reddit"
+                        ? isZh
+                          ? "在 Reddit 查看原帖"
+                          : "Read on Reddit"
+                        : review.source === "fantuan"
+                          ? isZh
+                            ? "前往饭团外卖查看"
+                            : "View on Fantuan"
+                          : isZh
+                            ? "在 Google 地图查看"
+                            : "View on Google Maps"}
                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </span>
               </div>
@@ -381,13 +425,13 @@ export function ReviewsSection() {
             <div>
               <h3 className="font-display text-2xl font-bold text-ink">
                 {isZh
-                  ? "精选 Instagram、TikTok 与 Threads 热门帖"
-                  : "Featured Posts on Instagram, TikTok & Threads"}
+                  ? "精选社媒、Reddit 讨论与饭团外卖"
+                  : "Featured Posts on Instagram, TikTok, Threads, Reddit & Fantuan"}
               </h3>
               <p className="mt-1 text-sm text-ink-muted">
                 {isZh
-                  ? "TikTok 粉丝 1,190+ · 获赞 3,170+ · 点击任意卡片直达对应原帖或短视频"
-                  : "1,190+ TikTok followers · 3,170+ likes · Click any card to open that exact post or video"}
+                  ? "TikTok 1,190+ 粉丝 · Reddit r/LondonFood 强推 · 饭团 4.5 ★ · 点击直达原帖或门店"
+                  : "1,190+ TikTok followers · r/LondonFood favourite · 4.5 ★ on Fantuan · Click any card to open directly"}
               </p>
             </div>
 
@@ -438,6 +482,16 @@ export function ReviewsSection() {
                   {
                     key: "threads",
                     label: `Threads (${threadsPostsCount})`,
+                  },
+                  {
+                    key: "reddit",
+                    label: `Reddit (${redditPostsCount})`,
+                  },
+                  {
+                    key: "fantuan",
+                    label: isZh
+                      ? `饭团 (${fantuanPostsCount})`
+                      : `Fantuan (${fantuanPostsCount})`,
                   },
                 ] as const
               ).map((tab) => {
@@ -521,9 +575,17 @@ export function ReviewsSection() {
                         ? isZh
                           ? "打开 Instagram 原帖"
                           : "Open Instagram Post"
-                        : isZh
-                          ? "打开 Threads 原帖"
-                          : "Open Threads Post"}
+                        : post.platform === "reddit"
+                          ? isZh
+                            ? "在 Reddit 查看讨论"
+                            : "Open Reddit Thread"
+                          : post.platform === "fantuan"
+                            ? isZh
+                              ? "前往饭团外卖下单"
+                              : "Order on Fantuan"
+                            : isZh
+                              ? "打开 Threads 原帖"
+                              : "Open Threads Post"}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
                 </div>

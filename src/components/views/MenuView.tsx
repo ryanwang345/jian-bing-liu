@@ -55,6 +55,17 @@ export function MenuView() {
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
+              {restaurant.links.fantuanOrder && (
+                <a
+                  href={restaurant.links.fantuanOrder}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar"
+                >
+                  {isZh ? "饭团外卖下单" : "Order on Fantuan"}
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                </a>
+              )}
               <a
                 href={restaurant.phone.href}
                 className="inline-flex items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"

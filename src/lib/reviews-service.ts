@@ -215,7 +215,10 @@ async function fetchCustomFeedReviews(): Promise<CustomerReview[]> {
         (item.rating ?? 5) >= DEFAULT_MIN_RATING
       ) {
         const source =
-          item.source === "instagram" || item.source === "tiktok"
+          item.source === "instagram" ||
+          item.source === "tiktok" ||
+          item.source === "reddit" ||
+          item.source === "fantuan"
             ? item.source
             : "google";
         valid.push({

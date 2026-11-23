@@ -1,6 +1,11 @@
 import type { LocalizedText } from "@/lib/i18n";
 
-export type ReviewSource = "google" | "instagram" | "tiktok";
+export type ReviewSource =
+  | "google"
+  | "instagram"
+  | "tiktok"
+  | "reddit"
+  | "fantuan";
 
 export interface CustomerReview {
   id: string;
@@ -15,7 +20,7 @@ export interface CustomerReview {
 
 export interface SocialPost {
   id: string;
-  platform: "instagram" | "tiktok" | "threads";
+  platform: "instagram" | "tiktok" | "threads" | "reddit" | "fantuan";
   handle: string;
   postType: LocalizedText;
   title: LocalizedText;
@@ -27,6 +32,12 @@ export interface SocialPost {
 
 export const GOOGLE_MAPS_PLACE_URL =
   "https://www.google.com/maps/place/Jian+Bing+Liu/@51.5422785,-0.1377214,17z/data=!3m1!4b1!4m6!3m5!1s0x48761b0053d36dcf:0x6c48602980f0cb9e!8m2!3d51.5422785!4d-0.1377214!16s%2Fg%2F11y90b95h1";
+
+export const FANTUAN_STORE_URL =
+  "https://www.fantuanorder.com/store/jian-bing-liu/gb-4753211";
+
+export const REDDIT_RECOMMEND_URL =
+  "https://www.reddit.com/r/LondonFood/comments/1qmx85b/highly_recommend_jian_bing_liu_in_camden/";
 
 export const googleRating = {
   score: "4.9",
@@ -67,6 +78,36 @@ export const customerReviews: CustomerReview[] = [
     quote: {
       en: "A small but mighty spot on Camden Road specialising in authentic Chinese savoury crepes and street food. Even the small size Jian Bing was incredibly filling — packed with egg, char siu, crispy fried onions, homemade sauce, potato fries, crisp cracker and pork floss. Very generous portions!",
       zh: "藏在卡姆登路上的宝藏小店，专注正宗中式煎饼与街头小吃。连小份煎饼都超级扎实，塞满鸡蛋、叉烧、酥脆洋葱、秘制酱、土豆丝、薄脆和肉松，分量太实在了；甜煎饼也铺满新鲜水果和榛子巧克力酱！",
+    },
+  },
+  {
+    id: "reddit-londonfood-beijing",
+    author: "r/LondonFood",
+    rating: 5,
+    source: "reddit",
+    url: REDDIT_RECOMMEND_URL,
+    highlight: {
+      en: "Most authentic Jian Bing outside of Beijing",
+      zh: "Reddit r/LondonFood 强推：北京以外最正宗的煎饼",
+    },
+    quote: {
+      en: "Jian Bing Liu is by far the most authentic Jian Bing that I have ever had outside of Beijing… it is run by a lady who is also the owner. She is unbelievably friendly and sweet, explaining to you the details about the dish and what she's adding.",
+      zh: "煎饼刘是我在北京之外吃过迄今为止最正宗的煎饼果子……小店由老板娘亲自打理，人超级热情温柔，会细心讲解每一样食材和配料。",
+    },
+  },
+  {
+    id: "fantuan-vip-l-colorful",
+    author: "L · Fantuan VIP",
+    rating: 5,
+    source: "fantuan",
+    url: FANTUAN_STORE_URL,
+    highlight: {
+      en: "Best colourful Jian Bing in the UK",
+      zh: "饭团 VIP 评价：在英国吃过最好吃的彩色煎饼",
+    },
+    quote: {
+      en: "The jianbing (savory Chinese crepes) at Jianbing Liu are truly delicious. Located near Camden, the shop is run by a very welcoming owner. The quality and taste of the crepes are outstanding, and the portions are generous. It's the best colorful jianbing I've ever had in the UK! The crepe batter is so soft.",
+      zh: "煎饼刘的煎饼真的非常好吃！就在卡姆登附近，老板娘特别热情，品质和口感都非常在线，分量也很足。这是我在英国吃过最好吃的彩色果蔬煎饼，饼皮特别柔软香甜！",
     },
   },
   {
@@ -294,6 +335,51 @@ export const customerReviews: CustomerReview[] = [
       zh: "藏在卡姆登路上的宝藏煎饼店，老板娘人特别好，会很耐心地介绍每一种配料。我点的抹茶甜煎饼配料丰富又扎实，草莓香蕉都很新鲜，分量超大超好吃，强烈推荐！",
     },
   },
+  {
+    id: "fantuan-vip-59997",
+    author: "Fantuan VIP (***59997)",
+    rating: 5,
+    source: "fantuan",
+    url: FANTUAN_STORE_URL,
+    highlight: {
+      en: "Generous portion & thoughtful packaging",
+      zh: "饭团 VIP 好评：分量超足，贴心分装",
+    },
+    quote: {
+      en: "Super delicious and a generous portion. The owner thoughtfully split it into two bags.",
+      zh: "超级好吃而且分量特别大，老板娘还很贴心地帮忙分装成了两袋！",
+    },
+  },
+  {
+    id: "fantuan-vip-l-pigear",
+    author: "L · Fantuan VIP",
+    rating: 5,
+    source: "fantuan",
+    url: FANTUAN_STORE_URL,
+    highlight: {
+      en: "Braised pork hock & pig ear Jian Bing",
+      zh: "饭团回头客推荐：猪耳肘子煎饼超香",
+    },
+    quote: {
+      en: "The jianbing is absolutely delicious — the pig ear jianbing is great!",
+      zh: "煎饼太美味了，卤味猪耳肘子煎饼特别棒！",
+    },
+  },
+  {
+    id: "fantuan-vip-o2556",
+    author: "Fantuan VIP (***o2556)",
+    rating: 5,
+    source: "fantuan",
+    url: FANTUAN_STORE_URL,
+    highlight: {
+      en: "Roast duck & braised pork hock Jian Bing",
+      zh: "饭团点评：烤鸭与肘子煎饼馅料超多",
+    },
+    quote: {
+      en: "The taste is decent, and the portions are generous with plenty of fillings; highly recommended. (Roast Duck Jianbing & Braised Pork Hock Jianbing.)",
+      zh: "味道在线，分量很大、馅料塞得满满当当，烤鸭煎饼和卤肘子煎饼都很推荐！",
+    },
+  },
 ];
 
 /**
@@ -498,6 +584,66 @@ export const socialPosts: SocialPost[] = [
     imageAlt: {
       en: "Hand-piped pink lace crepe sheet in the Camden kitchen",
       zh: "卡姆登厨房里的手工粉色蕾丝甜煎饼皮",
+    },
+  },
+  {
+    id: "reddit-highly-recommend",
+    platform: "reddit",
+    handle: "r/LondonFood",
+    postType: { en: "Reddit Thread", zh: "Reddit 热门讨论" },
+    title: {
+      en: "“Highly recommend Jian Bing Liu in Camden!”",
+      zh: "Reddit 伦敦美食社区热帖：强烈推荐卡姆登煎饼刘",
+    },
+    caption: {
+      en: "London foodies on r/LondonFood praising Jian Bing Liu as the most authentic Jian Bing outside of Beijing, with everything made fresh in-house.",
+      zh: "伦敦食客在 r/LondonFood 热烈讨论，盛赞煎饼刘是北京之外最地道的中式煎饼与自制辣椒油。",
+    },
+    href: REDDIT_RECOMMEND_URL,
+    image: "/images/beef-crepe-sleeve.jpg",
+    imageAlt: {
+      en: "Warm black-sesame Jian Bing crepe wrapped in a kraft sleeve",
+      zh: "装在牛皮纸袋里撒满黑芝麻的咸味煎饼",
+    },
+  },
+  {
+    id: "reddit-best-chinese-london",
+    platform: "reddit",
+    handle: "r/LondonFood",
+    postType: { en: "Reddit Thread", zh: "Reddit 推荐帖" },
+    title: {
+      en: "Featured in “Best Authentic Chinese Food in London”",
+      zh: "入选 r/LondonFood「伦敦最正宗中餐」推荐讨论",
+    },
+    caption: {
+      en: "Recommended by London locals as a must-visit hidden gem for Northern Chinese street food in Camden.",
+      zh: "被伦敦本地吃货力荐为卡姆登必打卡的北方中式街头风味宝藏小店。",
+    },
+    href: "https://www.reddit.com/r/LondonFood/comments/1vkvncd/best_authentic_chinese_food_in_london/",
+    image: "/images/braised-beef-rice.jpg",
+    imageAlt: {
+      en: "Slow-braised beef with carrots, potatoes, and steamed white rice",
+      zh: "慢炖土豆胡萝卜牛肉配热白米饭",
+    },
+  },
+  {
+    id: "fantuan-camden-store",
+    platform: "fantuan",
+    handle: "Fantuan · 4.5 ★",
+    postType: { en: "Fantuan Delivery", zh: "饭团外卖 · 4.5 ★" },
+    title: {
+      en: "Order Jian Bing Liu (Camden) on Fantuan Delivery",
+      zh: "饭团外卖直达：煎饼刘（Camden 店）",
+    },
+    caption: {
+      en: "Browse full Chinese & English delivery menu on Fantuan — savoury crepes, braised pork hock & roast duck crepes, rice bowls, wontons & drinks.",
+      zh: "在饭团外卖一键下单全套招牌果蔬煎饼、卤肘子/烤鸭煎饼、盖饭、鲜汤馄饨与饮品，查看最新评价与满减优惠。",
+    },
+    href: FANTUAN_STORE_URL,
+    image: "/images/beef-dumplings-plate.jpg",
+    imageAlt: {
+      en: "Golden pan-fried beef dumplings plated with house dipping sauce",
+      zh: "金黄酥脆的牛肉煎饺配秘制蘸汁",
     },
   },
 ];

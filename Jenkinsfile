@@ -199,7 +199,7 @@ spec:
           echo "[CI] Image Tag:  ${env.BUILD_NUMBER}"
           echo "=========================================================="
 
-          build job: 'JianBingLiu-Deploy', wait: false, parameters: [
+          build job: '/JianBingLiu-Deploy', wait: false, parameters: [
             string(name: 'IMAGE_TAG', value: "${env.BUILD_NUMBER}"),
             string(name: 'TARGET_ENV', value: targetEnv)
           ]

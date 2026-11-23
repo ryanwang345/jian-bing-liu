@@ -42,6 +42,9 @@ export function Footer() {
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
+                {isZh ? "提供堂食" : "Dine-in"}
+              </span>
+              <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
                 {isZh ? "支持到店自取" : "Takeaway"}
               </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
@@ -195,8 +198,8 @@ export function Footer() {
           </p>
           <p>
             {isZh
-              ? "专注外带与配送 · 菜品供应及价格以门店实际为准"
-              : "Takeaway & delivery kitchen · Prices & availability subject to in-store confirmation."}
+              ? "堂食、外带与配送 · 菜品供应及价格以门店实际为准"
+              : "Dine-in, takeaway & delivery · Prices & availability subject to in-store confirmation."}
           </p>
         </div>
       </div>

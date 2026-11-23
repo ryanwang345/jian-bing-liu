@@ -12,7 +12,13 @@ export interface SocialLink {
   label: LocalizedText;
   handle: string;
   href: string;
-  platform: "instagram" | "threads" | "tiktok" | "google-maps";
+  platform:
+    | "instagram"
+    | "threads"
+    | "tiktok"
+    | "reddit"
+    | "fantuan"
+    | "google-maps";
 }
 
 export const SITE_URL =
@@ -25,8 +31,8 @@ export const restaurant = {
   sealText: "爱民",
   chineseTagline: "正宗风味 · 果蔬煎饼",
   description: {
-    en: "Authentic Chinese street food takeaway in Camden, London — freshly griddled Jian Bing savoury crepes, delicate lace sweet crepes, handmade dumplings, braised mains, and traditional drinks.",
-    zh: "位于伦敦卡姆登的正宗中式街头小吃外卖店——现摊果蔬咸味煎饼、手工花式蕾丝甜煎饼、酥脆煎饺、慢炖热菜及现磨饮品。",
+    en: "Authentic Chinese street food in Camden, London — freshly griddled Jian Bing savoury crepes, delicate lace sweet crepes, handmade dumplings, braised mains, and traditional drinks. Dine-in, takeaway, and delivery available.",
+    zh: "位于伦敦卡姆登的正宗中式街头小吃店——现摊果蔬咸味煎饼、手工花式蕾丝甜煎饼、酥脆煎饺、慢炖热菜及现磨饮品，支持堂食、到店自取与外卖配送。",
   },
   shortIntro: {
     en: "Tucked along Camden Road, Jian Bing Liu brings the warmth and crunch of traditional Chinese street food to North London — led by made-to-order savoury Jian Bing crepes, vibrant fruit-and-vegetable batters, crisp handmade dumplings, and delicate lace sweet crepes.",
@@ -70,14 +76,15 @@ export const restaurant = {
     },
   ] as OpeningHoursEntry[],
   serviceOptions: {
+    dineIn: true,
     takeaway: true,
     noContactDelivery: true,
-    dineIn: false,
   },
   links: {
     orderOnline:
       "https://jianbingliucamden.co.uk/menu-jian-bing-liu-chinese-takeaway-camden-town",
     orderOnlineProvider: "All Eat",
+    fantuanOrder: "https://www.fantuanorder.com/store/jian-bing-liu/gb-4753211",
     googleMapsDirections:
       "https://www.google.com/maps/place/Jian+Bing+Liu/@51.5422785,-0.1377214,17z/data=!3m1!4b1!4m6!3m5!1s0x48761b0053d36dcf:0x6c48602980f0cb9e!8m2!3d51.5422785!4d-0.1377214!16s%2Fg%2F11y90b95h1",
     googleMapsEmbedQuery: "124+Camden+Rd,+London+NW1+9EE,+UK",
@@ -100,6 +107,18 @@ export const restaurant = {
       handle: "@jianbingliu.uk",
       href: "https://www.tiktok.com/@jianbingliu.uk",
       platform: "tiktok",
+    },
+    {
+      label: { en: "Reddit", zh: "Reddit 社区" },
+      handle: "r/LondonFood",
+      href: "https://www.reddit.com/r/LondonFood/comments/1qmx85b/highly_recommend_jian_bing_liu_in_camden/",
+      platform: "reddit",
+    },
+    {
+      label: { en: "Fantuan Delivery", zh: "饭团外卖" },
+      handle: "4.5 ★ Camden",
+      href: "https://www.fantuanorder.com/store/jian-bing-liu/gb-4753211",
+      platform: "fantuan",
     },
     {
       label: { en: "Google Maps", zh: "谷歌地图" },
@@ -127,8 +146,8 @@ export const restaurant = {
         zh: "除了经典的清真牛肉、清真鸡肉和素食果蔬煎饼，我们还用天然果蔬调出色彩鲜亮的饼皮，并手工挤出精致的花式蕾丝甜煎饼；店内同时供应慢炖牛肉饭、日式咖喱、手工煎饺、鲜汤馄饨和现磨豆浆、黑芝麻糊等熟悉的家常味道。",
       },
       {
-        en: "Operating as a dedicated neighbourhood takeaway and delivery kitchen on Camden Road, we prepare every order fresh so you can enjoy warm, colourful Chinese street food on the go or at home across London.",
-        zh: "我们扎根伦敦卡姆登路，专注外带与无接触配送，坚持每一单现点现做，无论匆忙路过还是宅家解馋，都能吃到这一口热气腾腾的中国味。",
+        en: "On Camden Road, we welcome guests for casual dine-in as well as takeaway and delivery — preparing every order fresh so you can enjoy warm, colourful Chinese street food right here in-store, on the go, or at home across London.",
+        zh: "我们扎根伦敦卡姆登路，提供温馨堂食、到店外带与无接触配送，坚持每一单现点现做，无论坐下来趁热品尝、逛街随手带走还是宅家解馋，都能吃到这一口热气腾腾的中国味。",
       },
     ],
     pillars: [

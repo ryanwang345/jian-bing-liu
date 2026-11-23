@@ -10,7 +10,6 @@ import {
   Navigation,
   Phone,
   ShoppingBag,
-  XCircle,
 } from "lucide-react";
 import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
@@ -43,8 +42,8 @@ export function VisitView() {
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
               {isZh
-                ? "欢迎直接到店外带热乎现摊煎饼，也支持卡姆登及周边伦敦区域无接触配送。"
-                : "Drop by for freshly griddled takeaway or order no-contact delivery across Camden and surrounding North London neighbourhoods."}
+                ? "欢迎到店堂食或外带热乎现摊煎饼，也支持卡姆登及周边伦敦区域无接触配送。"
+                : "Drop by for casual dine-in or freshly griddled takeaway, or order no-contact delivery across Camden and surrounding North London neighbourhoods."}
             </p>
           </div>
         </div>
@@ -157,7 +156,7 @@ export function VisitView() {
                   </a>
 
                   {restaurant.links.orderOnline && (
-                    <div className="mt-4 border-t border-kraft-deep/60 pt-4">
+                    <div className="mt-4 space-y-2.5 border-t border-kraft-deep/60 pt-4">
                       <a
                         href={restaurant.links.orderOnline}
                         target="_blank"
@@ -170,6 +169,18 @@ export function VisitView() {
                           : `Order Online via ${restaurant.links.orderOnlineProvider}`}
                         <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                       </a>
+                      {restaurant.links.fantuanOrder && (
+                        <a
+                          href={restaurant.links.fantuanOrder}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-kraft-deep bg-kraft/50 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"
+                        >
+                          <ShoppingBag className="h-4 w-4 text-cinnabar" aria-hidden="true" />
+                          {isZh ? "前往饭团外卖下单" : "Order on Fantuan Delivery"}
+                          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      )}
                     </div>
                   )}
 
@@ -252,11 +263,18 @@ export function VisitView() {
               </h2>
               <p className="mt-1.5 text-sm text-ink-muted">
                 {isZh
-                  ? "煎饼刘专注中式街头小吃外带与外卖配送，现点现做，不设堂食座位。"
-                  : "Jian Bing Liu operates as a dedicated Chinese street-food takeaway and delivery counter."}
+                  ? "煎饼刘现点现做，欢迎到店堂食趁热享用，也支持到店外带与无接触配送。"
+                  : "Jian Bing Liu welcomes walk-in guests for dine-in as well as takeaway and no-contact delivery — everything cooked fresh to order."}
               </p>
 
               <ul className="mt-5 grid gap-3 sm:grid-cols-3">
+                <li className="flex items-center gap-2.5 rounded-2xl border border-jade/25 bg-white px-4 py-3 text-sm font-semibold text-ink">
+                  <CheckCircle2
+                    className="h-5 w-5 shrink-0 text-jade"
+                    aria-hidden="true"
+                  />
+                  {isZh ? "提供堂食" : "Dine-in"}
+                </li>
                 <li className="flex items-center gap-2.5 rounded-2xl border border-jade/25 bg-white px-4 py-3 text-sm font-semibold text-ink">
                   <CheckCircle2
                     className="h-5 w-5 shrink-0 text-jade"
@@ -270,13 +288,6 @@ export function VisitView() {
                     aria-hidden="true"
                   />
                   {isZh ? "无接触配送" : "No-contact delivery"}
-                </li>
-                <li className="flex items-center gap-2.5 rounded-2xl border border-kraft-deep bg-white/70 px-4 py-3 text-sm font-medium text-ink-muted">
-                  <XCircle
-                    className="h-5 w-5 shrink-0 text-cinnabar/70"
-                    aria-hidden="true"
-                  />
-                  {isZh ? "暂不提供堂食" : "No dine-in seating"}
                 </li>
               </ul>
 

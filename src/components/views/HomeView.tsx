@@ -150,7 +150,7 @@ export function HomeView() {
               <div>
                 <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                   <Phone className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
-                  {isZh ? "外带与配送" : "Takeaway & Delivery"}
+                  {isZh ? "堂食 · 外带 · 配送" : "Dine-In · Takeaway"}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-ink">
                   <a
@@ -448,8 +448,8 @@ export function HomeView() {
             <div className="lg:col-span-7">
               <p className="text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
                 {isZh
-                  ? "伦敦卡姆登路 · 到店外带与配送"
-                  : "Camden Road · Takeaway & Delivery"}
+                  ? "伦敦卡姆登路 · 堂食、外带与配送"
+                  : "Camden Road · Dine-In, Takeaway & Delivery"}
               </p>
               <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
                 {isZh

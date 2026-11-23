@@ -4,7 +4,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "Visit Us",
   description:
-    "Visit Jian Bing Liu at 124 Camden Rd, London NW1 9EE. Open daily 11:00 AM – 9:30 PM for takeaway and no-contact delivery. Call 07824 318124 or get directions.",
+    "Visit Jian Bing Liu at 124 Camden Rd, London NW1 9EE. Open daily 11:00 AM – 9:30 PM for dine-in, takeaway, and no-contact delivery. Call 07824 318124 or get directions.",
   path: "/visit-us",
   image: "/images/brand-kraft-sleeve.jpg",
 });

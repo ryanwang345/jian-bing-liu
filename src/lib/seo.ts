@@ -66,7 +66,12 @@ export function buildRestaurantJsonLd() {
     acceptsReservations: false,
     hasMenu: `${SITE_URL}/menu`,
     sameAs: restaurant.verifiedSocialLinks
-      .filter((s) => s.platform !== "google-maps")
+      .filter(
+        (s) =>
+          s.platform === "instagram" ||
+          s.platform === "threads" ||
+          s.platform === "tiktok"
+      )
       .map((s) => s.href),
     aggregateRating: {
       "@type": "AggregateRating",
