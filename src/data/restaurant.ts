@@ -79,7 +79,7 @@ export const restaurant = {
       "https://jianbingliucamden.co.uk/menu-jian-bing-liu-chinese-takeaway-camden-town",
     orderOnlineProvider: "All Eat",
     googleMapsDirections:
-      "https://www.google.com/maps/search/?api=1&query=Jian+Bing+Liu+124+Camden+Rd+London+NW1+9EE",
+      "https://www.google.com/maps/place/Jian+Bing+Liu/@51.5422785,-0.1377214,17z/data=!3m1!4b1!4m6!3m5!1s0x48761b0053d36dcf:0x6c48602980f0cb9e!8m2!3d51.5422785!4d-0.1377214!16s%2Fg%2F11y90b95h1",
     googleMapsEmbedQuery: "124+Camden+Rd,+London+NW1+9EE,+UK",
   },
   verifiedSocialLinks: [
@@ -104,7 +104,7 @@ export const restaurant = {
     {
       label: { en: "Google Maps", zh: "谷歌地图" },
       handle: "124 Camden Rd",
-      href: "https://www.google.com/maps/search/?api=1&query=Jian+Bing+Liu+124+Camden+Rd+London+NW1+9EE",
+      href: "https://www.google.com/maps/place/Jian+Bing+Liu/@51.5422785,-0.1377214,17z/data=!3m1!4b1!4m6!3m5!1s0x48761b0053d36dcf:0x6c48602980f0cb9e!8m2!3d51.5422785!4d-0.1377214!16s%2Fg%2F11y90b95h1",
       platform: "google-maps",
     },
   ] as SocialLink[],

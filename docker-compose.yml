@@ -13,6 +13,9 @@ services:
       PORT: "3000"
       HOSTNAME: 0.0.0.0
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY:-}
+      GOOGLE_PLACE_ID: ${GOOGLE_PLACE_ID:-}
+      REVIEWS_FEED_URL: ${REVIEWS_FEED_URL:-}
     read_only: true
     tmpfs:
       - /tmp

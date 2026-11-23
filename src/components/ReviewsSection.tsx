@@ -1,79 +1,124 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ExternalLink, Quote, Star } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Quote,
+  Star,
+} from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
-import { customerReviews, googleRating } from "@/data/reviews";
-import { useLocale, type LocalizedText } from "@/lib/i18n";
+import {
+  customerReviews as initialReviews,
+  googleRating as initialRating,
+  socialPosts,
+  type CustomerReview,
+  type ReviewSource,
+} from "@/data/reviews";
+import type { ReviewsPayload } from "@/lib/reviews-service";
+import { useLocale } from "@/lib/i18n";
 
-const socialShowcases: Array<{
-  platform: "instagram" | "tiktok" | "threads";
-  title: LocalizedText;
-  handle: string;
-  href: string;
-  summary: LocalizedText;
-  cta: LocalizedText;
-  image: string;
-  imageAlt: LocalizedText;
-}> = [
-  {
-    platform: "instagram",
-    title: { en: "Instagram", zh: "Instagram" },
-    handle: "@jian_bing_liu",
-    href: "https://www.instagram.com/jian_bing_liu/",
-    summary: {
-      en: "Daily crepe photos, colourful fruit-and-veg batters, seasonal sweet toppings, and behind-the-counter moments.",
-      zh: "每日现摊果蔬煎饼实拍、时令花式甜煎饼新品与卡姆登小店日常。",
-    },
-    cta: { en: "Follow on Instagram", zh: "关注 Instagram" },
-    image: "/images/nutella-strawberry-crepe.jpg",
-    imageAlt: {
-      en: "Strawberry and banana chocolate crepe featured on Jian Bing Liu Instagram",
-      zh: "煎饼刘 Instagram 展示的草莓香蕉巧克力甜煎饼",
-    },
-  },
-  {
-    platform: "tiktok",
-    title: { en: "TikTok", zh: "TikTok" },
-    handle: "@jianbingliu.uk",
-    href: "https://www.tiktok.com/@jianbingliu.uk",
-    summary: {
-      en: "Watch hot griddle pours, hand-piped lace edges, crispy folds, and sizzling street-food clips straight from Camden.",
-      zh: "近距离观看圆铁板现摊、手工挤花式蕾丝脆边与热气腾腾的出餐短视频。",
-    },
-    cta: { en: "Watch on TikTok", zh: "前往 TikTok 观看" },
-    image: "/images/fancy-lace-dessert-cone.jpg",
-    imageAlt: {
-      en: "Hand-piped lace dessert crepe cone featured on Jian Bing Liu TikTok",
-      zh: "煎饼刘 TikTok 展示的花式蕾丝甜筒煎饼",
-    },
-  },
-  {
-    platform: "threads",
-    title: { en: "Threads", zh: "Threads" },
-    handle: "@jian_bing_liu",
-    href: "https://www.threads.com/@jian_bing_liu",
-    summary: {
-      en: "Quick kitchen updates, fresh batch announcements, and friendly chats with our London regulars.",
-      zh: "门店动态、当日新鲜出品分享，欢迎留言聊聊你最爱的煎饼口味。",
-    },
-    cta: { en: "Join on Threads", zh: "在 Threads 互动" },
-    image: "/images/jianbing-apron-hero.jpg",
-    imageAlt: {
-      en: "Loaded Jian Bing held in front of the Jian Bing Liu apron",
-      zh: "煎饼刘围裙前满满当当的招牌咸味煎饼",
-    },
-  },
-];
+const REVIEWS_PER_PAGE = 4;
+const POSTS_PER_PAGE = 3;
+
+type ReviewFilter = "all" | ReviewSource;
+type SocialFilter = "all" | "instagram" | "tiktok" | "threads";
 
 export function ReviewsSection() {
   const { locale, t } = useLocale();
   const isZh = locale === "zh";
 
+  const [reviews, setReviews] = useState<CustomerReview[]>(initialReviews);
+  const [rating, setRating] = useState({
+    ...initialRating,
+    isLive: false,
+  });
+  const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [socialFilter, setSocialFilter] = useState<SocialFilter>("all");
+  const [socialPage, setSocialPage] = useState(1);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/reviews")
+      .then((res) => (res.ok ? (res.json() as Promise<ReviewsPayload>) : null))
+      .then((data) => {
+        if (!active || !data) return;
+        if (Array.isArray(data.reviews) && data.reviews.length > 0) {
+          setReviews(data.reviews);
+        }
+        if (data.rating) {
+          setRating(data.rating);
+        }
+      })
+      .catch(() => {
+        // Keep initial verified reviews on transient network errors
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const filteredReviews =
+    reviewFilter === "all"
+      ? reviews
+      : reviews.filter((r) => r.source === reviewFilter);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredReviews.length / REVIEWS_PER_PAGE)
+  );
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * REVIEWS_PER_PAGE;
+  const pageReviews = filteredReviews.slice(
+    startIndex,
+    startIndex + REVIEWS_PER_PAGE
+  );
+
+  const filteredPosts =
+    socialFilter === "all"
+      ? socialPosts
+      : socialPosts.filter((post) => post.platform === socialFilter);
+
+  const totalSocialPages = Math.max(
+    1,
+    Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
+  );
+  const safeSocialPage = Math.min(socialPage, totalSocialPages);
+  const socialStartIndex = (safeSocialPage - 1) * POSTS_PER_PAGE;
+  const pagePosts = filteredPosts.slice(
+    socialStartIndex,
+    socialStartIndex + POSTS_PER_PAGE
+  );
+
+  const googleCount = reviews.filter((r) => r.source === "google").length;
+  const igCount = reviews.filter((r) => r.source === "instagram").length;
+  const ttCount = reviews.filter((r) => r.source === "tiktok").length;
+
+  const igPostsCount = socialPosts.filter((p) => p.platform === "instagram").length;
+  const ttPostsCount = socialPosts.filter((p) => p.platform === "tiktok").length;
+  const threadsPostsCount = socialPosts.filter((p) => p.platform === "threads").length;
+
+  const handleReviewFilter = (next: ReviewFilter) => {
+    setReviewFilter(next);
+    setCurrentPage(1);
+  };
+
+  const handleSocialFilter = (next: SocialFilter) => {
+    setSocialFilter(next);
+    setSocialPage(1);
+  };
+
   return (
-    <section className="border-y border-kraft-deep/80 bg-kraft/45">
+    <section
+      id="reviews"
+      className="scroll-mt-24 border-y border-kraft-deep/80 bg-kraft/45"
+    >
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         {/* Header + Verified Google Rating Summary */}
         <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
@@ -87,13 +132,13 @@ export function ReviewsSection() {
             }
             description={
               isZh
-                ? "每一条评价都来自真实光临卡姆登路 124 号的食客——欢迎在 Google、Instagram、TikTok 与 Threads 上查看更多分享。"
-                : "Real words from guests who visit 124 Camden Road — plus daily griddle clips and updates across Instagram, TikTok, and Threads."
+                ? "以下评价与互动均来自真实光临卡姆登路 124 号的食客——点击任意卡片可直达 Google 地图或对应社媒原帖。"
+                : "Verified reviews and comments from guests visiting 124 Camden Road — click any review or post to open it directly on Google Maps, Instagram, TikTok, or Threads."
             }
           />
 
           <a
-            href={googleRating.reviewsUrl}
+            href={rating.reviewsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex shrink-0 items-center gap-4 rounded-2xl border border-kraft-deep bg-white px-5 py-3.5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-cinnabar/40 hover:shadow-md"
@@ -101,18 +146,28 @@ export function ReviewsSection() {
             <div>
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-3xl font-extrabold text-ink">
-                  {googleRating.score}
+                  {rating.score}
                 </span>
-                <span className="flex items-center gap-0.5 text-[#E59819]" aria-hidden="true">
+                <span
+                  className="flex items-center gap-0.5 text-[#E59819]"
+                  aria-hidden="true"
+                >
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-current" />
                   ))}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs font-medium text-ink-muted">
-                {isZh
-                  ? `基于 Google ${googleRating.count} 条真实评价`
-                  : `Based on ${googleRating.count} Google Reviews`}
+              <p className="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-ink-muted">
+                <span>
+                  {isZh
+                    ? `基于 Google ${rating.count} 条真实评价`
+                    : `Based on ${rating.count} Google Reviews`}
+                </span>
+                {rating.isLive && (
+                  <span className="rounded-full bg-jade/15 px-1.5 py-0.5 text-[10px] font-semibold text-jade">
+                    {isZh ? "实时同步" : "Live"}
+                  </span>
+                )}
               </p>
             </div>
             <ExternalLink
@@ -122,29 +177,119 @@ export function ReviewsSection() {
           </a>
         </div>
 
-        {/* Verified Google Review Cards */}
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {customerReviews.map((review) => (
-            <article
+        {/* Review Source Filter + Count */}
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+          <div
+            role="group"
+            aria-label={isZh ? "按平台筛选评论" : "Filter reviews by source"}
+            className="flex flex-wrap gap-2"
+          >
+            {(
+              [
+                {
+                  key: "all",
+                  label: isZh
+                    ? `全部评价 (${reviews.length})`
+                    : `All Reviews (${reviews.length})`,
+                },
+                {
+                  key: "google",
+                  label: `Google (${googleCount})`,
+                },
+                {
+                  key: "instagram",
+                  label: `Instagram (${igCount})`,
+                },
+                {
+                  key: "tiktok",
+                  label: `TikTok (${ttCount})`,
+                },
+              ] as const
+            ).map((tab) => {
+              const active = reviewFilter === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => handleReviewFilter(tab.key)}
+                  aria-pressed={active}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                    active
+                      ? "bg-ink text-parchment shadow-xs"
+                      : "border border-kraft-deep bg-white/80 text-ink-soft hover:bg-kraft"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-xs font-medium text-ink-muted">
+            {isZh
+              ? `第 ${startIndex + 1}–${Math.min(
+                  startIndex + REVIEWS_PER_PAGE,
+                  filteredReviews.length
+                )} 条，共 ${filteredReviews.length} 条精选评价`
+              : `Showing ${startIndex + 1}–${Math.min(
+                  startIndex + REVIEWS_PER_PAGE,
+                  filteredReviews.length
+                )} of ${filteredReviews.length} featured reviews`}
+          </p>
+        </div>
+
+        {/* Paginated Review Cards */}
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          {pageReviews.map((review) => (
+            <a
               key={review.id}
-              className="flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white p-6 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+              href={review.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white p-6 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-cinnabar/40 hover:shadow-md"
             >
               <div>
                 <div className="flex items-center justify-between gap-3">
                   <div
                     className="flex items-center gap-0.5 text-[#E59819]"
-                    aria-label={isZh ? "5 星好评" : "5 out of 5 stars"}
+                    aria-label={
+                      isZh
+                        ? `${review.rating} 星好评`
+                        : `${review.rating} out of 5 stars`
+                    }
                   >
                     {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-current" aria-hidden="true" />
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-current"
+                        aria-hidden="true"
+                      />
                     ))}
                   </div>
-                  <span className="rounded-full bg-kraft/70 px-2.5 py-0.5 text-[11px] font-semibold text-ink-soft">
-                    {isZh ? "Google 真实评价" : "Google Review"}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-kraft/70 px-2.5 py-0.5 text-[11px] font-semibold text-ink-soft">
+                    {review.source === "instagram" ? (
+                      <>
+                        <SocialIcon
+                          platform="instagram"
+                          className="h-3 w-3 text-cinnabar"
+                        />
+                        {isZh ? "Instagram 评论" : "Instagram"}
+                      </>
+                    ) : review.source === "tiktok" ? (
+                      <>
+                        <SocialIcon
+                          platform="tiktok"
+                          className="h-3 w-3 text-cinnabar"
+                        />
+                        {isZh ? "TikTok 评论" : "TikTok"}
+                      </>
+                    ) : (
+                      <>{isZh ? "Google 真实评价" : "Google Review"}</>
+                    )}
                   </span>
                 </div>
 
-                <h3 className="mt-3 font-display text-base font-bold text-ink">
+                <h3 className="mt-3 font-display text-base font-bold text-ink transition-colors group-hover:text-cinnabar">
                   {t(review.highlight)}
                 </h3>
 
@@ -159,78 +304,285 @@ export function ReviewsSection() {
 
               <div className="mt-5 flex items-center justify-between border-t border-kraft-deep/60 pt-3.5 text-xs">
                 <span className="font-semibold text-ink">{review.author}</span>
-                <a
-                  href={googleRating.reviewsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-cinnabar hover:text-cinnabar-dark"
-                >
-                  {isZh ? "在 Google 查看 →" : "View on Google →"}
-                </a>
+                <span className="inline-flex items-center gap-1 font-medium text-cinnabar group-hover:text-cinnabar-dark">
+                  {review.source === "instagram"
+                    ? isZh
+                      ? "打开 Instagram 原帖"
+                      : "Open Instagram Reel"
+                    : review.source === "tiktok"
+                      ? isZh
+                        ? "观看 TikTok 原视频"
+                        : "Watch TikTok Video"
+                      : isZh
+                        ? "在 Google 地图查看"
+                        : "View on Google Maps"}
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </span>
               </div>
-            </article>
+            </a>
           ))}
         </div>
 
-        {/* Instagram, TikTok & Threads Community Showcase */}
-        <div className="mt-14">
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h3 className="font-display text-2xl font-bold text-ink">
+        {/* Review Pagination Controls */}
+        {totalPages > 1 && (
+          <nav
+            aria-label={isZh ? "评论分页导航" : "Reviews pagination"}
+            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
+            <button
+              type="button"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+              {isZh ? "上一页" : "Previous"}
+            </button>
+
+            {Array.from({ length: totalPages }, (_, idx) => idx + 1).map(
+              (pageNum) => {
+                const isCurrent = pageNum === safePage;
+                return (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => setCurrentPage(pageNum)}
+                    aria-current={isCurrent ? "page" : undefined}
+                    aria-label={
+                      isZh ? `第 ${pageNum} 页` : `Page ${pageNum}`
+                    }
+                    className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
+                      isCurrent
+                        ? "bg-cinnabar text-parchment shadow-xs"
+                        : "border border-kraft-deep bg-white text-ink-soft hover:border-cinnabar hover:text-cinnabar"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              }
+            )}
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {isZh ? "下一页" : "Next"}
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </button>
+          </nav>
+        )}
+
+        {/* Direct-Linked Instagram, TikTok & Threads Posts (Paginated) */}
+        <div className="mt-16 border-t border-kraft-deep/80 pt-14">
+          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <h3 className="font-display text-2xl font-bold text-ink">
+                {isZh
+                  ? "精选 Instagram、TikTok 与 Threads 热门帖"
+                  : "Featured Posts on Instagram, TikTok & Threads"}
+              </h3>
+              <p className="mt-1 text-sm text-ink-muted">
+                {isZh
+                  ? "TikTok 粉丝 1,190+ · 获赞 3,170+ · 点击任意卡片直达对应原帖或短视频"
+                  : "1,190+ TikTok followers · 3,170+ likes · Click any card to open that exact post or video"}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {restaurant.verifiedSocialLinks
+                .filter((s) => s.platform !== "google-maps")
+                .map((social) => (
+                  <a
+                    key={social.href}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white px-3.5 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar"
+                  >
+                    <SocialIcon
+                      platform={social.platform}
+                      className="h-3.5 w-3.5 text-cinnabar"
+                    />
+                    {t(social.label)}
+                    <ExternalLink className="h-3 w-3 opacity-60" aria-hidden="true" />
+                  </a>
+                ))}
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <div
+              role="group"
+              aria-label={isZh ? "按社媒平台筛选帖子" : "Filter posts by platform"}
+              className="flex flex-wrap gap-2"
+            >
+              {(
+                [
+                  {
+                    key: "all",
+                    label: isZh
+                      ? `全部动态 (${socialPosts.length})`
+                      : `All Posts (${socialPosts.length})`,
+                  },
+                  {
+                    key: "instagram",
+                    label: `Instagram (${igPostsCount})`,
+                  },
+                  {
+                    key: "tiktok",
+                    label: `TikTok (${ttPostsCount})`,
+                  },
+                  {
+                    key: "threads",
+                    label: `Threads (${threadsPostsCount})`,
+                  },
+                ] as const
+              ).map((tab) => {
+                const active = socialFilter === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => handleSocialFilter(tab.key)}
+                    aria-pressed={active}
+                    className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                      active
+                        ? "bg-cinnabar text-parchment shadow-xs"
+                        : "border border-kraft-deep bg-white/80 text-ink-soft hover:bg-kraft"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <p className="text-xs font-medium text-ink-muted">
               {isZh
-                ? "在 Instagram、TikTok 与 Threads 关注煎饼刘"
-                : `Follow ${restaurant.name} on Instagram, TikTok & Threads`}
-            </h3>
-            <p className="text-sm text-ink-muted">
-              {isZh
-                ? "点击直达官方主页，看最新摊饼视频与食客打卡"
-                : "Fresh griddle videos, sweet crepe drops & customer shoutouts"}
+                ? `第 ${socialStartIndex + 1}–${Math.min(
+                    socialStartIndex + POSTS_PER_PAGE,
+                    filteredPosts.length
+                  )} 条，共 ${filteredPosts.length} 条精选动态`
+                : `Showing ${socialStartIndex + 1}–${Math.min(
+                    socialStartIndex + POSTS_PER_PAGE,
+                    filteredPosts.length
+                  )} of ${filteredPosts.length} posts`}
             </p>
           </div>
 
           <div className="mt-6 grid gap-5 md:grid-cols-3">
-            {socialShowcases.map((card) => (
+            {pagePosts.map((post) => (
               <a
-                key={card.platform}
-                href={card.href}
+                key={post.id}
+                href={post.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-cinnabar/40 hover:shadow-lg"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-kraft">
                   <Image
-                    src={card.image}
-                    alt={t(card.imageAlt)}
+                    src={post.image}
+                    alt={t(post.imageAlt)}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ink/85 px-3 py-1 text-xs font-semibold text-parchment backdrop-blur-xs">
                     <SocialIcon
-                      platform={card.platform}
+                      platform={post.platform}
                       className="h-3.5 w-3.5 text-[#F0C26E]"
                     />
-                    {t(card.title)}
+                    {t(post.postType)}
                   </span>
                 </div>
 
                 <div className="flex flex-1 flex-col justify-between p-5">
                   <div>
                     <p className="text-xs font-semibold text-cinnabar">
-                      {card.handle}
+                      {post.handle}
                     </p>
+                    <h4 className="mt-1.5 font-display text-base font-bold text-ink transition-colors group-hover:text-cinnabar">
+                      {t(post.title)}
+                    </h4>
                     <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                      {t(card.summary)}
+                      {t(post.caption)}
                     </p>
                   </div>
 
                   <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-cinnabar">
-                    {t(card.cta)}
+                    {post.platform === "tiktok"
+                      ? isZh
+                        ? "打开 TikTok 原视频"
+                        : "Watch TikTok Video"
+                      : post.platform === "instagram"
+                        ? isZh
+                          ? "打开 Instagram 原帖"
+                          : "Open Instagram Post"
+                        : isZh
+                          ? "打开 Threads 原帖"
+                          : "Open Threads Post"}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
                 </div>
               </a>
             ))}
           </div>
+
+          {totalSocialPages > 1 && (
+            <nav
+              aria-label={isZh ? "社媒动态分页导航" : "Social posts pagination"}
+              className="mt-8 flex flex-wrap items-center justify-center gap-2"
+            >
+              <button
+                type="button"
+                onClick={() => setSocialPage((p) => Math.max(1, p - 1))}
+                disabled={safeSocialPage === 1}
+                className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+                {isZh ? "上一页" : "Previous"}
+              </button>
+
+              {Array.from({ length: totalSocialPages }, (_, idx) => idx + 1).map(
+                (pageNum) => {
+                  const isCurrent = pageNum === safeSocialPage;
+                  return (
+                    <button
+                      key={pageNum}
+                      type="button"
+                      onClick={() => setSocialPage(pageNum)}
+                      aria-current={isCurrent ? "page" : undefined}
+                      aria-label={
+                        isZh ? `动态第 ${pageNum} 页` : `Posts page ${pageNum}`
+                      }
+                      className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
+                        isCurrent
+                          ? "bg-cinnabar text-parchment shadow-xs"
+                          : "border border-kraft-deep bg-white text-ink-soft hover:border-cinnabar hover:text-cinnabar"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                }
+              )}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setSocialPage((p) => Math.min(totalSocialPages, p + 1))
+                }
+                disabled={safeSocialPage === totalSocialPages}
+                className="inline-flex items-center gap-1 rounded-full border border-kraft-deep bg-white px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-cinnabar hover:text-cinnabar disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {isZh ? "下一页" : "Next"}
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            </nav>
+          )}
         </div>
       </div>
     </section>
