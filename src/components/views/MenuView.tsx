@@ -37,14 +37,14 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
               </p>
               <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
                 {pick(
-                  "现点现摊，热乎实在的中国街头味",
-                  "Street food made hot to order"
+                  "现点现做，热乎踏实的家常街头味",
+                  "Warm street food, cooked fresh to order"
                 )}
               </h1>
               <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
                 {pick(
-                  "从咔嚓作响的果蔬咸煎饼、£6.5 午市简餐，到慢炖土豆牛肉饭、纯素日式咖喱、手工脆底煎饺与现磨热豆浆——清真、素食一应俱全。",
-                  "Crisp savoury Jian Bing, £6.50 lunch crepes, slow-braised beef bowls, vegan Japanese curry, golden dumplings, and hot house-made soya milk."
+                  "从外脆里软的果蔬咸煎饼、£6.5 午市简餐，到慢炖土豆牛肉饭、温和醇香的纯素咖喱、£1 脆底煎饺与现磨热豆浆——清真与素食都照顾周全。",
+                  "Crisp savoury Jian Bing, £6.50 lunch crepes, slow-braised beef over rice, warming vegan curry, £1 pan-fried dumplings and silky house soya milk."
                 )}
               </p>
             </div>
@@ -150,7 +150,7 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                   </p>
                   <p>
                     Our kitchen handles wheat/gluten, eggs, sesame, soy, dairy,
-                    crustaceans (shrimp wontons), and nuts (Nutella). If you
+                    crustaceans (prawn wontons), and nuts (Nutella). If you
                     have a food allergy or intolerance, please speak with our
                     team on{" "}
                     <a

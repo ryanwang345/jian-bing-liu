@@ -51,7 +51,7 @@ const craftGalleryStrip: Array<{
       en: "Colourful fruit-and-vegetable batter crepe topped with herbs and shredded fillings on the hot griddle",
       zh: "热铁板上天然调色的彩色果蔬面糊煎饼，铺满鲜绿青菜与香葱",
     },
-    label: { en: "Fruit & Veg Batter", zh: "天然果蔬面糊" },
+    label: { en: "Natural Fruit & Veg Batter", zh: "鲜榨果蔬饼皮" },
     hashtag: "#ZeroFoodDye",
   },
   {
@@ -60,7 +60,7 @@ const craftGalleryStrip: Array<{
       en: "Hand-piped pink lace dessert crepe cone with whipped cream, fresh fruit, and biscuit sticks",
       zh: "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与抹茶饼干棒",
     },
-    label: { en: "Fancy Lace Cones", zh: "花式蕾丝甜筒" },
+    label: { en: "Pink Lace Crepe Cones", zh: "手工粉色蕾丝甜筒" },
     hashtag: "#PinkLaceCrepe",
   },
   {
@@ -69,7 +69,7 @@ const craftGalleryStrip: Array<{
       en: "Golden crispy vegetarian spring rolls served on a heart-shaped plate",
       zh: "心形白盘上金黄酥脆的传统素春卷",
     },
-    label: { en: "Crispy Street Snacks", zh: "酥香街头小吃" },
+    label: { en: "Crispy Veggie Spring Rolls", zh: "金黄酥脆素春卷" },
     hashtag: "#CamdenSnacks",
   },
   {
@@ -78,30 +78,30 @@ const craftGalleryStrip: Array<{
       en: "Spiced Chinese tea eggs steeping in dark soy and aromatic black tea marinade",
       zh: "浓郁红茶五香卤汁里浸泡的整颗茶叶蛋",
     },
-    label: { en: "Traditional Tea Eggs", zh: "古法五香茶叶蛋" },
+    label: { en: "Spiced Tea Eggs", zh: "古法五香茶叶蛋" },
     hashtag: "#ChineseStreetFood",
   },
 ];
 
 const featuredDishTags: LocalizedText[] = [
-  { en: "Spun hot to order", zh: "铁板现摊热乎" },
-  { en: "Fresh fruit & veg batter", zh: "每日鲜榨果蔬皮" },
-  { en: "Hand-piped on hot iron", zh: "铁板手挤花式蕾丝" },
-  { en: "Pan-fried crisp bottoms", zh: "现煎金黄脆底" },
-  { en: "Slow-braised comfort bowl", zh: "慢炖暖胃家常味" },
-  { en: "100% plant-based warm meal", zh: "香浓纯素热菜" },
+  { en: "Crisp, hot & properly filling", zh: "外脆里软 · 拿在手里沉甸甸" },
+  { en: "Fresh fruit & veg batter, 0% dye", zh: "每日鲜榨果蔬皮 · 零色素" },
+  { en: "Slow-braised until fork-tender", zh: "慢火咕嘟炖烂 · 拌饭最香" },
+  { en: "Mild, velvety & warming", zh: "温和顺滑 · 暖胃纯素热饭" },
+  { en: "Golden crispy bottoms · £1 each", zh: "现煎金黄脆底 · £1 一只" },
+  { en: "Warm, soft & generously spread", zh: "热乎松软 · 现抹榛子巧克力" },
 ];
 
 const trendingTickerItems: Array<{
   label: LocalizedText;
   dot: string;
 }> = [
-  { label: { en: "FRESH DRAGON FRUIT & BEETROOT BATTER · 0% DYE", zh: "每日现切红心火龙果 · 甜菜根零色素饼皮" }, dot: "bg-cinnabar" },
-  { label: { en: "CRACKED EGG, CRISPY CRACKER & HOUSE CHILLI OIL", zh: "双蛋刷秘制酱 · 现炸薄脆与自制辣椒油" }, dot: "bg-turmeric" },
-  { label: { en: "HALAL BEEF & CHICKEN · VEGGIE & VEGAN", zh: "清真牛肉 & 鸡肉 · 素食与纯素全都有" }, dot: "bg-jade" },
-  { label: { en: "HOMEMADE HOT SOYA MILK £2 · DUMPLINGS FROM £1", zh: "每日现磨温热豆浆 £2 · 脆底煎饺 £1 起" }, dot: "bg-turmeric" },
-  { label: { en: "HAND-PIPED SWEET LACE CREPES FROM £4", zh: "铁板手挤花式蕾丝甜筒 £4 起" }, dot: "bg-cinnabar" },
-  { label: { en: "4.9★ GOOGLE (287+ REVIEWS) · 124 CAMDEN RD NW1", zh: "Google 4.9★ · 287+ 真人好评 · 卡姆登路 124 号" }, dot: "bg-jade" },
+  { label: { en: "FRESH DRAGON FRUIT & BEETROOT BATTER · NEVER FOOD DYE", zh: "每天现切红心火龙果 · 甜菜根榨汁和面" }, dot: "bg-cinnabar" },
+  { label: { en: "CRACKED EGG, WONTON CRUNCH & HOUSE CHILLI OIL", zh: "热锅磕双蛋 · 现炸薄脆与自家熬制辣椒油" }, dot: "bg-turmeric" },
+  { label: { en: "HALAL BEEF & CHICKEN · VEGGIE & VEGAN CHOICES", zh: "清真牛鸡与素食纯素皆全 · 怎么点都合适" }, dot: "bg-jade" },
+  { label: { en: "HOUSE SOYA MILK £2 · PAN-FRIED DUMPLINGS £1", zh: "温润现磨豆浆 £2 · 金黄脆底煎饺 £1 一只" }, dot: "bg-turmeric" },
+  { label: { en: "WARM SWEET CREPES FROM £4 · PINK LACE CONES", zh: "热乎甜煎饼 £4 起 · 手工粉色蕾丝甜筒" }, dot: "bg-cinnabar" },
+  { label: { en: "4.9★ ON GOOGLE (287+ REVIEWS) · 124 CAMDEN RD NW1", zh: "Google 4.9★ 街坊口碑 · 卡姆登路 124 号" }, dot: "bg-jade" },
 ];
 
 interface HomeViewProps {
@@ -168,8 +168,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
               <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted sm:text-[17px]">
                 {pick(
-                  "红心火龙果、甜菜根每天现切榨汁和面，零色素；磕双蛋、刷秘制酱、夹现炸薄脆——清真牛鸡与素食全都有，像在家门口买的一样热乎实在。",
-                  "Real dragon fruit & beetroot batters — never food dye. Folded warm off cast iron with crispy wonton cracker, Halal beef or chicken, fresh herbs, and homemade chilli oil."
+                  "红心火龙果、甜菜根和菠菜每天现切榨汁和面，不加一滴色素；热锅磕双蛋、刷刘阿姨自家熬的咸香酱、夹上酥脆薄脆——像在家门口买的一样热乎实在。",
+                  "Natural fruit-and-veg batters — never food dye — cracked with egg, brushed with Mrs Liu's savoury house sauce and folded around a proper wonton crunch. Warm, filling street food made the way it's done back home."
                 )}
               </p>
 
@@ -495,12 +495,12 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               eyebrow={pick("家的味道 · 热乎现摊", "Fresh Off the Griddle")}
               chineseAccent="招牌美味"
               title={pick(
-                "像在家门口买的一样热乎实在",
-                "Honest, piping-hot comfort food on Camden Road"
+                "热乎出锅，像在家门口吃的一样踏实",
+                "Cooked warm to order, just like back home"
               )}
               description={pick(
-                "招牌果蔬咸煎饼、慢炖土豆牛肉饭、金黄脆底煎饺与手工花式甜筒，全线明码实价，现点现做。",
-                "Savoury natural-batter Jian Bing, slow-braised beef rice, £1 pan-fried dumplings, and hand-piped sweet crepes — cooked warm to order."
+                "现摊果蔬咸煎饼、慢炖土豆牛肉饭、£1 金黄脆底煎饺与温热甜煎饼——料足价实，趁热最好吃。",
+                "From crisp savoury Jian Bing and slow-braised beef over rice to £1 pan-fried dumplings and warm sweet crepes — simple, generous food with nothing hidden."
               )}
             />
             <Link
@@ -599,14 +599,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </div>
               <h2 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] text-parchment sm:text-4xl">
                 {pick(
-                  "三套回头客闭眼点的神仙搭配",
-                  "Three orders Camden regulars swear by"
+                  "回头客常点的三套家常搭配",
+                  "Three orders Camden regulars come back for"
                 )}
               </h2>
               <p className="mt-3 text-base leading-relaxed text-parchment/75">
                 {pick(
-                  "不管你是刷到小红书、TikTok、Instagram 还是 Reddit 找过来的，照着这三套点准没错。",
-                  "Spotted us on TikTok, Instagram, RedNote, or r/LondonFood? Start with one of these regulars' favourites — all spun hot to order."
+                  "第一次来不知道点什么？照着街坊和老客最常点的这三套搭配来一份，现做现拿，热乎又踏实。",
+                  "First time at the counter? Start with one of our regulars' favourites — cooked fresh in front of you and genuinely filling."
                 )}
               </p>
             </div>
@@ -636,11 +636,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             {[
               {
                 tag: pick("招牌咸口 · 清真可选", "The Classic · Halal"),
-                title: pick("牛肉 / 鸡肉煎饼 + 热豆浆", "Beef or Chicken Jian Bing + Soya Milk"),
+                title: pick("牛肉 / 鸡肉煎饼 + 热豆浆", "Beef or Chicken Jian Bing + House Soya Milk"),
                 price: "£10 + £2",
                 desc: pick(
-                  "双蛋果蔬饼皮刷自家秘制酱，配酥脆薄脆与清真肉馅，再捧一杯温热现磨豆浆，最地道的街头组合。",
-                  "Two-egg savoury crepe brushed with house sauce, crispy fried onions, Halal beef or chicken, and hot classic soya milk."
+                  "现摊双蛋果蔬饼皮刷自家咸香酱，裹满酥脆炸洋葱和清真牛肉或鸡肉，再配一杯温润顺滑的热豆浆，最妥帖的一顿。",
+                  "A crisp two-egg savoury crepe brushed with house sauce, crunchy fried shallots and Halal beef or chicken, alongside silky warm soya milk."
                 ),
                 image: "/images/beef-crepe-sleeve.webp",
                 alt: pick(
@@ -651,12 +651,12 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 cta: pick("查看清真煎饼", "See Halal Crepes"),
               },
               {
-                tag: pick("高颜值打卡甜品", "The Sweet Hit"),
-                title: pick("花式蕾丝甜筒 / 榛子巧克力甜煎饼", "Fancy Lace Cone or Nutella Crepe"),
+                tag: pick("午后甜口", "Something Sweet"),
+                title: pick("粉色蕾丝甜筒 / 榛子巧克力甜煎饼", "Pink Lace Crepe Cone or Warm Nutella Crepe"),
                 price: pick("£4 起", "From £4"),
                 desc: pick(
-                  "手工挤制粉色蕾丝脆边卷成甜筒，装满绵密奶油与鲜果，或来一份热乎拉丝的榛子巧克力草莓甜煎饼。",
-                  "Hand-piped pink lace crepe cone packed with whipped cream and fruit, or a warm Nutella crepe straight off the iron."
+                  "铁板手挤轻脆粉色蕾丝卷成甜筒，装满绵密奶油与鲜果，或来一份热乎松软的榛子巧克力甜煎饼，甜而不腻。",
+                  "Hand-piped pink lace crepe rolled with whipped cream and fresh fruit, or a soft warm Nutella crepe straight off the griddle."
                 ),
                 image: "/images/fancy-lace-dessert-cone.webp",
                 alt: pick(
@@ -667,12 +667,12 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 cta: pick("看甜煎饼菜单", "See Sweet Crepes"),
               },
               {
-                tag: pick("暖胃热菜 · 含纯素", "Hot Bowls & Dumplings"),
-                title: pick("慢炖牛肉饭 / 纯素咖喱 + 脆底煎饺", "Braised Beef or Vegan Curry + Dumplings"),
+                tag: pick("暖胃热饭 · 含纯素", "Warm Bowls & Dumplings"),
+                title: pick("慢炖牛肉饭 / 纯素咖喱 + 脆底煎饺", "Slow-Braised Beef or Vegan Curry + Dumplings"),
                 price: "£7.95 – £12.95",
                 desc: pick(
-                  "软烂入味的土豆胡萝卜炖牛肉或醇香纯素日式咖喱配白米饭，再加几只 £1 起的金黄脆底煎饺，管饱又暖胃。",
-                  "Slow-braised beef or Vegan Japanese Curry with steamed white rice, plus golden pan-fried beef or veggie dumplings from £1."
+                  "炖得软烂入味的土豆胡萝卜牛肉或温和浓香的纯素日式咖喱，浇在热白米饭上，再顺手加几只 £1 金黄脆底煎饺，特别暖胃。",
+                  "Fork-tender braised beef or gently spiced vegan Japanese curry over steamed white rice, plus golden pan-fried beef or veggie dumplings from £1."
                 ),
                 image: "/images/braised-beef-rice.webp",
                 alt: pick(
