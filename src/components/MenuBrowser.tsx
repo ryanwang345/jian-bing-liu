@@ -1,15 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
-import { ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldCheck, X, ZoomIn } from "lucide-react";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import {
   dietaryLabels,
   type DietaryTagKey,
   type MenuCategory,
+  type MenuItem,
 } from "@/data/menu";
-import { useLocale } from "@/lib/i18n";
+import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 export type MenuDietaryFilter = "all" | DietaryTagKey;
 
@@ -32,6 +34,8 @@ export function MenuBrowser({
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
   const [activeDietary, setActiveDietary] =
     useState<MenuDietaryFilter>(initialDietary);
+  const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const dietaryCounts = useMemo(() => {
     const allItems = categories.flatMap((c) => c.items);
@@ -46,6 +50,7 @@ export function MenuBrowser({
 
   const handleSelectDietary = (filter: MenuDietaryFilter) => {
     setActiveDietary(filter);
+    setLightboxItemId(null);
     try {
       const url = new URL(window.location.href);
       if (filter === "all") {
@@ -59,17 +64,87 @@ export function MenuBrowser({
     }
   };
 
-  const filteredCategories = categories
-    .map((category) => ({
-      ...category,
-      items:
-        activeDietary === "all"
-          ? category.items
-          : category.items.filter((item) =>
-              item.dietary?.includes(activeDietary)
-            ),
-    }))
-    .filter((category) => category.items.length > 0);
+  const filteredCategories = useMemo(
+    () =>
+      categories
+        .map((category) => ({
+          ...category,
+          items:
+            activeDietary === "all"
+              ? category.items
+              : category.items.filter((item) =>
+                  item.dietary?.includes(activeDietary)
+                ),
+        }))
+        .filter((category) => category.items.length > 0),
+    [categories, activeDietary]
+  );
+
+  const picturedItems = useMemo(() => {
+    const list: Array<{
+      item: MenuItem & { image: string };
+      categoryTitle: LocalizedText;
+    }> = [];
+    for (const cat of filteredCategories) {
+      for (const item of cat.items) {
+        if (item.image) {
+          list.push({
+            item: item as MenuItem & { image: string },
+            categoryTitle: cat.title,
+          });
+        }
+      }
+    }
+    return list;
+  }, [filteredCategories]);
+
+  const activeLightboxIndex = useMemo(() => {
+    if (!lightboxItemId) return -1;
+    return picturedItems.findIndex((entry) => entry.item.id === lightboxItemId);
+  }, [lightboxItemId, picturedItems]);
+
+  const activeEntry =
+    activeLightboxIndex >= 0 ? picturedItems[activeLightboxIndex] : null;
+
+  useEffect(() => {
+    if (activeLightboxIndex < 0) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLightboxItemId(null);
+      } else if (event.key === "ArrowRight" && picturedItems.length > 1) {
+        const nextIdx = (activeLightboxIndex + 1) % picturedItems.length;
+        setLightboxItemId(picturedItems[nextIdx]?.item.id ?? null);
+      } else if (event.key === "ArrowLeft" && picturedItems.length > 1) {
+        const prevIdx =
+          (activeLightboxIndex - 1 + picturedItems.length) %
+          picturedItems.length;
+        setLightboxItemId(picturedItems[prevIdx]?.item.id ?? null);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeLightboxIndex, picturedItems]);
+
+  const showPrevPhoto = () => {
+    if (activeLightboxIndex < 0 || picturedItems.length < 2) return;
+    const prevIdx =
+      (activeLightboxIndex - 1 + picturedItems.length) % picturedItems.length;
+    setLightboxItemId(picturedItems[prevIdx]?.item.id ?? null);
+  };
+
+  const showNextPhoto = () => {
+    if (activeLightboxIndex < 0 || picturedItems.length < 2) return;
+    const nextIdx = (activeLightboxIndex + 1) % picturedItems.length;
+    setLightboxItemId(picturedItems[nextIdx]?.item.id ?? null);
+  };
 
   return (
     <div>
@@ -188,7 +263,15 @@ export function MenuBrowser({
                   className="group flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white/80 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-kraft-deep hover:shadow-md sm:flex-row"
                 >
                   {item.image && (
-                    <div className="relative h-48 w-full shrink-0 overflow-hidden bg-kraft sm:h-auto sm:w-40">
+                    <button
+                      type="button"
+                      onClick={() => setLightboxItemId(item.id)}
+                      aria-label={pick(
+                        `查看完整大图：${item.name.zh}`,
+                        `View full photo of ${item.name.en}`
+                      )}
+                      className="group/photo relative h-48 w-full shrink-0 cursor-zoom-in overflow-hidden bg-kraft text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cinnabar focus-visible:ring-inset sm:h-auto sm:w-40"
+                    >
                       <Image
                         src={item.image}
                         alt={
@@ -196,9 +279,15 @@ export function MenuBrowser({
                         }
                         fill
                         sizes="(max-width: 640px) 100vw, 160px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 group-hover/photo:scale-105"
                       />
-                    </div>
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute right-2.5 bottom-2.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-ink/65 text-parchment shadow-sm backdrop-blur-xs transition-all duration-300 group-hover/photo:scale-110 group-hover/photo:bg-cinnabar"
+                      >
+                        <ZoomIn className="h-3.5 w-3.5" />
+                      </span>
+                    </button>
                   )}
 
                   <div className="flex flex-1 flex-col justify-between p-5">
@@ -278,6 +367,134 @@ export function MenuBrowser({
           </div>
         )}
       </div>
+
+      {activeEntry &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={t(activeEntry.item.name)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/90 p-3 backdrop-blur-sm sm:p-6"
+            onClick={() => setLightboxItemId(null)}
+          >
+            <div
+              className="relative flex max-h-[94dvh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
+              onClick={(event) => event.stopPropagation()}
+              onTouchStart={(event) => {
+                touchStartX.current = event.touches[0]?.clientX ?? null;
+              }}
+              onTouchEnd={(event) => {
+                if (touchStartX.current === null) return;
+                const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
+                const delta = endX - touchStartX.current;
+                touchStartX.current = null;
+                if (delta > 50) showPrevPhoto();
+                if (delta < -50) showNextPhoto();
+              }}
+            >
+              <div className="flex items-center justify-between gap-3 border-b border-parchment/15 px-4 py-3 text-parchment sm:px-5 sm:py-3.5">
+                <div className="min-w-0 truncate text-xs font-semibold tracking-wider text-[#F0C26E]">
+                  {t(activeEntry.categoryTitle)} ·{" "}
+                  {pick(
+                    `第 ${activeLightboxIndex + 1} / ${picturedItems.length} 张`,
+                    `${activeLightboxIndex + 1} / ${picturedItems.length}`
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxItemId(null)}
+                  aria-label={pick("关闭完整照片", "Close full photo viewer")}
+                  className="shrink-0 rounded-full bg-parchment/10 p-2 text-parchment transition-colors hover:bg-parchment/25"
+                >
+                  <X className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </div>
+
+              <div className="relative flex-1 bg-black/55">
+                <div className="relative mx-auto h-[58dvh] w-full sm:h-[64dvh]">
+                  <Image
+                    src={activeEntry.item.image}
+                    alt={
+                      activeEntry.item.imageAlt
+                        ? t(activeEntry.item.imageAlt)
+                        : t(activeEntry.item.name)
+                    }
+                    fill
+                    sizes="(max-width: 768px) 96vw, 900px"
+                    className="object-contain p-2.5 sm:p-4"
+                    priority
+                  />
+                </div>
+
+                {picturedItems.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={showPrevPhoto}
+                      aria-label={pick("上一道菜品照片", "Previous dish photo")}
+                      className="absolute top-1/2 left-2.5 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar sm:left-4"
+                    >
+                      <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={showNextPhoto}
+                      aria-label={pick("下一道菜品照片", "Next dish photo")}
+                      className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar sm:right-4"
+                    >
+                      <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              <div className="border-t border-parchment/15 px-5 py-4 text-parchment sm:px-6">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h3 className="font-display text-lg font-bold text-parchment sm:text-xl">
+                      {t(activeEntry.item.name)}
+                    </h3>
+                    {!isZh && activeEntry.item.chineseName && (
+                      <p
+                        lang="zh-Hans"
+                        className="text-xs font-medium text-parchment/65"
+                      >
+                        {activeEntry.item.chineseName}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="shrink-0 text-right">
+                    {activeEntry.item.price && (
+                      <span className="inline-block rounded-lg bg-[#F0C26E] px-2.5 py-1 font-sans text-sm font-bold tabular-nums text-ink">
+                        {activeEntry.item.price}
+                      </span>
+                    )}
+                    {activeEntry.item.secondaryPrice && (
+                      <p className="mt-1 text-xs font-medium text-parchment/75">
+                        {t(activeEntry.item.secondaryPrice)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <p className="mt-2 text-xs leading-relaxed text-parchment/80 sm:text-sm">
+                  {t(activeEntry.item.description)}
+                </p>
+
+                {activeEntry.item.dietary && activeEntry.item.dietary.length > 0 && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    {activeEntry.item.dietary.map((tag) => (
+                      <DietaryBadge key={tag} tag={tag} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
