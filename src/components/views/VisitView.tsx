@@ -60,8 +60,8 @@ export function VisitView() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-12">
-          <div className="space-y-6 lg:col-span-5">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <div className="min-w-0 space-y-6 lg:col-span-5">
             <div className="rounded-3xl border border-kraft-deep bg-white p-6 shadow-xs sm:p-7">
               <div className="flex items-start gap-3.5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cinnabar/10 text-cinnabar">
@@ -265,7 +265,7 @@ export function VisitView() {
             </div>
           </div>
 
-          <div className="space-y-6 lg:col-span-7">
+          <div className="min-w-0 space-y-6 lg:col-span-7">
             <div className="overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
               {mapReady ? (
                 <iframe

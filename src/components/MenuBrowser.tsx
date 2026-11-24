@@ -82,7 +82,7 @@ export function MenuBrowser({
                 "按饮食偏好筛选菜单",
                 "Filter menu by dietary preference"
               )}
-              className="no-scrollbar flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-visible sm:pb-0"
+              className="no-scrollbar flex w-full min-w-0 max-w-full flex-nowrap items-center gap-1.5 overflow-x-auto pb-0.5 sm:w-auto sm:flex-wrap sm:overflow-visible sm:pb-0"
             >
               <span className="mr-1 shrink-0 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                 {pick("饮食筛选：", "Dietary:")}

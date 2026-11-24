@@ -158,6 +158,12 @@ export function AppleCraftShowcase() {
 
     const updateFromScroll = () => {
       rafId = 0;
+      if (window.innerWidth < 1024) {
+        if (photoZoomRef.current) {
+          photoZoomRef.current.style.transform = "";
+        }
+        return;
+      }
       const rect = runway.getBoundingClientRect();
       const scrollable = runway.offsetHeight - window.innerHeight;
 
@@ -214,6 +220,7 @@ export function AppleCraftShowcase() {
 
       const scrollable = runway.offsetHeight - window.innerHeight;
       if (
+        window.innerWidth >= 1024 &&
         scrollable > 20 &&
         !window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
@@ -335,9 +342,9 @@ export function AppleCraftShowcase() {
             onTouchEnd={handleTouchEnd}
             className="mt-5 overflow-hidden rounded-[24px] border border-parchment/15 bg-white/[0.04] shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-xs sm:mt-7 sm:rounded-[28px]"
           >
-            <div className="grid items-stretch lg:grid-cols-12">
+            <div className="grid grid-cols-1 items-stretch lg:grid-cols-12">
               {/* Full-Bleed Visual Stage with Live Scroll-Scrubbed Zoom */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/50 lg:col-span-7 lg:aspect-auto lg:min-h-[360px] xl:min-h-[420px]">
+              <div className="relative aspect-[16/10] w-full min-w-0 overflow-hidden bg-black/50 lg:col-span-7 lg:aspect-auto lg:min-h-[360px] xl:min-h-[420px]">
                 <div
                   ref={photoZoomRef}
                   className="absolute inset-0 will-change-transform"
@@ -373,7 +380,7 @@ export function AppleCraftShowcase() {
               </div>
 
               {/* Crisp Editorial Content Column */}
-              <div className="flex flex-col justify-between p-5 sm:p-8 lg:col-span-5 lg:p-7 xl:p-10">
+              <div className="flex min-w-0 flex-col justify-between p-5 sm:p-8 lg:col-span-5 lg:p-7 xl:p-10">
                 <div key={current.id} className="animate-fade-up">
                   <p className="text-xs font-semibold tracking-[0.18em] text-[#F0C26E] uppercase">
                     {t(current.eyebrow)}

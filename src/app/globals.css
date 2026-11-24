@@ -148,7 +148,7 @@ html[lang="zh-Hant"] h3.font-display {
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: none;
   }
 }
 
@@ -159,7 +159,7 @@ html[lang="zh-Hant"] h3.font-display {
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
   }
 }
 
@@ -207,7 +207,7 @@ html[lang="zh-Hant"] h3.font-display {
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: none;
   }
 }
 
@@ -218,7 +218,7 @@ html[lang="zh-Hant"] h3.font-display {
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: none;
   }
 }
 
@@ -229,20 +229,22 @@ html[lang="zh-Hant"] h3.font-display {
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: none;
   }
 }
 
+/* Use fill-mode `backwards` (never `both`/`forwards`) so no persistent `transform`
+   containing block remains after entrance to trap `position: fixed` modals or sticky elements. */
 html[data-locale-switching="true"] #main-content {
-  animation: localeSettle 0.36s var(--ease-apple) both;
+  animation: localeSettle 0.36s var(--ease-apple) backwards;
 }
 
 .animate-route-enter {
-  animation: routeEnter 0.42s var(--ease-apple) both;
+  animation: routeEnter 0.42s var(--ease-apple) backwards;
 }
 
 .animate-drawer-down {
-  animation: drawerDown 0.28s var(--ease-apple) both;
+  animation: drawerDown 0.28s var(--ease-apple) backwards;
 }
 
 .watermark-mask {
@@ -273,19 +275,19 @@ html[data-locale-switching="true"] #main-content {
 }
 
 .animate-fade-up {
-  animation: fadeUp 0.85s var(--ease-apple) both;
+  animation: fadeUp 0.85s var(--ease-apple) backwards;
 }
 
 .animate-fade-up-delay-1 {
-  animation: fadeUp 0.85s var(--ease-apple) 0.12s both;
+  animation: fadeUp 0.85s var(--ease-apple) 0.12s backwards;
 }
 
 .animate-fade-up-delay-2 {
-  animation: fadeUp 0.85s var(--ease-apple) 0.24s both;
+  animation: fadeUp 0.85s var(--ease-apple) 0.24s backwards;
 }
 
 .animate-hero-media {
-  animation: heroScaleIn 1.1s var(--ease-apple) both;
+  animation: heroScaleIn 1.1s var(--ease-apple) backwards;
 }
 
 .animate-float-gentle {
@@ -316,7 +318,7 @@ html[data-locale-switching="true"] #main-content {
 
 .apple-reveal[data-visible="true"] {
   opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: none;
   will-change: auto;
 }
 

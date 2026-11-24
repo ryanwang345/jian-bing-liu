@@ -29,8 +29,11 @@ export function ShareSpotButton({ variant = "light" }: ShareSpotButtonProps) {
       try {
         await navigator.share({ title, text, url: shareUrl });
         return;
-      } catch {
-        // User cancelled or share unsupported; fall back to copy
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+        // Share unsupported or blocked; fall back to clipboard copy
       }
     }
 

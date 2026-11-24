@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ExternalLink, Globe, MapPin, Menu, Phone, X } from "lucide-react";
@@ -41,14 +41,17 @@ function LanguageToggle() {
   const measurePill = useCallback(() => {
     const track = trackRef.current;
     const activeBtn = btnRefs.current[activeIndex];
-    if (!track || !activeBtn) return;
+    if (!track || !activeBtn || activeBtn.offsetWidth === 0) {
+      setPill(null);
+      return;
+    }
     setPill({
       left: activeBtn.offsetLeft,
       width: activeBtn.offsetWidth,
     });
   }, [activeIndex]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     measurePill();
   }, [measurePill]);
 
@@ -141,7 +144,7 @@ export function Header() {
   const measureActiveNav = useCallback(() => {
     const activeEl =
       activeNavIndex >= 0 ? linkRefs.current[activeNavIndex] : null;
-    if (!activeEl) {
+    if (!activeEl || activeEl.offsetWidth === 0) {
       setActivePill(null);
       return;
     }
@@ -152,7 +155,7 @@ export function Header() {
   }, [activeNavIndex]);
 
   // Re-measure active indicator whenever route OR language changes (text widths shift smoothly!)
-  useLayoutEffect(() => {
+  useEffect(() => {
     measureActiveNav();
   }, [measureActiveNav, locale]);
 

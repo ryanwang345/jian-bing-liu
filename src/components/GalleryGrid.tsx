@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
@@ -28,6 +29,8 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
 
   useEffect(() => {
     if (lightboxIndex === null) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setLightboxIndex(null);
@@ -44,7 +47,10 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
       }
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [lightboxIndex, visibleItems.length]);
 
   const activePhoto =
@@ -114,90 +120,94 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
         ))}
       </div>
 
-      {activePhoto && lightboxIndex !== null && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={t(activePhoto.caption)}
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-sm sm:p-8"
-          onClick={() => setLightboxIndex(null)}
-        >
+      {activePhoto &&
+        lightboxIndex !== null &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            className="relative flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t(activePhoto.caption)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-sm sm:p-8"
+            onClick={() => setLightboxIndex(null)}
           >
-            <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3.5 text-parchment">
-              <div className="text-xs font-semibold tracking-wider text-[#F0C26E]">
-                {t(galleryCategoryLabels[activePhoto.category])} ·{" "}
-                {pick(
-                  `第 ${lightboxIndex + 1} / ${visibleItems.length} 张`,
-                  `${lightboxIndex + 1} / ${visibleItems.length}`
+            <div
+              className="relative flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3.5 text-parchment">
+                <div className="text-xs font-semibold tracking-wider text-[#F0C26E]">
+                  {t(galleryCategoryLabels[activePhoto.category])} ·{" "}
+                  {pick(
+                    `第 ${lightboxIndex + 1} / ${visibleItems.length} 张`,
+                    `${lightboxIndex + 1} / ${visibleItems.length}`
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(null)}
+                  aria-label={pick("关闭大图预览", "Close photo viewer")}
+                  className="rounded-full bg-parchment/10 p-2 text-parchment transition-colors hover:bg-parchment/20"
+                >
+                  <X className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </div>
+
+              <div className="relative flex-1 bg-black/50">
+                <div className="relative mx-auto h-[62dvh] w-full">
+                  <Image
+                    src={activePhoto.src}
+                    alt={t(activePhoto.alt)}
+                    fill
+                    sizes="90vw"
+                    className="object-contain p-3"
+                    priority
+                  />
+                </div>
+
+                {visibleItems.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setLightboxIndex(
+                          (lightboxIndex - 1 + visibleItems.length) %
+                            visibleItems.length
+                        )
+                      }
+                      aria-label={pick("上一张照片", "Previous photo")}
+                      className="absolute top-1/2 left-3 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar"
+                    >
+                      <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setLightboxIndex(
+                          (lightboxIndex + 1) % visibleItems.length
+                        )
+                      }
+                      aria-label={pick("下一张照片", "Next photo")}
+                      className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar"
+                    >
+                      <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                  </>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => setLightboxIndex(null)}
-                aria-label={pick("关闭大图预览", "Close photo viewer")}
-                className="rounded-full bg-parchment/10 p-2 text-parchment transition-colors hover:bg-parchment/20"
-              >
-                <X className="h-5 w-5" aria-hidden="true" />
-              </button>
-            </div>
 
-            <div className="relative flex-1 bg-black/50">
-              <div className="relative mx-auto h-[62vh] w-full">
-                <Image
-                  src={activePhoto.src}
-                  alt={t(activePhoto.alt)}
-                  fill
-                  sizes="90vw"
-                  className="object-contain p-3"
-                  priority
-                />
+              <div className="border-t border-parchment/15 px-6 py-4 text-parchment">
+                <p className="font-display text-base font-semibold">
+                  {t(activePhoto.caption)}
+                </p>
+                <p className="mt-1 text-xs text-parchment/70">
+                  {t(activePhoto.alt)}
+                </p>
               </div>
-
-              {visibleItems.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setLightboxIndex(
-                        (lightboxIndex - 1 + visibleItems.length) %
-                          visibleItems.length
-                      )
-                    }
-                    aria-label={pick("上一张照片", "Previous photo")}
-                    className="absolute top-1/2 left-3 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar"
-                  >
-                    <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setLightboxIndex(
-                        (lightboxIndex + 1) % visibleItems.length
-                      )
-                    }
-                    aria-label={pick("下一张照片", "Next photo")}
-                    className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full bg-ink/80 p-2.5 text-parchment shadow-md transition-colors hover:bg-cinnabar"
-                  >
-                    <ChevronRight className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                </>
-              )}
             </div>
-
-            <div className="border-t border-parchment/15 px-6 py-4 text-parchment">
-              <p className="font-display text-base font-semibold">
-                {t(activePhoto.caption)}
-              </p>
-              <p className="mt-1 text-xs text-parchment/70">
-                {t(activePhoto.alt)}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

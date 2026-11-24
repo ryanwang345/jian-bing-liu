@@ -150,9 +150,9 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         />
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-10 sm:px-6 sm:pt-12 sm:pb-14 lg:px-8 lg:pt-14 lg:pb-16">
-          <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
             {/* Left Column: Crisp Social-First Hierarchy */}
-            <div className="animate-fade-up lg:col-span-5">
+            <div className="animate-fade-up min-w-0 lg:col-span-5">
               {/* Beat 1: Instant Trust + Live Open Status */}
               <div className="flex flex-wrap items-center gap-2">
                 <a
@@ -252,7 +252,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   {pick("素食 · 纯素可选", "Veggie & Vegan")}
                 </Link>
                 <Link
-                  href="/menu#lunch-specials"
+                  href="/menu#lunchtime-specials"
                   className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white px-3 py-1.5 tabular-nums text-ink-soft transition-all hover:-translate-y-0.5 hover:border-dragonfruit/40 hover:text-dragonfruit"
                 >
                   {pick("午市煎饼 £6.50 起", "Lunch From £6.50")}
@@ -326,8 +326,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             </div>
 
             {/* Right Column: Social-Feed Bento Visual Stage (3 Unobstructed Signature Photos + Floating Tags) */}
-            <div className="animate-fade-up-delay-1 lg:col-span-7">
-              <div className="grid gap-3.5 sm:gap-4">
+            <div className="animate-fade-up-delay-1 min-w-0 lg:col-span-7">
+              <div className="grid min-w-0 gap-3.5 sm:gap-4">
                 {/* Main Hero Dish Photo — Full-Bleed Unobstructed Showcase */}
                 <ParallaxLayer offset={-10}>
                   <Link
@@ -932,8 +932,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
       {/* 6. Our Story & Craft Editorial Band */}
       <section className="cv-auto border-y border-kraft-deep/80 bg-kraft/60">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-22 lg:grid-cols-12 lg:px-8">
-          <div className="grid grid-cols-12 gap-4 lg:col-span-6">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 sm:py-22 lg:grid-cols-12 lg:px-8">
+          <div className="grid min-w-0 grid-cols-12 gap-4 lg:col-span-6">
             <Reveal variant="scale" className="col-span-7">
             <div className="relative aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
               <Image
@@ -980,7 +980,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             </div>
           </div>
 
-          <div className="lg:col-span-6">
+          <div className="min-w-0 lg:col-span-6">
             <Reveal>
               <SectionHeading
                 eyebrow={pick("创业故事", "Our Story")}
@@ -1092,8 +1092,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_10%_15%,rgba(225,45,102,0.28),transparent_48%),radial-gradient(ellipse_at_90%_85%,rgba(244,178,60,0.22),transparent_48%)]"
           />
-          <div className="relative z-10 grid items-center gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-7">
+          <div className="relative z-10 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+            <div className="min-w-0 lg:col-span-7">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-dragonfruit px-3 py-1 text-[11px] font-bold text-white">
                   @jian_bing_liu

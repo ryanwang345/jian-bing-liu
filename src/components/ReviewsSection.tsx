@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import {
   Camera,
@@ -242,9 +243,14 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
   const isInteractingRef = useRef(false);
   const interactionResumeTimerRef = useRef<number | null>(null);
 
-  // Keyboard navigation inside photo lightbox
+  // Keyboard navigation + body scroll lock inside photo lightbox
   useEffect(() => {
-    if (!previewLightbox) return;
+    if (!previewLightbox) {
+      isInteractingRef.current = false;
+      return;
+    }
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setPreviewLightbox(null);
@@ -273,7 +279,10 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
       }
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [previewLightbox]);
 
   // Client-side hydration fallback if SSR initialData wasn't supplied
@@ -779,11 +788,13 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
           onMouseLeave={() => {
             isInteractingRef.current = false;
           }}
-          onFocus={() => {
+          onFocusCapture={() => {
             isInteractingRef.current = true;
           }}
-          onBlur={() => {
-            isInteractingRef.current = false;
+          onBlurCapture={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+              isInteractingRef.current = false;
+            }
           }}
           onTouchStart={() => {
             isInteractingRef.current = true;
@@ -798,98 +809,102 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
         </div>
       </div>
 
-      {/* Review Photo Lightbox */}
-      {previewLightbox && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={pick(
-            `${previewLightbox.author} 的顾客实拍照片`,
-            `Review photo by ${previewLightbox.author}`
-          )}
-          onClick={() => setPreviewLightbox(null)}
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-sm sm:p-8"
-        >
+      {/* Review Photo Lightbox — Portaled to document.body so it is always centered in the viewport above Header */}
+      {previewLightbox &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label={pick(
+              `${previewLightbox.author} 的顾客实拍照片`,
+              `Review photo by ${previewLightbox.author}`
+            )}
+            onClick={() => setPreviewLightbox(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-sm sm:p-8"
           >
-            <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3 text-xs font-semibold text-parchment">
-              <span>
-                {pick(
-                  `顾客实拍 · ${previewLightbox.author}`,
-                  `Guest Photo · ${previewLightbox.author}`
-                )}
-                {previewLightbox.photos.length > 1 && (
-                  <span className="ml-2 tabular-nums text-parchment/70">
-                    ({previewLightbox.index + 1}/{previewLightbox.photos.length})
-                  </span>
-                )}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPreviewLightbox(null)}
-                aria-label={pick("关闭图片预览", "Close photo preview")}
-                className="rounded-full bg-parchment/10 p-1.5 text-parchment transition-colors hover:bg-parchment/20"
-              >
-                <X className="h-4 w-4" aria-hidden="true" />
-              </button>
-            </div>
-            <div className="relative flex max-h-[75vh] items-center justify-center bg-black/50 p-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={previewLightbox.photos[previewLightbox.index]}
-                alt={pick(
-                  `${previewLightbox.author} 分享的顾客实拍`,
-                  `Guest review photo by ${previewLightbox.author}`
-                )}
-                className="max-h-[70vh] w-auto rounded-xl object-contain"
-              />
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-h-[90dvh] w-full max-w-3xl overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3 text-xs font-semibold text-parchment">
+                <span>
+                  {pick(
+                    `顾客实拍 · ${previewLightbox.author}`,
+                    `Guest Photo · ${previewLightbox.author}`
+                  )}
+                  {previewLightbox.photos.length > 1 && (
+                    <span className="ml-2 tabular-nums text-parchment/70">
+                      ({previewLightbox.index + 1}/
+                      {previewLightbox.photos.length})
+                    </span>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPreviewLightbox(null)}
+                  aria-label={pick("关闭图片预览", "Close photo preview")}
+                  className="rounded-full bg-parchment/10 p-1.5 text-parchment transition-colors hover:bg-parchment/20"
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="relative flex max-h-[75dvh] items-center justify-center bg-black/50 p-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewLightbox.photos[previewLightbox.index]}
+                  alt={pick(
+                    `${previewLightbox.author} 分享的顾客实拍`,
+                    `Guest review photo by ${previewLightbox.author}`
+                  )}
+                  className="max-h-[70dvh] w-auto rounded-xl object-contain"
+                />
 
-              {previewLightbox.photos.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setPreviewLightbox((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              index:
-                                (prev.index - 1 + prev.photos.length) %
-                                prev.photos.length,
-                            }
-                          : null
-                      )
-                    }
-                    aria-label={pick("上一张照片", "Previous photo")}
-                    className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/75 text-parchment transition-colors hover:bg-ink"
-                  >
-                    <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setPreviewLightbox((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              index: (prev.index + 1) % prev.photos.length,
-                            }
-                          : null
-                      )
-                    }
-                    aria-label={pick("下一张照片", "Next photo")}
-                    className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/75 text-parchment transition-colors hover:bg-ink"
-                  >
-                    <ChevronRight className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                </>
-              )}
+                {previewLightbox.photos.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewLightbox((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                index:
+                                  (prev.index - 1 + prev.photos.length) %
+                                  prev.photos.length,
+                              }
+                            : null
+                        )
+                      }
+                      aria-label={pick("上一张照片", "Previous photo")}
+                      className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/75 text-parchment transition-colors hover:bg-ink"
+                    >
+                      <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewLightbox((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                index: (prev.index + 1) % prev.photos.length,
+                              }
+                            : null
+                        )
+                      }
+                      aria-label={pick("下一张照片", "Next photo")}
+                      className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/75 text-parchment transition-colors hover:bg-ink"
+                    >
+                      <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
 
       {/* Full-Bleed Edge-to-Edge Social Media Showcase Band */}
       <SocialShowcaseBand />

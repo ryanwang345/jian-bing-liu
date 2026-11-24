@@ -69,8 +69,8 @@ export function StoryView() {
   return (
     <div className="pb-20">
       <section className="kraft-grain border-b border-kraft-deep/80">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:px-8">
-          <div className="lg:col-span-6">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:px-8">
+          <div className="min-w-0 lg:col-span-6">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase">
               <span>{pick("创业故事", "Our Story")}</span>
               <span aria-hidden="true" className="text-kraft-deep">
@@ -141,7 +141,7 @@ export function StoryView() {
             </div>
           </div>
 
-          <div className="animate-fade-up-delay-1 lg:col-span-6">
+          <div className="animate-fade-up-delay-1 min-w-0 lg:col-span-6">
             <ParallaxLayer offset={-18}>
             <div className="animate-hero-media relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
               <Image

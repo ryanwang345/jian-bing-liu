@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -138,72 +139,81 @@ export function SocialStoryStrip() {
   const { t, pick } = useLocale();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [viewedIds, setViewedIds] = useState<Set<string>>(() => new Set());
+  const [isPaused, setIsPaused] = useState(false);
 
-  const openStory = (index: number) => {
+  const openStory = useCallback((index: number) => {
     setActiveIndex(index);
     const id = storyHighlights[index]?.id;
     if (id) {
       setViewedIds((prev) => new Set(prev).add(id));
     }
-  };
+  }, []);
 
-  // Auto-advance active story every 5.5s & keyboard arrows/Escape
+  // Body scroll lock + keyboard navigation while Story Viewer is open
   useEffect(() => {
     if (activeIndex === null) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setActiveIndex(null);
       } else if (event.key === "ArrowRight") {
-        setActiveIndex((prev) =>
-          prev === null ? null : prev < storyHighlights.length - 1 ? prev + 1 : null
-        );
+        if (activeIndex < storyHighlights.length - 1) {
+          openStory(activeIndex + 1);
+        } else {
+          setActiveIndex(null);
+        }
       } else if (event.key === "ArrowLeft") {
-        setActiveIndex((prev) =>
-          prev === null ? null : Math.max(0, prev - 1)
-        );
+        openStory(Math.max(0, activeIndex - 1));
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
 
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeIndex, openStory]);
+
+  // Auto-advance active story every 5.5s unless paused by hover/hold
+  useEffect(() => {
+    if (activeIndex === null || isPaused) return;
+
     const timer = window.setTimeout(() => {
-      setActiveIndex((prev) => {
-        if (prev === null) return null;
-        if (prev < storyHighlights.length - 1) {
-          const nextId = storyHighlights[prev + 1]?.id;
-          if (nextId) {
-            setViewedIds((v) => new Set(v).add(nextId));
-          }
-          return prev + 1;
-        }
-        return null;
-      });
+      if (activeIndex < storyHighlights.length - 1) {
+        openStory(activeIndex + 1);
+      } else {
+        setActiveIndex(null);
+      }
     }, 5500);
 
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
       window.clearTimeout(timer);
     };
-  }, [activeIndex]);
+  }, [activeIndex, isPaused, openStory]);
 
   const activeStory =
     activeIndex !== null ? storyHighlights[activeIndex] : null;
 
   return (
     <>
-      <div className="mt-6">
-        <div className="mb-2.5 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-ink-muted uppercase">
-            <Sparkles className="h-3.5 w-3.5 text-dragonfruit" aria-hidden="true" />
-            {pick("点击看今日精选快拍 · Stories", "Tap Highlights · Stories")}
+      <div className="mt-6 w-full min-w-0">
+        <div className="mb-2.5 flex items-center justify-between gap-2">
+          <span className="inline-flex min-w-0 items-center gap-1.5 truncate text-[11px] font-bold tracking-wider text-ink-muted uppercase">
+            <Sparkles className="h-3.5 w-3.5 shrink-0 text-dragonfruit" aria-hidden="true" />
+            <span className="truncate">
+              {pick("点击看今日精选快拍 · Stories", "Tap Highlights · Stories")}
+            </span>
           </span>
-          <span className="text-[11px] font-semibold text-dragonfruit">
+          <span className="shrink-0 text-[11px] font-semibold text-dragonfruit">
             @jian_bing_liu
           </span>
         </div>
 
-        <div className="no-scrollbar -mx-1 flex items-center gap-3 overflow-x-auto px-1 pb-1">
+        <div className="no-scrollbar flex w-full max-w-full items-center gap-3 overflow-x-auto pb-1">
           {storyHighlights.map((story, idx) => {
             const isViewed = viewedIds.has(story.id);
             return (
@@ -239,19 +249,26 @@ export function SocialStoryStrip() {
         </div>
       </div>
 
-      {/* Instagram / RedNote Style Vertical Story Viewer Modal */}
-      {activeStory && activeIndex !== null && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={t(activeStory.headline)}
-          onClick={() => setActiveIndex(null)}
-          className="fixed inset-0 z-[95] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-md"
-        >
+      {/* Instagram / RedNote Style Vertical Story Viewer Modal — Portaled to document.body */}
+      {activeStory &&
+        activeIndex !== null &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative flex h-[min(86dvh,680px)] w-full max-w-[390px] flex-col justify-between overflow-hidden rounded-[30px] border border-parchment/20 bg-ink text-parchment shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t(activeStory.headline)}
+            onClick={() => setActiveIndex(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-md"
           >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+              onPointerDown={() => setIsPaused(true)}
+              onPointerUp={() => setIsPaused(false)}
+              className="relative flex h-[min(86dvh,680px)] w-full max-w-[390px] flex-col justify-between overflow-hidden rounded-[30px] border border-parchment/20 bg-ink text-parchment shadow-2xl"
+            >
             {/* Full-bleed Story Image */}
             <Image
               src={activeStory.image}
@@ -382,9 +399,10 @@ export function SocialStoryStrip() {
                 )}
               </div>
             </div>
-          </div>
-        </div>
-      )}
+            </div>
+          </div>,
+          document.body
+        )}
     </>
   );
 }

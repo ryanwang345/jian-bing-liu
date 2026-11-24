@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -80,6 +81,15 @@ export function LocaleProvider({
   children: ReactNode;
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const switchTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (switchTimerRef.current !== null) {
+        window.clearTimeout(switchTimerRef.current);
+      }
+    };
+  }, []);
 
   // Load the active calligraphy stylesheet asynchronously (non-render-blocking) on mount.
   useEffect(() => {
@@ -112,9 +122,13 @@ export function LocaleProvider({
         root.removeAttribute("data-locale-switching");
         // Force reflow so rapid switches replay the settle animation cleanly
         void root.offsetWidth;
+        if (switchTimerRef.current !== null) {
+          window.clearTimeout(switchTimerRef.current);
+        }
         root.setAttribute("data-locale-switching", "true");
-        window.setTimeout(() => {
+        switchTimerRef.current = window.setTimeout(() => {
           root.removeAttribute("data-locale-switching");
+          switchTimerRef.current = null;
         }, 380);
       }
       return next;
