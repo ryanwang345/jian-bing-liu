@@ -14,7 +14,9 @@
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "db:seed:gen": "node scripts/generate-menu-seed.mjs",
     "db:migrate:local": "wrangler d1 migrations apply MENU_DB --local",
-    "db:migrate:remote": "wrangler d1 migrations apply MENU_DB --remote"
+    "db:migrate:remote": "wrangler d1 migrations apply MENU_DB --remote",
+    "r2:migrate-images:local": "node scripts/migrate-menu-images-to-r2.mjs --local",
+    "r2:migrate-images:remote": "node scripts/migrate-menu-images-to-r2.mjs --remote"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.18",

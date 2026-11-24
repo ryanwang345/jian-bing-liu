@@ -445,10 +445,17 @@ export function MenuAdminClient({
 
           {!session.configured && (
             <div className="mt-5 rounded-2xl border border-cinnabar/30 bg-cinnabar/5 p-4 text-xs leading-relaxed text-cinnabar-dark">
-              生产环境尚未设置管理密码。请先在终端运行：
-              <code className="mt-2 block rounded-lg bg-ink px-3 py-2 font-mono text-[11px] text-parchment">
+              尚未设置管理密码 <code>ADMIN_PASSWORD</code>：
+              <span className="mt-2 block">
+                线上环境请运行：
+              </span>
+              <code className="mt-1 block rounded-lg bg-ink px-3 py-2 font-mono text-[11px] text-parchment">
                 pnpm exec wrangler secret put ADMIN_PASSWORD
               </code>
+              <span className="mt-2 block">
+                本地预览（localhost:8787）请在项目根目录的 <code>.dev.vars</code> 中写入{" "}
+                <code>ADMIN_PASSWORD=你的密码</code>，然后重启 <code>pnpm cf:preview</code>。
+              </span>
             </div>
           )}
 
