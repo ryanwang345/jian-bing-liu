@@ -13,8 +13,8 @@
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "db:seed:gen": "node scripts/generate-menu-seed.mjs",
-    "db:migrate:local": "wrangler d1 migrations apply MENU_DB --local",
-    "db:migrate:remote": "wrangler d1 migrations apply MENU_DB --remote",
+    "db:migrate:local": "wrangler d1 migrations apply MENU_DB --local && node scripts/migrate-menu-images-to-r2.mjs --local --static-only",
+    "db:migrate:remote": "wrangler d1 migrations apply MENU_DB --remote && node scripts/migrate-menu-images-to-r2.mjs --remote --static-only",
     "r2:migrate-images:local": "node scripts/migrate-menu-images-to-r2.mjs --local",
     "r2:migrate-images:remote": "node scripts/migrate-menu-images-to-r2.mjs --remote"
   },
@@ -33,6 +33,7 @@
     "@types/react-dom": "^19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-next": "^15.5.0",
+    "sharp": "0.35.5",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.8.0",
     "wrangler": "^4.166.0"

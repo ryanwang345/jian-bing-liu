@@ -66,8 +66,9 @@ const ALL_DIETARY: DietaryTagKey[] = ["halal", "vegetarian", "vegan"];
  * Downscales large phone photos in the browser to <=1280px WebP before upload
  * so R2 storage stays lean and storefront loading remains instant.
  */
-async function compressImageInBrowser(file: File): Promise<File> {
-  if (typeof window === "undefined" || !file.type.startsWith("image/")) {
+async function downsizeLargeUpload(file: File): Promise<File> {
+  const isPhoto = file.type.startsWith("image/") || /\.hei[cf]$/i.test(file.name);
+  if (file.size <= 8 * 1024 * 1024 || !isPhoto) {
     return file;
   }
 
@@ -82,7 +83,10 @@ async function compressImageInBrowser(file: File): Promise<File> {
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return file;
+    if (!ctx) {
+      bitmap.close();
+      return file;
+    }
 
     ctx.drawImage(bitmap, 0, 0, width, height);
     bitmap.close();
@@ -90,7 +94,7 @@ async function compressImageInBrowser(file: File): Promise<File> {
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob(resolve, "image/webp", 0.84)
     );
-    if (!blob) return file;
+    if (!blob || blob.type !== "image/webp") return file;
 
     const baseName = file.name.replace(/\.[^.]+$/, "") || "dish";
     return new File([blob], `${baseName}.webp`, { type: "image/webp" });
@@ -323,9 +327,10 @@ export function MenuAdminClient({
 
   const handleUploadPhoto = async (file: File) => {
     if (!editorForm) return;
+    const uploadInput = fileInputRef.current;
     setIsUploading(true);
     try {
-      const optimized = await compressImageInBrowser(file);
+      const optimized = await downsizeLargeUpload(file);
       const formData = new FormData();
       formData.append("file", optimized);
 
@@ -338,6 +343,7 @@ export function MenuAdminClient({
         url?: string;
         error?: string;
       };
+      if (fileInputRef.current !== uploadInput) return;
       if (!res.ok || !data.url) {
         showToast("error", data.error || "图片上传失败");
         return;
@@ -354,7 +360,7 @@ export function MenuAdminClient({
 
   const handleSaveForm = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!editorForm) return;
+    if (!editorForm || isUploading) return;
 
     const parsedVariants = editorForm.variants
       .filter((v) => v.pricePounds.trim() !== "")
@@ -525,7 +531,7 @@ export function MenuAdminClient({
       {toast && (
         <div
           role="status"
-          className={`fixed top-20 right-4 z-[90] flex max-w-sm items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold shadow-xl ${
+          className={`fixed top-20 right-4 z-[110] flex max-w-sm items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold shadow-xl ${
             toast.type === "success"
               ? "bg-jade text-parchment"
               : "bg-cinnabar text-parchment"
@@ -1056,7 +1062,7 @@ export function MenuAdminClient({
                 {/* Photo Upload (Cloudflare R2) */}
                 <div className="rounded-2xl border border-kraft-deep bg-white p-4">
                   <label className="block text-xs font-bold text-ink">
-                    食物照片（直接上传至 Cloudflare R2 或填现有路径）
+                    菜品照片（自动转换为 WebP 并存入 R2）
                   </label>
                   <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
                     <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-kraft-deep bg-kraft">
@@ -1080,7 +1086,7 @@ export function MenuAdminClient({
                         <input
                           ref={fileInputRef}
                           type="file"
-                          accept="image/jpeg,image/png,image/webp,image/avif"
+                          accept="image/*,.heic,.heif"
                           className="hidden"
                           onChange={(e) => {
                             const f = e.target.files?.[0];
@@ -1090,7 +1096,7 @@ export function MenuAdminClient({
                         />
                         <button
                           type="button"
-                          disabled={isUploading || !snapshot?.hasR2}
+                          disabled={isSaving || isUploading || !snapshot?.hasR2}
                           onClick={() => fileInputRef.current?.click()}
                           className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-xs font-semibold text-parchment hover:bg-cinnabar disabled:opacity-45"
                         >
@@ -1104,6 +1110,7 @@ export function MenuAdminClient({
                         {editorForm.imageUrl && (
                           <button
                             type="button"
+                            disabled={isUploading}
                             onClick={() =>
                               setEditorForm({ ...editorForm, imageUrl: "" })
                             }
@@ -1116,6 +1123,7 @@ export function MenuAdminClient({
 
                       <input
                         type="text"
+                        disabled={isUploading}
                         value={editorForm.imageUrl}
                         onChange={(e) =>
                           setEditorForm({ ...editorForm, imageUrl: e.target.value })
@@ -1225,7 +1233,7 @@ export function MenuAdminClient({
                 </button>
                 <button
                   type="submit"
-                  disabled={isSaving}
+                  disabled={isSaving || isUploading}
                   className="inline-flex items-center gap-1.5 rounded-full bg-cinnabar px-6 py-2 text-xs font-bold text-parchment shadow-xs hover:bg-cinnabar-dark disabled:opacity-50"
                 >
                   {isSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

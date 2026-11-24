@@ -1,15 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSessionStatus } from "@/lib/admin-auth";
-import { getMenuImagesBucket } from "@/lib/cf-bindings";
-import { getRuntimeEnv } from "@/lib/runtime-env";
-
-const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB
-const ALLOWED_MIME_TO_EXT: Record<string, string> = {
-  "image/webp": "webp",
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/avif": "avif",
-};
+import { MenuPhotoError, storeMenuPhoto } from "@/lib/menu-photos";
 
 export async function POST(request: Request) {
   const session = await getAdminSessionStatus();
@@ -17,66 +8,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const bucket = await getMenuImagesBucket();
-  if (!bucket) {
-    return NextResponse.json(
-      {
-        error:
-          "Cloudflare R2 binding MENU_IMAGES is not available in this environment.",
-      },
-      { status: 503 }
-    );
-  }
-
   try {
-    const formData = await request.formData();
-    const file = formData.get("file");
+    const file = (await request.formData()).get("file");
     if (!(file instanceof File)) {
-      return NextResponse.json({ error: "Missing image file" }, { status: 400 });
+      return NextResponse.json({ error: "请选择菜品照片。" }, { status: 400 });
     }
-
-    const ext = ALLOWED_MIME_TO_EXT[file.type];
-    if (!ext) {
-      return NextResponse.json(
-        { error: "仅支持 WebP / JPG / PNG / AVIF 图片格式" },
-        { status: 400 }
-      );
-    }
-
-    if (file.size <= 0 || file.size > MAX_UPLOAD_BYTES) {
-      return NextResponse.json(
-        { error: "图片不能超过 8MB" },
-        { status: 400 }
-      );
-    }
-
-    const rawName = (file.name || "dish")
-      .replace(/\.[^.]+$/, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 32);
-
-    const uniqueId = crypto.randomUUID().slice(0, 8);
-    const key = `dishes/${rawName || "dish"}-${Date.now().toString(36)}-${uniqueId}.${ext}`;
-    const bytes = await file.arrayBuffer();
-
-    await bucket.put(key, bytes, {
-      httpMetadata: {
-        contentType: file.type,
-        cacheControl: "public, max-age=31536000, immutable",
-      },
-    });
-
-    const customBase = await getRuntimeEnv("R2_PUBLIC_BASE_URL");
-    const url = customBase
-      ? `${customBase.replace(/\/+$/, "")}/${key}`
-      : `/api/media/${key}`;
-
-    return NextResponse.json({ ok: true, key, url });
+    const photo = await storeMenuPhoto(file);
+    return NextResponse.json({ ok: true, ...photo });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to upload image";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof MenuPhotoError ? error.userMessage : "照片上传失败，请重试。" },
+      { status: error instanceof MenuPhotoError ? error.status : 500 }
+    );
   }
 }

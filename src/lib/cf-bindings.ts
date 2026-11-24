@@ -43,12 +43,19 @@ export interface R2Bucket {
   delete(key: string | string[]): Promise<void>;
 }
 
+interface ImageTransform {
+  transform(options: { width: number; height: number; fit: "scale-down" }): ImageTransform;
+  output(options: { format: "image/webp"; quality: number }): Promise<{ response(): Response }>;
+}
+
 interface CloudflareMenuEnv {
+  IMAGES?: { input(stream: ReadableStream<Uint8Array>): ImageTransform };
+  ASSETS?: { fetch(request: Request): Promise<Response> };
   MENU_DB?: D1Database;
   MENU_IMAGES?: R2Bucket;
 }
 
-async function getCfEnv(): Promise<CloudflareMenuEnv | undefined> {
+export async function getCfEnv(): Promise<CloudflareMenuEnv | undefined> {
   try {
     const { env } = await getCloudflareContext({ async: true });
     return env as unknown as CloudflareMenuEnv | undefined;

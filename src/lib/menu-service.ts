@@ -7,6 +7,7 @@ import {
   type MenuItem,
   type MenuVariant,
 } from "@/data/menu";
+import { resolveMenuPhotoUrl } from "@/lib/menu-photos";
 import { getMenuDb, getMenuImagesBucket, type D1Database } from "@/lib/cf-bindings";
 
 interface CategoryRow {
@@ -285,6 +286,9 @@ export async function seedDefaultMenuToDb(
     throw new Error("Cloudflare D1 binding MENU_DB is not available.");
   }
 
+  const existing = await db.prepare("SELECT id FROM menu_items").all<{ id: string }>();
+  const existingIds = new Set(existing.results.map((row) => row.id));
+  const photoUrls = new Map<string, string | null>();
   const statements = [];
   let itemCount = 0;
   let variantCount = 0;
@@ -312,6 +316,9 @@ export async function seedDefaultMenuToDb(
     for (let itemIdx = 0; itemIdx < cat.items.length; itemIdx++) {
       const item = cat.items[itemIdx];
       itemCount++;
+      if (item.image && !existingIds.has(item.id) && !photoUrls.has(item.image)) {
+        photoUrls.set(item.image, await resolveMenuPhotoUrl(item.image));
+      }
       statements.push(
         db
           .prepare(
@@ -329,7 +336,7 @@ export async function seedDefaultMenuToDb(
             item.chineseName || item.name.zh,
             item.description.en,
             item.description.zh,
-            item.image ?? null,
+            item.image ? photoUrls.get(item.image) ?? null : null,
             item.imageAlt?.en ?? null,
             item.imageAlt?.zh ?? null,
             JSON.stringify(item.dietary ?? []),
@@ -458,7 +465,7 @@ export async function upsertMenuItem(input: MenuItemUpsertInput): Promise<string
         (input.chineseName?.trim() || input.nameZh.trim()),
         input.descEn.trim(),
         input.descZh.trim(),
-        input.imageUrl?.trim() || null,
+        await resolveMenuPhotoUrl(input.imageUrl),
         input.imageAltEn?.trim() || null,
         input.imageAltZh?.trim() || null,
         JSON.stringify(cleanDietary),

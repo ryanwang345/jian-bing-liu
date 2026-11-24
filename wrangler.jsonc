@@ -25,6 +25,7 @@
       "migrations_dir": "migrations"
     }
   ],
+  "images": { "binding": "IMAGES" },
   "r2_buckets": [
     {
       "binding": "MENU_IMAGES",

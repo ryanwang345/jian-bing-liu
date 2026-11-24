@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import type { DietaryTagKey } from "@/data/menu";
+import { MenuPhotoError } from "@/lib/menu-photos";
 import { getAdminSessionStatus } from "@/lib/admin-auth";
 import {
   deleteMenuItem,
@@ -90,6 +91,9 @@ export async function POST(request: Request) {
     const snapshot = await getAdminMenuSnapshot();
     return NextResponse.json({ ok: true, id, snapshot });
   } catch (error) {
+    if (error instanceof MenuPhotoError) {
+      return NextResponse.json({ error: error.userMessage }, { status: error.status });
+    }
     const message =
       error instanceof Error ? error.message : "Failed to save menu item";
     return NextResponse.json({ error: message }, { status: 500 });
