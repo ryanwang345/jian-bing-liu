@@ -9,10 +9,10 @@ import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 const quickLinks: Array<{ href: string; label: LocalizedText }> = [
   { href: "/", label: { en: "Home", zh: "首页" } },
-  { href: "/menu", label: { en: "Menu", zh: "精选菜单" } },
+  { href: "/menu", label: { en: "Menu", zh: "招牌菜单" } },
   { href: "/our-story", label: { en: "Our Story", zh: "品牌故事" } },
-  { href: "/gallery", label: { en: "Gallery", zh: "美食图集" } },
-  { href: "/visit-us", label: { en: "Visit Us", zh: "来店指南" } },
+  { href: "/gallery", label: { en: "Gallery", zh: "实拍图集" } },
+  { href: "/visit-us", label: { en: "Visit Us", zh: "到店导航" } },
 ];
 
 export function Footer() {

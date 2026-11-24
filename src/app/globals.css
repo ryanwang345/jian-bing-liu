@@ -186,6 +186,51 @@ html[lang="zh-Hant"] h3.font-display {
   }
 }
 
+@keyframes localeSettle {
+  0% {
+    opacity: 0.72;
+    transform: translate3d(0, 5px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes routeEnter {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes drawerDown {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+html[data-locale-switching="true"] #main-content {
+  animation: localeSettle 0.36s var(--ease-apple) both;
+}
+
+.animate-route-enter {
+  animation: routeEnter 0.42s var(--ease-apple) both;
+}
+
+.animate-drawer-down {
+  animation: drawerDown 0.28s var(--ease-apple) both;
+}
+
 .watermark-mask {
   mask-image: linear-gradient(
     to right,
@@ -283,7 +328,10 @@ html[lang="zh-Hant"] h3.font-display {
   .animate-hero-media,
   .animate-float-gentle,
   .animate-watermark-left,
-  .animate-watermark-right {
+  .animate-watermark-right,
+  .animate-route-enter,
+  .animate-drawer-down,
+  html[data-locale-switching="true"] #main-content {
     animation: none !important;
   }
   .apple-reveal {

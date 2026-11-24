@@ -36,8 +36,8 @@ export const restaurant = {
     zh: "国内退休后来伦敦三次归零创业，扎根卡姆登路的暖心煎饼小店！鲜切红心火龙果与甜菜根现榨天然果蔬饼皮，清真牛鸡与素食纯素皆全，Google 4.9★ 好评，支持到店自取外带与无接触配送。",
   },
   shortIntro: {
-    en: "After retiring in China, Mrs Liu started from zero in London — third time lucky. On Camden Road, every Jian Bing is spun hot to order with real dragon fruit and beetroot batters, crispy wonton cracker, Halal beef or chicken, and homemade chilli oil.",
-    zh: "在国内退休后来到伦敦，第三次把自己归零创业。扎根卡姆登路守着热铁板，坚持鲜切红心火龙果与甜菜根现榨和面、不加色素，清真牛鸡与素食纯素一应俱全，每一口都是滚烫酥脆的中国烟火气。",
+    en: "Mrs Liu retired in China, moved to London, and started over for the third time — spinning crisp Northern Chinese Jian Bing on Camden Road with fresh dragon fruit & beetroot batters, crispy wonton cracker, Halal beef or chicken, and house chilli oil.",
+    zh: "国内退休后搬来伦敦，刘阿姨第三次把自己归零重来——在卡姆登路守着一块热铁板，鲜切红心火龙果与甜菜根现榨和面，磕双蛋、夹薄脆、配清真牛鸡与素食，把热气腾腾的中国街头味带到北伦敦。",
   },
   priceRange: "£10–20",
   address: {
@@ -135,12 +135,12 @@ export const restaurant = {
   ] as SocialLink[],
   story: {
     headline: {
-      en: "Retired in China. Started from zero in London — third time lucky.",
-      zh: "国内退休，在伦敦第三次归零创业",
+      en: "Retired in China. Starting over in London — third time lucky.",
+      zh: "国内退休，来伦敦第三次从零开始",
     },
     lead: {
-      en: "Every Jian Bing on Camden Road is still made the honest way: real fruit and veg blended straight into the batter, cracked egg on sizzling cast iron, crisp wonton cracker, and folded hot into our brown paper sleeve stamped with our 爱民 seal.",
-      zh: "在卡姆登路守着一块热铁板，不加色素、不图省事——新鲜红心火龙果与甜菜根现切现榨和面，磕蛋刷秘制酱、铺满爽脆薄脆与青菜，趁热装进印有「煎饼刘 · 爱民」朱印的牛皮纸袋里。",
+      en: "No shortcuts on Camden Road: real fruit and veg blended straight into the batter, cracked egg on sizzling cast iron, crisp wonton cracker, and folded piping hot into our brown paper sleeve stamped with our 爱民 seal.",
+      zh: "在卡姆登路守着这块热铁板，不走捷径、不加色素：新鲜红心火龙果与甜菜根现切现榨和面，热锅磕蛋、刷秘制酱、铺满现炸薄脆与鲜菜，趁热装进盖着「煎饼刘 · 爱民」朱印的牛皮纸袋。",
     },
     paragraphs: [
       {

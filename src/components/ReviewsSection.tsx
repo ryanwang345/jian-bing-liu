@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import {
+  Camera,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
   Quote,
   Star,
+  X,
 } from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SocialIcon } from "@/components/SocialIcon";
@@ -42,6 +44,19 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
   );
   const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [previewPhoto, setPreviewPhoto] = useState<{
+    src: string;
+    author: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!previewPhoto) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreviewPhoto(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [previewPhoto]);
 
   useEffect(() => {
     if (initialData) return;
@@ -231,12 +246,9 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
         {/* Paginated Review Cards */}
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           {pageReviews.map((review) => (
-            <a
+            <article
               key={review.id}
-              href={review.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white p-6 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-cinnabar/40 hover:shadow-md"
+              className="apple-card group flex flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white p-6 shadow-xs hover:border-cinnabar/40 hover:shadow-md"
             >
               <div>
                 <div className="flex items-center justify-between gap-3">
@@ -295,7 +307,14 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
                 </div>
 
                 <h3 className="mt-3 font-display text-base font-bold text-ink transition-colors group-hover:text-cinnabar">
-                  {t(review.highlight)}
+                  <a
+                    href={review.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {t(review.highlight)}
+                  </a>
                 </h3>
 
                 <blockquote className="relative mt-2 text-sm leading-relaxed text-ink-muted">
@@ -305,11 +324,71 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
                   />{" "}
                   {t(review.quote)}
                 </blockquote>
+
+                {/* Customer-uploaded review photos (when available) */}
+                {review.photos && review.photos.length > 0 && (
+                  <div className="mt-4">
+                    <div className="mb-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-ink-muted">
+                      <Camera className="h-3 w-3 text-cinnabar" aria-hidden="true" />
+                      {pick(
+                        `顾客实拍照片 (${review.photos.length})`,
+                        `Guest photos (${review.photos.length})`
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {review.photos.map((photoSrc, photoIdx) => (
+                        <button
+                          key={`${review.id}-photo-${photoIdx}`}
+                          type="button"
+                          onClick={() =>
+                            setPreviewPhoto({
+                              src: photoSrc,
+                              author: review.author,
+                            })
+                          }
+                          aria-label={pick(
+                            `放大查看 ${review.author} 的评价照片`,
+                            `View review photo by ${review.author}`
+                          )}
+                          className="relative h-20 w-24 overflow-hidden rounded-xl border border-kraft-deep/80 bg-kraft transition-all hover:scale-[1.03] hover:border-cinnabar hover:shadow-sm"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={photoSrc}
+                            alt={pick(
+                              `${review.author} 分享的煎饼刘顾客实拍`,
+                              `Review photo shared by ${review.author} at Jian Bing Liu`
+                            )}
+                            loading="lazy"
+                            className="h-full w-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-5 flex items-center justify-between border-t border-kraft-deep/60 pt-3.5 text-xs">
-                <span className="font-semibold text-ink">{review.author}</span>
-                <span className="inline-flex items-center gap-1 font-medium text-cinnabar group-hover:text-cinnabar-dark">
+                <span className="inline-flex items-center gap-2 font-semibold text-ink">
+                  {review.authorAvatar && (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={review.authorAvatar}
+                      alt=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className="h-6 w-6 rounded-full border border-kraft-deep object-cover"
+                    />
+                  )}
+                  <span>{review.author}</span>
+                </span>
+                <a
+                  href={review.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-medium text-cinnabar hover:text-cinnabar-dark"
+                >
                   {review.source === "instagram"
                     ? pick("打开 Instagram 原帖", "Open Instagram Reel")
                     : review.source === "tiktok"
@@ -320,11 +399,58 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
                           ? pick("前往饭团外卖查看", "View on Fantuan")
                           : pick("在 Google 地图查看", "View on Google Maps")}
                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                </span>
+                </a>
               </div>
-            </a>
+            </article>
           ))}
         </div>
+
+        {/* Review Photo Lightbox */}
+        {previewPhoto && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={pick(
+              `${previewPhoto.author} 的顾客实拍照片`,
+              `Review photo by ${previewPhoto.author}`
+            )}
+            onClick={() => setPreviewPhoto(null)}
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/90 p-4 backdrop-blur-sm sm:p-8"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3 text-xs font-semibold text-parchment">
+                <span>
+                  {pick(
+                    `顾客实拍 · ${previewPhoto.author}`,
+                    `Guest Photo · ${previewPhoto.author}`
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPreviewPhoto(null)}
+                  aria-label={pick("关闭图片预览", "Close photo preview")}
+                  className="rounded-full bg-parchment/10 p-1.5 text-parchment transition-colors hover:bg-parchment/20"
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="flex max-h-[75vh] items-center justify-center bg-black/50 p-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewPhoto.src}
+                  alt={pick(
+                    `${previewPhoto.author} 分享的顾客实拍`,
+                    `Guest review photo by ${previewPhoto.author}`
+                  )}
+                  className="max-h-[70vh] w-auto rounded-xl object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Review Pagination Controls */}
         {totalPages > 1 && (

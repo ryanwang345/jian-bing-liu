@@ -20,18 +20,26 @@ export interface ReviewsPayload {
   updatedAt: string;
 }
 
+interface GoogleAuthorAttribution {
+  displayName?: string;
+  uri?: string;
+  photoUri?: string;
+}
+
 interface GooglePlaceReview {
   name?: string;
   relativePublishTimeDescription?: string;
   rating?: number;
   text?: { text?: string; languageCode?: string };
   originalText?: { text?: string; languageCode?: string };
-  authorAttribution?: {
-    displayName?: string;
-    uri?: string;
-  };
+  authorAttribution?: GoogleAuthorAttribution;
   publishTime?: string;
   googleMapsUri?: string;
+}
+
+interface GooglePlacePhoto {
+  name?: string;
+  authorAttributions?: GoogleAuthorAttribution[];
 }
 
 interface GooglePlaceDetailsResponse {
@@ -40,6 +48,7 @@ interface GooglePlaceDetailsResponse {
   userRatingCount?: number;
   googleMapsUri?: string;
   reviews?: GooglePlaceReview[];
+  photos?: GooglePlacePhoto[];
 }
 
 interface GoogleTextSearchResponse {
@@ -112,6 +121,8 @@ async function fetchGooglePlacesReviews(): Promise<{
       "reviews.relativePublishTimeDescription",
       "reviews.publishTime",
       "reviews.googleMapsUri",
+      "photos.name",
+      "photos.authorAttributions",
     ].join(",");
 
     const res = await fetch(
@@ -136,6 +147,30 @@ async function fetchGooglePlacesReviews(): Promise<{
       process.env.REVIEWS_MIN_RATING || DEFAULT_MIN_RATING
     );
 
+    // Index Google Maps photos by reviewer attribution (URI & normalized display name)
+    // so customer-uploaded photos attach cleanly to their matching review card.
+    const photosByAuthor = new Map<string, string[]>();
+    for (const photo of data.photos || []) {
+      const photoName = photo.name?.trim();
+      if (!photoName) continue;
+      const proxiedUrl = `/api/place-photo?name=${encodeURIComponent(photoName)}&w=720`;
+
+      for (const attr of photo.authorAttributions || []) {
+        const keys = [
+          attr.uri?.trim().toLowerCase(),
+          attr.displayName?.trim().toLowerCase(),
+        ].filter((k): k is string => Boolean(k));
+
+        for (const key of keys) {
+          const existing = photosByAuthor.get(key) || [];
+          if (!existing.includes(proxiedUrl) && existing.length < 3) {
+            existing.push(proxiedUrl);
+            photosByAuthor.set(key, existing);
+          }
+        }
+      }
+    }
+
     const liveReviews: CustomerReview[] = (data.reviews || [])
       .filter((r) => {
         const text = (r.text?.text || r.originalText?.text || "").trim();
@@ -144,6 +179,13 @@ async function fetchGooglePlacesReviews(): Promise<{
       .map((r, index) => {
         const author =
           r.authorAttribution?.displayName?.trim() || "Google Reviewer";
+        const authorUri = r.authorAttribution?.uri?.trim().toLowerCase();
+        const authorNameKey = author.toLowerCase();
+        const matchedPhotos =
+          (authorUri && photosByAuthor.get(authorUri)) ||
+          photosByAuthor.get(authorNameKey) ||
+          undefined;
+
         const rawText = (r.text?.text || r.originalText?.text || "").trim();
         const relativeTime = r.relativePublishTimeDescription?.trim();
         const safeRating = Math.min(5, Math.max(4, Math.round(r.rating ?? 5))) as
@@ -155,6 +197,7 @@ async function fetchGooglePlacesReviews(): Promise<{
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")}`,
           author,
+          authorAvatar: r.authorAttribution?.photoUri?.trim() || undefined,
           rating: safeRating,
           source: "google",
           url: r.googleMapsUri || r.authorAttribution?.uri || placeUrl,
@@ -173,6 +216,7 @@ async function fetchGooglePlacesReviews(): Promise<{
             en: rawText,
             zh: rawText,
           },
+          photos: matchedPhotos && matchedPhotos.length > 0 ? matchedPhotos : undefined,
         };
       });
 
@@ -228,9 +272,23 @@ async function fetchCustomFeedReviews(): Promise<CustomerReview[]> {
           item.source === "fantuan"
             ? item.source
             : "google";
+        const safePhotos = Array.isArray(item.photos)
+          ? item.photos
+              .filter(
+                (p): p is string =>
+                  typeof p === "string" &&
+                  (p.startsWith("https://") || p.startsWith("/"))
+              )
+              .slice(0, 4)
+          : undefined;
         valid.push({
           id: item.id,
           author: item.author,
+          authorAvatar:
+            typeof item.authorAvatar === "string" &&
+            item.authorAvatar.startsWith("https://")
+              ? item.authorAvatar
+              : undefined,
           rating: item.rating === 4 ? 4 : 5,
           source,
           url: item.url,
@@ -243,6 +301,7 @@ async function fetchCustomFeedReviews(): Promise<CustomerReview[]> {
             en: item.quote.en,
             zh: item.quote.zh || item.quote.en,
           },
+          photos: safePhotos && safePhotos.length > 0 ? safePhotos : undefined,
         });
       }
     }

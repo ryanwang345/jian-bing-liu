@@ -101,7 +101,19 @@ export function LocaleProvider({
 
   const setLocale = useCallback((next: Locale) => {
     ensureCalligraphyFont(next);
-    setLocaleState(next);
+    setLocaleState((prev) => {
+      if (prev !== next && typeof document !== "undefined") {
+        const root = document.documentElement;
+        root.removeAttribute("data-locale-switching");
+        // Force reflow so rapid switches replay the settle animation cleanly
+        void root.offsetWidth;
+        root.setAttribute("data-locale-switching", "true");
+        window.setTimeout(() => {
+          root.removeAttribute("data-locale-switching");
+        }, 380);
+      }
+      return next;
+    });
     document.documentElement.lang = localeToHtmlLang(next);
     writeLocaleCookie(next);
     try {

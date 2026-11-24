@@ -126,8 +126,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
               <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted sm:text-[17px]">
                 {pick(
-                  "鲜切红心火龙果与甜菜根现榨和面、零色素，现炸薄脆配清真牛鸡与素食纯素——伦敦卡姆登路热铁板现点现摊。",
-                  "Fresh dragon fruit & beetroot batters with zero food dye, crispy wonton cracker, Halal beef or chicken, and house chilli oil — made hot to order on Camden Road."
+                  "红心火龙果、甜菜根每天现切榨汁和面，零色素；磕双蛋、刷秘制酱、夹现炸薄脆——清真牛鸡与素食全都有，卡姆登路铁板现摊现带。",
+                  "Real dragon fruit & beetroot batters — never food dye. Folded hot off cast iron with crispy wonton cracker, Halal beef or chicken, fresh herbs, and house chilli oil."
                 )}
               </p>
 
@@ -377,15 +377,15 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         <Reveal>
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading
-              eyebrow={pick("当季热卖", "On the Menu")}
+              eyebrow={pick("招牌热卖", "What's on the Griddle")}
               chineseAccent="招牌美味"
               title={pick(
-                "热乎出锅的地道中式街头好味",
+                "铁板现摊，热乎出锅的实在味道",
                 "Cooked hot to order on Camden Road"
               )}
               description={pick(
-                "精选最受欢迎的现摊咸味煎饼、慢炖牛肉饭、金黄脆底煎饺与花式甜煎饼，菜单均标注清晰实价。",
-                "Our best-selling savoury Jian Bing, slow-braised beef, crispy dumplings, and sweet crepes, all with current in-store prices."
+                "招牌果蔬咸煎饼、慢炖土豆牛肉饭、金黄脆底煎饺与花式甜筒，全线明码实价，现点现做。",
+                "Savoury Jian Bing, slow-braised beef rice, golden pan-fried dumplings, and hand-piped sweet crepes — clear in-store prices, zero shortcuts."
               )}
             />
             <Link
@@ -465,7 +465,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
           <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
-                <span>{pick("进店必点指南", "First Time Here?")}</span>
+                <span>{pick("第一次来不知道点啥？", "First Time at the Counter?")}</span>
                 <span aria-hidden="true" className="text-parchment/30">
                   ·
                 </span>
@@ -478,14 +478,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </div>
               <h2 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] text-parchment sm:text-4xl">
                 {pick(
-                  "不知道怎么点？三套人气搭配直接抄作业",
-                  "Three ways Londoners order at the counter"
+                  "三套回头客闭眼点的神仙搭配",
+                  "Three orders Camden regulars swear by"
                 )}
               </h2>
               <p className="mt-3 text-base leading-relaxed text-parchment/75">
                 {pick(
-                  "不管你是刷到小红书、TikTok、Instagram 还是 Reddit 慕名而来，这三套高人气组合闭眼点都不会出错。",
-                  "Spotted us on TikTok, Instagram, RedNote, or r/LondonFood? Start with one of these crowd favourites — all spun hot to order."
+                  "不管你是刷到小红书、TikTok、Instagram 还是 Reddit 找过来的，照着这三套点准没错。",
+                  "Spotted us on TikTok, Instagram, RedNote, or r/LondonFood? Start with one of these regulars' favourites — all spun hot to order."
                 )}
               </p>
             </div>
@@ -910,8 +910,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </p>
               <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
                 {pick(
-                  "欢迎路过卡姆登路 124 号外带，或线上下单热乎送到家。",
-                  `Grab a takeaway at ${restaurant.address.street}, or order it hot to your door.`
+                  "顺路来卡姆登路 124 号带一份，或饭团外卖热乎送到家。",
+                  `Swing by ${restaurant.address.street}, or get it delivered hot on Fantuan.`
                 )}
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-parchment/80 sm:text-base">

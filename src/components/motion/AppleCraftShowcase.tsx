@@ -294,8 +294,8 @@ export function AppleCraftShowcase() {
               </p>
               <h2 className="mt-1.5 font-display text-2xl leading-[1.15] font-medium tracking-[-0.025em] text-parchment sm:text-4xl">
                 {pick(
-                  "一口铁板，四重热乎讲究。",
-                  "One iron griddle. Four reasons London loves it."
+                  "一口铁板，四件让人排队的理由。",
+                  "One cast-iron griddle. Four reasons people queue."
                 )}
               </h2>
             </div>

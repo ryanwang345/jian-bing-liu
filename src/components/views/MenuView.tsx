@@ -37,14 +37,14 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
               </p>
               <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
                 {pick(
-                  "现点现做，地道中式街头风味",
-                  "Fresh Chinese street food, cooked to order"
+                  "现点现摊，热乎实在的中国街头味",
+                  "Street food made hot to order"
                 )}
               </h1>
               <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
                 {pick(
-                  "从热乎酥脆的招牌咸味煎饼、午市简餐，到慢炖土豆牛肉、纯素日式咖喱、手工煎饺与现磨热饮，满足每一顿的想念。",
-                  "Savoury Jian Bing, lighter lunchtime crepes, slow-braised beef with rice, vegan Japanese curry, pan-fried dumplings, and fresh drinks."
+                  "从咔嚓作响的果蔬咸煎饼、£6.5 午市简餐，到慢炖土豆牛肉饭、纯素日式咖喱、手工脆底煎饺与现磨热豆浆——清真、素食一应俱全。",
+                  "Crisp savoury Jian Bing, £6.50 lunch crepes, slow-braised beef bowls, vegan Japanese curry, golden dumplings, and hot house-made soya milk."
                 )}
               </p>
             </div>

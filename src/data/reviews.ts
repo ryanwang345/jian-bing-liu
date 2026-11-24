@@ -10,12 +10,15 @@ export type ReviewSource =
 export interface CustomerReview {
   id: string;
   author: string;
+  authorAvatar?: string;
   rating: 4 | 5;
   source: ReviewSource;
   url: string;
   publishedLabel?: LocalizedText;
   highlight: LocalizedText;
   quote: LocalizedText;
+  /** Verified customer-uploaded photos attached to this review */
+  photos?: string[];
 }
 
 export interface SocialPost {

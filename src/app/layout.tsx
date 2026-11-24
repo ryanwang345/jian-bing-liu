@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileActionBar } from "@/components/MobileActionBar";
+import { RouteTransition } from "@/components/motion/RouteTransition";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { restaurant, SITE_URL } from "@/data/restaurant";
 import { getCalligraphyStylesheetHref } from "@/lib/fonts";
@@ -142,7 +143,7 @@ export default async function RootLayout({
           <Header />
 
           <main id="main-content" className="flex-1">
-            {children}
+            <RouteTransition>{children}</RouteTransition>
           </main>
 
           <Footer />
