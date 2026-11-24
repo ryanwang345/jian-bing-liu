@@ -372,7 +372,7 @@ export function SocialShowcaseBand() {
 
         <div className="relative z-10 w-full">
           {/* Header & Official Channel Links */}
-          <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-end">
               <div>
                 <h3 className="font-display text-2xl font-bold text-ink sm:text-3xl">
@@ -524,23 +524,37 @@ export function SocialShowcaseBand() {
             </div>
           </div>
 
-          {/* Edge-to-Edge Full-Width Real Social Content Track */}
-          <div
-            ref={viewportRef}
-            className={`mt-6 w-full ${
-              isScrollGallery
-                ? "overflow-x-auto pb-3 lg:overflow-hidden lg:pb-2"
-                : "overflow-x-auto pb-2"
-            }`}
-          >
+          {/* Real Social Content Track — aligned to the exact max-w-[1440px] width of the Reviews carousel above */}
+          <div className="relative mx-auto mt-6 max-w-[1440px]">
+            {isScrollGallery && (
+              <>
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-12 bg-gradient-to-r from-[#faf5eb] to-transparent lg:block"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-[#faf5eb] to-transparent lg:block"
+                />
+              </>
+            )}
+
             <div
-              ref={trackRef}
-              className={`flex gap-5 px-4 will-change-transform sm:px-8 lg:px-12 ${
+              ref={viewportRef}
+              className={`no-scrollbar w-full ${
                 isScrollGallery
-                  ? "w-max snap-x snap-mandatory lg:snap-none"
-                  : "mx-auto max-w-[1440px] flex-wrap sm:flex-nowrap"
+                  ? "overflow-x-auto pb-3 lg:overflow-hidden lg:pb-2"
+                  : "overflow-x-auto pb-2"
               }`}
             >
+              <div
+                ref={trackRef}
+                className={`flex gap-5 px-4 will-change-transform sm:px-6 lg:px-10 ${
+                  isScrollGallery
+                    ? "w-max snap-x snap-mandatory lg:snap-none"
+                    : "flex-wrap sm:flex-nowrap"
+                }`}
+              >
               {filteredPosts.map((post, idx) => {
                 const cardWidth = isScrollGallery
                   ? "w-[320px] sm:w-[345px]"
@@ -701,11 +715,12 @@ export function SocialShowcaseBand() {
                 );
               })}
             </div>
+            </div>
           </div>
 
           {/* Horizontal Scroll Progress Rail */}
           {isScrollGallery && (
-            <div className="mx-auto mt-4 hidden max-w-[1440px] items-center gap-4 px-12 lg:flex">
+            <div className="mx-auto mt-4 hidden max-w-[1440px] items-center gap-4 px-10 lg:flex">
               <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-kraft-deep/60">
                 <span
                   ref={progressBarRef}

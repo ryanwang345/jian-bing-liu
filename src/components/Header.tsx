@@ -247,7 +247,7 @@ export function Header() {
                 transform: `translate3d(${activePill.left}px, 0, 0)`,
               }}
             >
-              <span className="absolute bottom-1 left-1/2 h-1 w-4 -translate-x-1/2 rounded-full bg-cinnabar/85" />
+              <span className="absolute bottom-1 left-1/2 h-1 w-4 -translate-x-1/2 rounded-full bg-gradient-to-r from-cinnabar to-dragonfruit" />
             </span>
           )}
 
@@ -288,7 +288,7 @@ export function Header() {
                 `前往${restaurant.links.orderOnlineProviderZh}在线点餐（新窗口打开）`,
                 `Order Online via ${restaurant.links.orderOnlineProvider} (opens in a new tab)`
               )}
-              className="inline-flex items-center gap-1.5 rounded-full bg-cinnabar px-4 py-2 text-sm font-semibold text-parchment shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-md"
+              className="sticker-shadow inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-cinnabar to-dragonfruit px-4 py-2 text-sm font-bold text-parchment transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97]"
             >
               {pick("饭团点餐", "Order Online")}
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />

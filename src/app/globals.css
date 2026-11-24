@@ -9,6 +9,8 @@
   --color-ink-muted: #594f47;
   --color-cinnabar: #b8251c;
   --color-cinnabar-dark: #921b14;
+  --color-dragonfruit: #e12d66;
+  --color-yolk: #f4b23c;
   --color-turmeric: #c9861f;
   --color-jade: #2b593c;
   --font-sans: var(--font-ibm-plex-sans), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
@@ -316,16 +318,69 @@ html[data-locale-switching="true"] #main-content {
   will-change: auto;
 }
 
+@keyframes tickerMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.38);
+  }
+  70% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-ticker {
+  animation: tickerMarquee 32s linear infinite;
+  will-change: transform;
+}
+
+.ticker-group:hover .animate-ticker {
+  animation-play-state: paused;
+}
+
+.animate-heart-pop {
+  animation: heartPop 0.42s var(--ease-apple) both;
+}
+
+/* Instagram / RedNote style vibrant story highlight ring */
+.story-ring {
+  background: linear-gradient(135deg, #e12d66 0%, #b8251c 48%, #f4b23c 100%);
+}
+
+/* Tactile street-food sticker pill shadow */
+.sticker-shadow {
+  box-shadow: 0 3px 0 rgba(26, 22, 20, 0.12);
+}
+
+.social-card-shadow {
+  box-shadow:
+    0 2px 10px rgba(26, 22, 20, 0.04),
+    0 10px 28px rgba(130, 96, 46, 0.07);
+}
+
 /* Smooth Apple-style optical card lift */
 .apple-card {
   transition:
-    transform 0.6s var(--ease-apple),
-    box-shadow 0.6s var(--ease-apple),
-    border-color 0.4s ease;
+    transform 0.55s var(--ease-apple),
+    box-shadow 0.55s var(--ease-apple),
+    border-color 0.35s ease;
 }
 
 .apple-card:hover {
-  transform: translate3d(0, -5px, 0);
+  transform: translate3d(0, -6px, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -339,6 +394,8 @@ html[data-locale-switching="true"] #main-content {
   .animate-float-gentle,
   .animate-watermark-left,
   .animate-watermark-right,
+  .animate-ticker,
+  .animate-heart-pop,
   .animate-route-enter,
   .animate-drawer-down,
   html[data-locale-switching="true"] #main-content {

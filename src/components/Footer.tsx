@@ -39,7 +39,10 @@ export function Footer() {
                 "Handmade Northern Chinese Jian Bing on Camden Road — natural dragon fruit & beetroot batters, Halal beef & chicken, and veggie & vegan favourites."
               )}
             </p>
-            <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
+            <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
+              <span className="rounded-full bg-dragonfruit/20 px-3 py-1 text-[#ff8fb3]">
+                @jian_bing_liu
+              </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
                 {pick("支持到店自取", "Takeaway")}
               </span>
