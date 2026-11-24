@@ -76,249 +76,299 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero Section — Balanced Apple-Style Editorial Bento Stage */}
       <section className="kraft-grain relative overflow-hidden border-b border-kraft-deep/80">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:py-20">
-          <div className="animate-fade-up lg:col-span-6">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="inline-flex items-center gap-2.5 rounded-full border border-cinnabar/25 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-cinnabar shadow-xs">
-                <span
-                  lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                  className="font-calligraphy text-base font-normal text-ink"
-                >
-                  {zhText(restaurant.chineseTagline)}
-                </span>
-                <span aria-hidden="true" className="text-kraft-deep">
-                  |
-                </span>
-                <span
-                  className={isZh ? "tracking-wider" : "tracking-wide uppercase"}
-                >
-                  {pick("伦敦卡姆登", "Camden, London")}
-                </span>
-              </div>
-              <LiveOpenBadge />
-            </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_18%_22%,rgba(201,134,31,0.11),transparent_55%),radial-gradient(ellipse_at_84%_28%,rgba(184,37,28,0.07),transparent_50%)]"
+        />
 
-            {isZh ? (
-              <h1 className="mt-5 font-display text-4xl leading-[1.2] tracking-[0.03em] text-ink sm:text-[3.2rem]">
-                {zhText("鲜榨果蔬皮，")}
-                <br />
-                {zhText("铁板现摊的")}
-                <span className="text-cinnabar">{zhText("热乎煎饼")}</span>
-              </h1>
-            ) : (
-              <h1 className="mt-5 font-display text-4xl leading-[1.06] font-medium tracking-[-0.025em] text-ink sm:text-5xl lg:text-[3.55rem]">
-                Hot, crisp{" "}
-                <em className="italic font-medium text-cinnabar">Jian Bing</em>,
-                spun fresh with real fruit &amp; veg.
-              </h1>
-            )}
-
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg">
-              {t(restaurant.shortIntro)}
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3.5">
-              <Link
-                href="/menu"
-                className="inline-flex items-center gap-2 rounded-full bg-cinnabar px-6 py-3.5 text-sm font-semibold text-parchment shadow-md transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-lg"
-              >
-                <UtensilsCrossed className="h-4 w-4" aria-hidden="true" />
-                {pick("查看菜单", "View Menu")}
-              </Link>
-
-              <Link
-                href="/visit-us"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-parchment px-6 py-3.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-ink hover:text-parchment"
-              >
-                <MapPin className="h-4 w-4" aria-hidden="true" />
-                {pick("来店指南", "Visit Us")}
-              </Link>
-
-              {restaurant.links.orderOnline && (
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-10 sm:px-6 sm:pt-12 sm:pb-14 lg:px-8 lg:pt-14 lg:pb-16">
+          <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+            {/* Left Column: Crisp 4-Beat Hierarchy (Zero Clutter) */}
+            <div className="animate-fade-up lg:col-span-5">
+              {/* Beat 1: Instant Trust + Live Open Status */}
+              <div className="flex flex-wrap items-center gap-2">
                 <a
-                  href={restaurant.links.orderOnline}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-cinnabar underline decoration-cinnabar/40 underline-offset-4 transition-colors hover:text-cinnabar-dark hover:decoration-cinnabar"
+                  href="#reviews"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white/90 px-3 py-1 text-xs font-semibold text-ink shadow-2xs transition-colors hover:border-cinnabar/45 hover:text-cinnabar"
                 >
-                  {pick("在线点餐", "Order Online")}
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  <Star
+                    className="h-3.5 w-3.5 fill-[#E59819] text-[#E59819]"
+                    aria-hidden="true"
+                  />
+                  <span className="tabular-nums">
+                    {initialReviews?.rating.score ?? "4.9"}
+                  </span>
+                  <span className="text-ink-muted">
+                    ({initialReviews?.rating.count ?? 287}{" "}
+                    {pick("条 Google 好评", "Google Reviews")})
+                  </span>
                 </a>
+                <LiveOpenBadge />
+              </div>
+
+              {/* Beat 2: Iconic Headline + Crisp 2-Line Appetite Copy */}
+              {isZh ? (
+                <h1 className="mt-5 font-display text-4xl leading-[1.18] tracking-[0.03em] text-ink sm:text-5xl lg:text-[3.35rem]">
+                  {zhText("鲜榨果蔬皮，")}
+                  <br />
+                  {zhText("铁板现摊的")}
+                  <span className="text-cinnabar">{zhText("热乎煎饼")}</span>
+                </h1>
+              ) : (
+                <h1 className="mt-5 font-display text-4xl leading-[1.06] font-medium tracking-[-0.028em] text-ink sm:text-5xl lg:text-[3.45rem]">
+                  Hot, crisp{" "}
+                  <em className="italic font-medium text-cinnabar">Jian Bing</em>,
+                  <br className="hidden sm:inline" /> spun fresh in Camden.
+                </h1>
               )}
-            </div>
 
-            {/* Instant Trust & Dietary Quick Links */}
-            <div className="mt-6 flex flex-wrap items-center gap-2 text-xs font-semibold">
-              <a
-                href="#reviews"
-                className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white/85 px-3 py-1 text-ink shadow-2xs transition-colors hover:border-cinnabar/40 hover:text-cinnabar"
-              >
-                <Star
-                  className="h-3.5 w-3.5 fill-[#E59819] text-[#E59819]"
-                  aria-hidden="true"
-                />
-                <span className="tabular-nums">
-                  {initialReviews?.rating.score ?? "4.9"}
-                </span>
-                <span className="text-ink-muted">
-                  ({initialReviews?.rating.count ?? 287}{" "}
-                  {pick("Google 好评", "Google Reviews")})
-                </span>
-              </a>
-              <Link
-                href="/menu?diet=halal"
-                className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/[0.07] px-3 py-1 text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-parchment"
-              >
-                <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                {pick("清真牛肉 · 鸡肉", "Halal Beef & Chicken")}
-              </Link>
-              <Link
-                href="/menu?diet=vegetarian"
-                className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/[0.08] px-3 py-1 text-jade transition-colors hover:bg-jade hover:text-parchment"
-              >
-                <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
-                {pick("素食 · 纯素可选", "Veggie & Vegan")}
-              </Link>
-            </div>
+              <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted sm:text-[17px]">
+                {pick(
+                  "鲜切红心火龙果与甜菜根现榨和面、零色素，现炸薄脆配清真牛鸡与素食纯素——伦敦卡姆登路热铁板现点现摊。",
+                  "Fresh dragon fruit & beetroot batters with zero food dye, crispy wonton cracker, Halal beef or chicken, and house chilli oil — made hot to order on Camden Road."
+                )}
+              </p>
 
-            {/* Official Social Icon Bar */}
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-xs font-medium text-ink-muted">
-                {pick("关注我们", "Follow us")}
-              </span>
-              {restaurant.verifiedSocialLinks
-                .filter((s) => s.platform !== "google-maps")
-                .map((social) => (
+              {/* Beat 3: Primary Conversion Actions */}
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/menu"
+                  className="inline-flex items-center gap-2 rounded-full bg-cinnabar px-6 py-3.5 text-sm font-semibold text-parchment shadow-md transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-lg"
+                >
+                  <UtensilsCrossed className="h-4 w-4" aria-hidden="true" />
+                  {pick("查看完整菜单", "View Menu")}
+                </Link>
+
+                {restaurant.links.orderOnline && (
                   <a
-                    key={social.href}
-                    href={social.href}
+                    href={restaurant.links.orderOnline}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title={`${t(social.label)} · ${social.handle}`}
-                    aria-label={`${t(social.label)} ${social.handle}`}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-kraft-deep bg-white/85 text-ink shadow-2xs transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:bg-cinnabar hover:text-parchment"
+                    className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-parchment shadow-sm transition-all hover:-translate-y-0.5 hover:bg-cinnabar"
                   >
-                    <SocialIcon platform={social.platform} className="h-4 w-4" />
+                    {pick("饭团在线点餐", "Order on Fantuan")}
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </a>
-                ))}
+                )}
+
+                <a
+                  href={restaurant.links.googleMapsDirections}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-2 text-sm font-semibold text-ink underline decoration-kraft-deep underline-offset-4 transition-colors hover:text-cinnabar hover:decoration-cinnabar"
+                >
+                  <MapPin className="h-4 w-4 text-cinnabar" aria-hidden="true" />
+                  {pick("导航到店", "Directions")}
+                </a>
+              </div>
+
+              {/* Dietary Quick-Filter Chips */}
+              <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold">
+                <Link
+                  href="/menu?diet=halal"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/[0.07] px-3 py-1.5 text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-parchment"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                  {pick("清真牛肉 · 鸡肉", "Halal Beef & Chicken")}
+                </Link>
+                <Link
+                  href="/menu?diet=vegetarian"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/[0.08] px-3 py-1.5 text-jade transition-colors hover:bg-jade hover:text-parchment"
+                >
+                  <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
+                  {pick("素食 · 纯素可选", "Veggie & Vegan")}
+                </Link>
+                <Link
+                  href="/menu#lunch-specials"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white/85 px-3 py-1.5 tabular-nums text-ink-soft transition-colors hover:border-cinnabar/40 hover:text-cinnabar"
+                >
+                  {pick("午市煎饼 £6.50 起", "Lunch From £6.50")}
+                </Link>
+              </div>
+
+              {/* Beat 4: Official Social Icon Bar */}
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-xs font-medium text-ink-muted">
+                  {pick("关注我们", "Follow us")}
+                </span>
+                {restaurant.verifiedSocialLinks
+                  .filter((s) => s.platform !== "google-maps")
+                  .map((social) => (
+                    <a
+                      key={social.href}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`${t(social.label)} · ${social.handle}`}
+                      aria-label={`${t(social.label)} ${social.handle}`}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-kraft-deep bg-white/90 text-ink shadow-2xs transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:bg-cinnabar hover:text-parchment"
+                    >
+                      <SocialIcon platform={social.platform} className="h-3.5 w-3.5" />
+                    </a>
+                  ))}
+              </div>
             </div>
 
-            <dl className="mt-7 grid grid-cols-1 gap-4 border-t border-kraft-deep/90 pt-6 sm:grid-cols-[1.25fr_1fr_1.15fr]">
+            {/* Right Column: Clean Apple Bento Visual Stage (3 Unobstructed Signature Photos) */}
+            <div className="animate-fade-up-delay-1 lg:col-span-7">
+              <div className="grid gap-3.5 sm:gap-4">
+                {/* Main Hero Dish Photo — Full-Bleed Unobstructed Showcase */}
+                <ParallaxLayer offset={-10}>
+                  <Link
+                    href="/menu"
+                    className="animate-hero-media group relative block aspect-[16/10] w-full overflow-hidden rounded-[26px] border border-kraft-deep/90 bg-kraft shadow-xl"
+                  >
+                    <Image
+                      src="/images/hero-jianbing-platter.webp"
+                      alt={pick(
+                        "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
+                        "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
+                      )}
+                      fill
+                      priority
+                      fetchPriority="high"
+                      sizes="(max-width: 1024px) calc(100vw - 2rem), 56vw"
+                      className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pt-14 pb-4 text-parchment">
+                      <div>
+                        <p
+                          lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                          className="font-calligraphy text-xl text-[#F0C26E] sm:text-2xl"
+                        >
+                          {zhText(restaurant.chineseTagline)}
+                        </p>
+                        <p className="text-xs text-parchment/85 sm:text-sm">
+                          {pick(
+                            "现点现摊招牌咸味煎饼 · 零色素果蔬皮",
+                            "Signature Savoury Jian Bing · Zero Food Dye"
+                          )}
+                        </p>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-[#F0C26E]/40 bg-ink/75 px-3 py-1 font-sans text-xs font-semibold tabular-nums text-[#F0C26E] backdrop-blur-md">
+                        {pick("£6.50 – £10", "£6.50 – £10")}
+                      </span>
+                    </div>
+                  </Link>
+                </ParallaxLayer>
+
+                {/* Two Flush Bento Supporting Visual Tiles Underneath */}
+                <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
+                  <Link
+                    href="/menu?diet=halal"
+                    className="apple-card group relative aspect-[16/10] overflow-hidden rounded-2xl border border-kraft-deep/85 bg-kraft shadow-md"
+                  >
+                    <Image
+                      src="/images/veggie-crepe-griddle.webp"
+                      alt={pick(
+                        "热铁板上天然红心火龙果与菠菜调色的果蔬煎饼",
+                        "Naturally pink and green fruit-and-vegetable Jian Bing batter sizzling on the griddle"
+                      )}
+                      fill
+                      sizes="(max-width: 1024px) 48vw, 28vw"
+                      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/88 via-ink/35 to-transparent px-3.5 pt-10 pb-3 text-parchment">
+                      <p className="text-xs font-semibold text-[#F0C26E]">
+                        {pick("鲜切火龙果 · 甜菜根", "Real Dragon Fruit & Veg")}
+                      </p>
+                      <p className="mt-0.5 text-xs text-parchment/90 sm:text-sm sm:font-medium">
+                        {pick("天然果蔬饼皮现摊", "Natural Colour Batters")}
+                      </p>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/menu#sweet-crepes-and-desserts"
+                    className="apple-card group relative aspect-[16/10] overflow-hidden rounded-2xl border border-kraft-deep/85 bg-kraft shadow-md"
+                  >
+                    <Image
+                      src="/images/fancy-lace-dessert-cone.webp"
+                      alt={pick(
+                        "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与抹茶饼干棒",
+                        "Hand-piped pink lace sweet crepe cone with cream and fresh strawberries"
+                      )}
+                      fill
+                      sizes="(max-width: 1024px) 48vw, 28vw"
+                      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/88 via-ink/35 to-transparent px-3.5 pt-10 pb-3 text-parchment">
+                      <p className="text-xs font-semibold text-[#F0C26E]">
+                        {pick("甜煎饼 £4 起", "Sweet Crepes · From £4")}
+                      </p>
+                      <p className="mt-0.5 text-xs text-parchment/90 sm:text-sm sm:font-medium">
+                        {pick("手工花式蕾丝甜筒", "Hand-Piped Lace Cones")}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Clean Full-Width Essential Info Strip (No Cramped Line-Wrapping!) */}
+          <dl className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-kraft-deep/85 bg-white/80 px-5 py-4 shadow-2xs backdrop-blur-xs sm:mt-10 sm:grid-cols-3 sm:divide-x sm:divide-kraft-deep/70 sm:px-6">
+            <div className="flex items-start gap-3">
+              <MapPin
+                className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar"
+                aria-hidden="true"
+              />
               <div>
-                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
-                  {pick("门店地址", "Location")}
+                <dt className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">
+                  {pick("门店地址 · 点击导航", "Location · Tap for Map")}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold whitespace-nowrap text-ink">
+                <dd className="mt-0.5 text-sm font-semibold text-ink">
                   <a
                     href={restaurant.links.googleMapsDirections}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline decoration-kraft-deep underline-offset-4 transition-colors hover:text-cinnabar hover:decoration-cinnabar"
                   >
-                    {restaurant.address.street}, {restaurant.address.postalCode}
+                    {restaurant.address.street}, London {restaurant.address.postalCode}
                   </a>
                 </dd>
               </div>
+            </div>
+
+            <div className="flex items-start gap-3 sm:pl-6">
+              <Clock
+                className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar"
+                aria-hidden="true"
+              />
               <div>
-                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
-                  <Clock className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
-                  {pick("每日营业", "Open Daily")}
+                <dt className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">
+                  {pick("营业时间", "Opening Hours")}
                 </dt>
-                <dd className="mt-1 text-xs leading-snug font-semibold tabular-nums text-ink sm:text-[13px]">
-                  {isZh ? (
-                    <>
-                      {zhText("周一至三 11:00–21:00")}
-                      <br />
-                      {zhText("周四至日 11:00–21:30")}
-                    </>
-                  ) : (
-                    <>
-                      Mon–Wed 11am–9pm
-                      <br />
-                      Thu–Sun 11am–9:30pm
-                    </>
-                  )}
+                <dd className="mt-0.5 text-sm font-semibold tabular-nums text-ink">
+                  {isZh
+                    ? zhText("周一至三 11:00–21:00 · 周四至日 11:00–21:30")
+                    : "Mon–Wed 11:00–21:00 · Thu–Sun 11:00–21:30"}
                 </dd>
               </div>
+            </div>
+
+            <div className="flex items-start gap-3 sm:pl-6">
+              <Phone
+                className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar"
+                aria-hidden="true"
+              />
               <div>
-                <dt className="flex items-center gap-1.5 text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase">
-                  <Phone className="h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
-                  {pick("外带 · 无接触配送", "Takeaway · Delivery")}
+                <dt className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">
+                  {pick("外带自取 · 无接触配送（不提供堂食）", "Takeaway & Delivery Only")}
                 </dt>
-                <dd className="mt-1 text-sm font-semibold whitespace-nowrap tabular-nums text-ink">
+                <dd className="mt-0.5 text-sm font-semibold tabular-nums text-ink">
                   <a
                     href={restaurant.phone.href}
-                    className="hover:text-cinnabar"
+                    className="transition-colors hover:text-cinnabar"
                   >
                     {restaurant.phone.display}
                   </a>
                 </dd>
               </div>
-            </dl>
-          </div>
-
-          {/* Hero Photography with Apple-style multi-plane scroll parallax */}
-          <div className="animate-fade-up-delay-1 relative lg:col-span-6">
-            <ParallaxLayer offset={-16}>
-              <div className="animate-hero-media relative aspect-[4/3] w-full overflow-hidden rounded-[28px] border-2 border-kraft-deep bg-kraft shadow-xl">
-                <Image
-                  src="/images/hero-jianbing-platter.webp"
-                  alt={pick(
-                    "刚出锅对半切开的招牌果蔬咸味煎饼，旁放印有煎饼刘字样的牛皮纸袋",
-                    "Freshly griddled herb-studded savoury Jian Bing crepe cut in half beside the Jian Bing Liu branded kraft sleeve"
-                  )}
-                  fill
-                  priority
-                  fetchPriority="high"
-                  sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), 544px"
-                  className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03]"
-                />
-              </div>
-            </ParallaxLayer>
-
-            <div className="mt-4 grid grid-cols-2 gap-4 sm:mt-0 sm:block">
-              <ParallaxLayer
-                offset={22}
-                className="sm:absolute sm:-bottom-6 sm:-left-6 sm:z-10"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-lg sm:h-36 sm:w-48">
-                  <Image
-                    src="/images/beef-crepe-sleeve.webp"
-                    alt={pick(
-                      "撒满黑芝麻、装在牛皮纸袋中的热乎咸味煎饼",
-                      "Warm black-sesame Jian Bing crepe wrapped in a signature kraft sleeve"
-                    )}
-                    fill
-                    sizes="(max-width: 640px) 50vw, 192px"
-                    className="object-cover"
-                  />
-                </div>
-              </ParallaxLayer>
-
-              <ParallaxLayer
-                offset={14}
-                className="sm:absolute sm:-right-3 sm:-bottom-6 sm:z-10 sm:max-w-[245px]"
-              >
-                <div className="flex h-full flex-col justify-center rounded-2xl border border-kraft-deep bg-ink p-4 text-parchment shadow-lg">
-                  <p
-                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                    className="font-calligraphy text-xl whitespace-nowrap text-[#F0C26E] sm:text-[22px]"
-                  >
-                    {zhText("煎饼刘 · 现做现卖")}
-                  </p>
-                  <p className="mt-1 text-xs leading-relaxed text-parchment/80">
-                    {pick(
-                      "零色素！新鲜红心火龙果与甜菜根现榨果蔬皮，清真牛鸡与素食每单现摊。",
-                      "Zero food dye — fresh dragon fruit & beetroot batters, Halal beef & chicken, spun to order."
-                    )}
-                  </p>
-                </div>
-              </ParallaxLayer>
             </div>
-          </div>
+          </dl>
         </div>
       </section>
 
