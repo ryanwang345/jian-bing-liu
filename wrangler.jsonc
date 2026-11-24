@@ -17,6 +17,7 @@
       "service": "jian-bing-liu"
     }
   ],
+  "keep_vars": true,
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://jianbingliu.uk"
   },

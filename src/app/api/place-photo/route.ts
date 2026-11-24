@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getRuntimeEnv } from "@/lib/runtime-env";
 
 const PHOTO_NAME_RE = /^places\/[A-Za-z0-9_-]+\/photos\/[A-Za-z0-9_-]+$/;
 
@@ -7,7 +8,7 @@ const PHOTO_NAME_RE = /^places\/[A-Za-z0-9_-]+\/photos\/[A-Za-z0-9_-]+$/;
  * Keeps GOOGLE_PLACES_API_KEY server-only and caches customer review photos for 24h.
  */
 export async function GET(request: Request) {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY?.trim();
+  const apiKey = await getRuntimeEnv("GOOGLE_PLACES_API_KEY");
   if (!apiKey) {
     return new NextResponse("Not configured", { status: 404 });
   }

@@ -4,6 +4,14 @@ import {
   googleRating as fallbackRating,
   type CustomerReview,
 } from "@/data/reviews";
+import { getRuntimeEnv } from "@/lib/runtime-env";
+
+export interface LiveGooglePhoto {
+  id: string;
+  src: string;
+  author: string;
+  authorUrl?: string;
+}
 
 export interface ReviewsPayload {
   rating: {
@@ -13,9 +21,11 @@ export interface ReviewsPayload {
     isLive: boolean;
   };
   reviews: CustomerReview[];
+  googlePhotos: LiveGooglePhoto[];
   sources: {
     googlePlacesConfigured: boolean;
     customFeedConfigured: boolean;
+    googleStatus: "ok" | "missing_key" | "place_not_found" | "api_error";
   };
   updatedAt: string;
 }
@@ -65,8 +75,9 @@ let memoryCache: { payload: ReviewsPayload; expiresAt: number } | null = null;
 let inFlightRefresh: Promise<ReviewsPayload> | null = null;
 
 async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
-  if (process.env.GOOGLE_PLACE_ID?.trim()) {
-    return process.env.GOOGLE_PLACE_ID.trim();
+  const configuredPlaceId = await getRuntimeEnv("GOOGLE_PLACE_ID");
+  if (configuredPlaceId) {
+    return configuredPlaceId;
   }
   if (cachedPlaceId) {
     return cachedPlaceId;
@@ -99,15 +110,21 @@ async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
 }
 
 async function fetchGooglePlacesReviews(): Promise<{
+  status: "ok" | "missing_key" | "place_not_found" | "api_error";
   rating?: { score: string; count: number; reviewsUrl: string };
   reviews: CustomerReview[];
-} | null> {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY?.trim();
-  if (!apiKey) return null;
+  photos: LiveGooglePhoto[];
+}> {
+  const apiKey = await getRuntimeEnv("GOOGLE_PLACES_API_KEY");
+  if (!apiKey) {
+    return { status: "missing_key", reviews: [], photos: [] };
+  }
 
   try {
     const placeId = await resolveGooglePlaceId(apiKey);
-    if (!placeId) return null;
+    if (!placeId) {
+      return { status: "place_not_found", reviews: [], photos: [] };
+    }
 
     const fieldMask = [
       "rating",
@@ -138,22 +155,30 @@ async function fetchGooglePlacesReviews(): Promise<{
     );
 
     if (!res.ok) {
-      return null;
+      return { status: "api_error", reviews: [], photos: [] };
     }
 
     const data = (await res.json()) as GooglePlaceDetailsResponse;
     const placeUrl = data.googleMapsUri || GOOGLE_MAPS_PLACE_URL;
-    const minRating = Number(
-      process.env.REVIEWS_MIN_RATING || DEFAULT_MIN_RATING
-    );
+    const minRatingRaw = await getRuntimeEnv("REVIEWS_MIN_RATING");
+    const minRating = Number(minRatingRaw || DEFAULT_MIN_RATING);
 
-    // Index Google Maps photos by reviewer attribution (URI & normalized display name)
-    // so customer-uploaded photos attach cleanly to their matching review card.
+    // Index Google Maps photos by reviewer attribution AND build the live Google Maps photo strip
     const photosByAuthor = new Map<string, string[]>();
-    for (const photo of data.photos || []) {
+    const livePhotos: LiveGooglePhoto[] = [];
+
+    for (const [idx, photo] of (data.photos || []).slice(0, 10).entries()) {
       const photoName = photo.name?.trim();
       if (!photoName) continue;
       const proxiedUrl = `/api/place-photo?name=${encodeURIComponent(photoName)}&w=720`;
+      const primaryAttr = photo.authorAttributions?.[0];
+
+      livePhotos.push({
+        id: `gphoto-${idx}-${photoName.slice(-10)}`,
+        src: proxiedUrl,
+        author: primaryAttr?.displayName?.trim() || "Google Maps Guest",
+        authorUrl: primaryAttr?.uri?.trim() || placeUrl,
+      });
 
       for (const attr of photo.authorAttributions || []) {
         const keys = [
@@ -221,6 +246,7 @@ async function fetchGooglePlacesReviews(): Promise<{
       });
 
     return {
+      status: "ok",
       rating:
         typeof data.rating === "number" &&
         typeof data.userRatingCount === "number"
@@ -231,14 +257,15 @@ async function fetchGooglePlacesReviews(): Promise<{
             }
           : undefined,
       reviews: liveReviews,
+      photos: livePhotos,
     };
   } catch {
-    return null;
+    return { status: "api_error", reviews: [], photos: [] };
   }
 }
 
 async function fetchCustomFeedReviews(): Promise<CustomerReview[]> {
-  const feedUrl = process.env.REVIEWS_FEED_URL?.trim();
+  const feedUrl = await getRuntimeEnv("REVIEWS_FEED_URL");
   if (!feedUrl) return [];
 
   try {
@@ -342,35 +369,49 @@ function deduplicateReviews(lists: CustomerReview[][]): CustomerReview[] {
 }
 
 async function computeDynamicReviews(): Promise<ReviewsPayload> {
-  const [googleData, customFeed] = await Promise.all([
+  const [googleData, customFeed, feedUrl] = await Promise.all([
     fetchGooglePlacesReviews(),
     fetchCustomFeedReviews(),
+    getRuntimeEnv("REVIEWS_FEED_URL"),
   ]);
 
   const mergedReviews = deduplicateReviews([
-    googleData?.reviews || [],
+    googleData.reviews,
     customFeed,
     fallbackReviews,
   ]);
 
   const payload: ReviewsPayload = {
     rating: {
-      score: googleData?.rating?.score || fallbackRating.score,
-      count: googleData?.rating?.count || fallbackRating.count,
-      reviewsUrl: googleData?.rating?.reviewsUrl || fallbackRating.reviewsUrl,
-      isLive: Boolean(googleData?.rating || googleData?.reviews.length),
+      score: googleData.rating?.score || fallbackRating.score,
+      count: googleData.rating?.count || fallbackRating.count,
+      reviewsUrl: googleData.rating?.reviewsUrl || fallbackRating.reviewsUrl,
+      isLive: Boolean(
+        googleData.rating ||
+          googleData.reviews.length > 0 ||
+          googleData.photos.length > 0
+      ),
     },
     reviews: mergedReviews,
+    googlePhotos: googleData.photos,
     sources: {
-      googlePlacesConfigured: Boolean(process.env.GOOGLE_PLACES_API_KEY?.trim()),
-      customFeedConfigured: Boolean(process.env.REVIEWS_FEED_URL?.trim()),
+      googlePlacesConfigured: googleData.status !== "missing_key",
+      customFeedConfigured: Boolean(feedUrl),
+      googleStatus: googleData.status,
     },
     updatedAt: new Date().toISOString(),
   };
 
+  // Only cache for the full 1h TTL when live data succeeded or no key is configured;
+  // cache transient API errors briefly (2 minutes) so recovery is quick.
+  const ttl =
+    googleData.status === "api_error" || googleData.status === "place_not_found"
+      ? 120_000
+      : CACHE_TTL_MS;
+
   memoryCache = {
     payload,
-    expiresAt: Date.now() + CACHE_TTL_MS,
+    expiresAt: Date.now() + ttl,
   };
   return payload;
 }

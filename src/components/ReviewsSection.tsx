@@ -19,7 +19,7 @@ import {
   type CustomerReview,
   type ReviewSource,
 } from "@/data/reviews";
-import type { ReviewsPayload } from "@/lib/reviews-service";
+import type { LiveGooglePhoto, ReviewsPayload } from "@/lib/reviews-service";
 import { useLocale } from "@/lib/i18n";
 
 const REVIEWS_PER_PAGE = 4;
@@ -35,6 +35,9 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
 
   const [reviews, setReviews] = useState<CustomerReview[]>(
     initialData?.reviews ?? initialReviews
+  );
+  const [googlePhotos, setGooglePhotos] = useState<LiveGooglePhoto[]>(
+    initialData?.googlePhotos ?? []
   );
   const [rating, setRating] = useState(
     initialData?.rating ?? {
@@ -67,6 +70,9 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
         if (!active || !data) return;
         if (Array.isArray(data.reviews) && data.reviews.length > 0) {
           setReviews(data.reviews);
+        }
+        if (Array.isArray(data.googlePhotos)) {
+          setGooglePhotos(data.googlePhotos);
         }
         if (data.rating) {
           setRating(data.rating);
@@ -242,6 +248,67 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
             )}
           </p>
         </div>
+
+        {/* Live Customer Photos directly from Google Maps (when Places API returns photos) */}
+        {googlePhotos.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-kraft-deep/80 bg-white/85 p-4 shadow-2xs sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-ink">
+                <Camera className="h-4 w-4 text-cinnabar" aria-hidden="true" />
+                <span>
+                  {pick(
+                    `Google 地图实时顾客实拍 (${googlePhotos.length})`,
+                    `Live Guest Photos from Google Maps (${googlePhotos.length})`
+                  )}
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-jade/12 px-2 py-0.5 text-[10px] font-semibold text-jade">
+                  <span className="h-1.5 w-1.5 rounded-full bg-jade" aria-hidden="true" />
+                  {pick("实时同步", "Live")}
+                </span>
+              </div>
+              <a
+                href={rating.reviewsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-cinnabar hover:text-cinnabar-dark"
+              >
+                {pick("在 Google 地图看更多", "See all on Google Maps")}
+                <ExternalLink className="h-3 w-3" aria-hidden="true" />
+              </a>
+            </div>
+
+            <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
+              {googlePhotos.map((photo) => (
+                <button
+                  key={photo.id}
+                  type="button"
+                  onClick={() =>
+                    setPreviewPhoto({ src: photo.src, author: photo.author })
+                  }
+                  aria-label={pick(
+                    `放大查看 ${photo.author} 在 Google 地图上传的照片`,
+                    `View Google Maps photo by ${photo.author}`
+                  )}
+                  className="group relative h-28 w-36 shrink-0 overflow-hidden rounded-xl border border-kraft-deep/80 bg-kraft text-left transition-all hover:scale-[1.02] hover:border-cinnabar hover:shadow-md sm:h-32 sm:w-44"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photo.src}
+                    alt={pick(
+                      `${photo.author} 在 Google 地图分享的煎饼刘实拍`,
+                      `Google Maps guest photo by ${photo.author} at Jian Bing Liu`
+                    )}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-ink/85 to-transparent px-2.5 pt-5 pb-1.5 text-[10px] font-medium text-parchment/95">
+                    {photo.author}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Paginated Review Cards */}
         <div className="mt-6 grid gap-5 md:grid-cols-2">
