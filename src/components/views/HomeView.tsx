@@ -372,148 +372,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* Multicultural Audience Highlights: Halal, Asian Street Food, UK Locals & Plant-Based */}
-      <section className="border-b border-kraft-deep/80 bg-kraft/35">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
-          <div className="grid gap-5 md:grid-cols-3">
-            {/* Halal Diners */}
-            <Reveal delay={0} className="h-full">
-            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/10 px-3 py-1 text-xs font-semibold text-cinnabar-dark">
-                    <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                    {pick("清真之选", "Halal Options")}
-                  </span>
-                  <span
-                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                    className="font-calligraphy text-lg text-ink-muted"
-                  >
-                    {zhText("清真美味")}
-                  </span>
-                </div>
-                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
-                  {pick(
-                    "清真牛肉与鸡肉，午市 £6.5 起",
-                    "Halal beef & chicken, lunch from £6.50"
-                  )}
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  {pick(
-                    "招牌牛肉煎饼、鸡肉煎饼（£10）、午市简餐（£6.5）及脆底牛肉煎饺（£1/只）均采用清真肉类食材，支持一键筛选全部清真菜品。",
-                    "Signature Halal Beef & Chicken Jian Bing (£10), £6.50 lunch crepes, and £1 pan-fried beef dumplings. Filter all Halal dishes in one tap."
-                  )}
-                </p>
-              </div>
-              <Link
-                href="/menu?diet=halal"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-cinnabar transition-colors hover:text-cinnabar-dark"
-              >
-                {pick("一键查看清真菜单", "Browse Halal Menu")}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-            </Reveal>
-
-            {/* Asian & Chinese Street Food Lovers */}
-            <Reveal delay={110} className="h-full">
-            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-turmeric/35 bg-turmeric/15 px-3 py-1 text-xs font-semibold text-[#87560d]">
-                    <Flame className="h-3.5 w-3.5" aria-hidden="true" />
-                    {pick("地道家乡味", "Authentic Street Food")}
-                  </span>
-                  <span
-                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                    className="font-calligraphy text-lg text-ink-muted"
-                  >
-                    {zhText("传统手艺")}
-                  </span>
-                </div>
-                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
-                  {pick(
-                    "火龙果现榨果蔬皮，留子中国胃认证",
-                    "Natural dragon fruit batter & real crunch"
-                  )}
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  {pick(
-                    "不是色素！后厨鲜切红心火龙果、甜菜根现打调糊，配现炸薄脆、自制辣椒油与热豆浆；就在 UCL/CSM 附近，支持饭团外卖（4.5 ★）。",
-                    "Zero food dye — fresh dragon fruit and beetroot blended straight into the batter, with crispy cracker, homemade chilli oil, soya milk, and Fantuan (4.5 ★)."
-                  )}
-                </p>
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/our-story"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-cinnabar"
-                >
-                  {pick("了解铁板手艺", "See Our Craft")}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-                {restaurant.links.fantuanOrder && (
-                  <a
-                    href={restaurant.links.fantuanOrder}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm font-semibold text-cinnabar transition-colors hover:text-cinnabar-dark"
-                  >
-                    {pick("饭团下单", "Fantuan")}
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                )}
-              </div>
-            </div>
-            </Reveal>
-
-            {/* UK Locals, Mixed Groups & Plant-Based Diners */}
-            <Reveal delay={220} className="h-full">
-            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/10 px-3 py-1 text-xs font-semibold text-jade">
-                    <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
-                    {pick("本地与蔬食友好", "Locals & Plant-Based")}
-                  </span>
-                  <span
-                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                    className="font-calligraphy text-lg text-ink-muted"
-                  >
-                    {zhText("蔬食友好")}
-                  </span>
-                </div>
-                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
-                  {pick(
-                    "现买现带超方便，素食与纯素同样丰富",
-                    "Quick takeaway for mixed groups & vegans"
-                  )}
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  {pick(
-                    "价格透明（£1 起），到店现摊外带或外卖直达；除经典咸甜煎饼外，还提供素食果蔬煎饼、菠菜芝士煎饼、素煎饺与纯素日式咖喱。",
-                    "Clear in-store prices from £1 for quick takeaway and delivery, plus Veggie Lover crepes, veg dumplings, and Vegan Japanese Curry."
-                  )}
-                </p>
-              </div>
-              <Link
-                href="/menu?diet=vegetarian"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-jade transition-colors hover:text-ink"
-              >
-                {pick("浏览素食与纯素菜品", "Browse Veggie & Vegan")}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Apple-Style Sticky Scroll Craft Showcase */}
-      <AppleCraftShowcase />
-
-      {/* Signature Menu Highlights */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
+      {/* 1. Signature Menu Highlights — Show real dishes & prices immediately below the Hero */}
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <Reveal>
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading
@@ -595,13 +455,13 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* Editorial Dark-Lacquer Band: First-Time Ordering Guide & Social Buzz */}
+      {/* 2. First-Time Ordering Guide — Help diners pick a combo right after seeing the menu */}
       <section className="cv-auto relative overflow-hidden border-y border-kraft-deep/80 bg-ink text-parchment">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_20%,rgba(201,134,31,0.16),transparent_55%),radial-gradient(ellipse_at_85%_85%,rgba(184,37,28,0.14),transparent_50%)]"
         />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
@@ -746,7 +606,150 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* Our Story & Craft Editorial Band */}
+      {/* 3. Verified Google Reviews & Live Full-Bleed Social Proof — Build trust early */}
+      <ReviewsSection initialData={initialReviews} />
+
+      {/* 4. Multicultural Audience Highlights: Halal, Asian Street Food, UK Locals & Plant-Based */}
+      <section className="border-b border-kraft-deep/80 bg-kraft/35">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="grid gap-5 md:grid-cols-3">
+            {/* Halal Diners */}
+            <Reveal delay={0} className="h-full">
+            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-cinnabar/25 bg-cinnabar/10 px-3 py-1 text-xs font-semibold text-cinnabar-dark">
+                    <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pick("清真之选", "Halal Options")}
+                  </span>
+                  <span
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-lg text-ink-muted"
+                  >
+                    {zhText("清真美味")}
+                  </span>
+                </div>
+                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
+                  {pick(
+                    "清真牛肉与鸡肉，午市 £6.5 起",
+                    "Halal beef & chicken, lunch from £6.50"
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                  {pick(
+                    "招牌牛肉煎饼、鸡肉煎饼（£10）、午市简餐（£6.5）及脆底牛肉煎饺（£1/只）均采用清真肉类食材，支持一键筛选全部清真菜品。",
+                    "Signature Halal Beef & Chicken Jian Bing (£10), £6.50 lunch crepes, and £1 pan-fried beef dumplings. Filter all Halal dishes in one tap."
+                  )}
+                </p>
+              </div>
+              <Link
+                href="/menu?diet=halal"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-cinnabar transition-colors hover:text-cinnabar-dark"
+              >
+                {pick("一键查看清真菜单", "Browse Halal Menu")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+            </Reveal>
+
+            {/* Asian & Chinese Street Food Lovers */}
+            <Reveal delay={110} className="h-full">
+            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-turmeric/35 bg-turmeric/15 px-3 py-1 text-xs font-semibold text-[#87560d]">
+                    <Flame className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pick("地道家乡味", "Authentic Street Food")}
+                  </span>
+                  <span
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-lg text-ink-muted"
+                  >
+                    {zhText("传统手艺")}
+                  </span>
+                </div>
+                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
+                  {pick(
+                    "火龙果现榨果蔬皮，留子中国胃认证",
+                    "Natural dragon fruit batter & real crunch"
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                  {pick(
+                    "不是色素！后厨鲜切红心火龙果、甜菜根现打调糊，配现炸薄脆、自制辣椒油与热豆浆；就在 UCL/CSM 附近，支持饭团外卖（4.5 ★）。",
+                    "Zero food dye — fresh dragon fruit and beetroot blended straight into the batter, with crispy cracker, homemade chilli oil, soya milk, and Fantuan (4.5 ★)."
+                  )}
+                </p>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/our-story"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-cinnabar"
+                >
+                  {pick("了解铁板手艺", "See Our Craft")}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                {restaurant.links.fantuanOrder && (
+                  <a
+                    href={restaurant.links.fantuanOrder}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm font-semibold text-cinnabar transition-colors hover:text-cinnabar-dark"
+                  >
+                    {pick("饭团下单", "Fantuan")}
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            </div>
+            </Reveal>
+
+            {/* UK Locals, Mixed Groups & Plant-Based Diners */}
+            <Reveal delay={220} className="h-full">
+            <div className="apple-card flex h-full flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white/90 p-6 shadow-2xs hover:shadow-lg">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-jade/10 px-3 py-1 text-xs font-semibold text-jade">
+                    <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pick("本地与蔬食友好", "Locals & Plant-Based")}
+                  </span>
+                  <span
+                    lang={isTraditional ? "zh-Hant" : "zh-Hans"}
+                    className="font-calligraphy text-lg text-ink-muted"
+                  >
+                    {zhText("蔬食友好")}
+                  </span>
+                </div>
+                <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
+                  {pick(
+                    "现买现带超方便，素食与纯素同样丰富",
+                    "Quick takeaway for mixed groups & vegans"
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                  {pick(
+                    "价格透明（£1 起），到店现摊外带或外卖直达；除经典咸甜煎饼外，还提供素食果蔬煎饼、菠菜芝士煎饼、素煎饺与纯素日式咖喱。",
+                    "Clear in-store prices from £1 for quick takeaway and delivery, plus Veggie Lover crepes, veg dumplings, and Vegan Japanese Curry."
+                  )}
+                </p>
+              </div>
+              <Link
+                href="/menu?diet=vegetarian"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-jade transition-colors hover:text-ink"
+              >
+                {pick("浏览素食与纯素菜品", "Browse Veggie & Vegan")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Apple-Style Scroll-Driven Craft Showcase — Deep craft story for engaged visitors */}
+      <AppleCraftShowcase />
+
+      {/* 6. Our Story & Craft Editorial Band */}
       <section className="cv-auto border-y border-kraft-deep/80 bg-kraft/60">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-22 lg:grid-cols-12 lg:px-8">
           <div className="grid grid-cols-12 gap-4 lg:col-span-6">
@@ -844,7 +847,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* Gallery Preview Strip */}
+      {/* 7. Gallery Preview Strip */}
       <section className="cv-auto mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
@@ -892,9 +895,6 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
           ))}
         </div>
       </section>
-
-      {/* Verified Google Reviews & Social Community */}
-      <ReviewsSection initialData={initialReviews} />
 
       {/* Visit Us CTA Banner */}
       <section className="cv-auto mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 lg:px-8">

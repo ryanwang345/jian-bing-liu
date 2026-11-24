@@ -26,8 +26,13 @@ export interface SocialPost {
   title: LocalizedText;
   caption: LocalizedText;
   href: string;
-  image: string;
-  imageAlt: LocalizedText;
+  /** Official live iframe embed URL for Instagram, TikTok, and Threads */
+  embedUrl?: string;
+  /** Authentic real platform media (used for RedNote where iframe embedding is blocked) */
+  image?: string;
+  imageAlt?: LocalizedText;
+  /** Verbatim community quotes or platform highlights for Reddit & Fantuan native cards */
+  highlights?: LocalizedText[];
 }
 
 export const GOOGLE_MAPS_PLACE_URL =
@@ -392,40 +397,40 @@ export const socialPosts: SocialPost[] = [
     id: "xhs-founder-story",
     platform: "rednote",
     handle: "煎饼刘 · ID: 1162231947",
-    postType: { en: "RedNote · Founder Story", zh: "小红书 · 创业日常" },
+    postType: { en: "RedNote · Official Note", zh: "小红书 · 官方笔记" },
     title: {
       en: "Retired in China, Starting From Zero in London on Camden Road",
       zh: "退休后来伦敦第三次归零创业，守着铁板把中国味道带到英国",
     },
     caption: {
-      en: "Mrs Liu shares daily life behind the Camden griddle on RedNote (1,830+ likes & saves) — thanking guests for 280+ five-star reviews.",
-      zh: "国内退休后赴英归零创业，用一块热铁板摊出正宗果蔬煎饼与可丽饼，谢谢大家的捧场与五星好评！",
+      en: "450 followers · 1,830 likes & saves on RedNote. Mrs Liu shares real life behind the Camden griddle and thanks everyone for the 5-star reviews.",
+      zh: "450 粉丝 · 1,830 获赞与收藏。国内退休后赴英第三次归零创业，用一块热铁板摊出正宗果蔬煎饼与可丽饼。",
     },
     href: REDNOTE_PROFILE_URL,
-    image: "/images/chef-lace-crepe.webp",
+    image: "/images/social-xhs-founder.jpg",
     imageAlt: {
-      en: "Mrs Liu smiling behind the griddle at Jian Bing Liu in Camden",
-      zh: "煎饼刘老板娘在卡姆登厨房微笑展示手工煎饼",
+      en: "Real RedNote note cover of Mrs Liu smiling behind the Camden griddle in her Jian Bing Liu apron",
+      zh: "小红书官方实拍封面：刘阿姨穿煎饼刘围裙在铁板前微笑摊饼",
     },
   },
   {
     id: "xhs-dragonfruit-beetroot",
     platform: "rednote",
     handle: "煎饼刘 · ID: 1162231947",
-    postType: { en: "RedNote · Natural Batter", zh: "小红书 · 鲜榨果蔬皮" },
+    postType: { en: "RedNote · Kitchen Vlog", zh: "小红书 · 后厨实拍" },
     title: {
       en: "Fresh Red Dragon Fruit & Beetroot Batters — Zero Food Dye",
-      zh: "伦敦煎饼刘｜鲜切红心火龙果与甜菜根现榨果蔬煎饼",
+      zh: "🥞 伦敦煎饼刘｜创意煎饼 · 红心火龙果与甜菜根现榨",
     },
     caption: {
-      en: "Behind-the-scenes prep on RedNote showing fresh red dragon fruit and beetroot sliced in the kitchen for naturally pink Jian Bing batters.",
-      zh: "不是食用色素！后厨每天现切新鲜红心火龙果与甜菜根榨汁调面糊，色泽自然清香，配酥脆薄脆超满足。",
+      en: "Real RedNote kitchen prep showing fresh red dragon fruit and peeled beetroot sliced daily for natural pink Jian Bing batters.",
+      zh: "小红书真实后厨备料实拍：新鲜红心火龙果与甜菜根每天现切榨汁调面糊，绝不加食用色素。",
     },
     href: REDNOTE_PROFILE_URL,
-    image: "/images/veggie-crepe-griddle.webp",
+    image: "/images/social-xhs-dragonfruit.jpg",
     imageAlt: {
-      en: "Naturally pink and green fruit-and-vegetable batter crepe on the hot griddle",
-      zh: "热铁板上天然红心火龙果与蔬果汁调色的果蔬煎饼",
+      en: "Real RedNote photo of fresh red dragon fruit and beetroot on a green kitchen cutting board",
+      zh: "小红书官方实拍：砧板上新鲜切开的红心火龙果与甜菜根",
     },
   },
   {
@@ -442,11 +447,7 @@ export const socialPosts: SocialPost[] = [
       zh: "卡姆登路人气实拍：满馅叉烧咸煎饼搭配焦糖布蕾奶油水果甜煎饼。",
     },
     href: "https://www.instagram.com/heyjojoeats/reel/Ddy_R9APhZs/",
-    image: "/images/hero-jianbing-platter.webp",
-    imageAlt: {
-      en: "Freshly sliced savoury Jian Bing featured on Instagram Reel",
-      zh: "Instagram 短视频展示的现摊咸味煎饼",
-    },
+    embedUrl: "https://www.instagram.com/reel/Ddy_R9APhZs/embed/captioned/",
   },
   {
     id: "tt-dragonfruit-spinach",
@@ -462,11 +463,8 @@ export const socialPosts: SocialPost[] = [
       zh: "用天然火龙果汁和菠菜汁现场调色摊饼，烤鸭、牛肉、鸡肉多种招牌馅料任选！",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7672559024713272598",
-    image: "/images/veggie-crepe-griddle.webp",
-    imageAlt: {
-      en: "Colourful dragon fruit and spinach Jian Bing on the griddle",
-      zh: "铁板上的火龙果菠菜双色果蔬煎饼",
-    },
+    embedUrl:
+      "https://www.tiktok.com/player/v1/7672559024713272598?music_info=0&description=0&rel=0",
   },
   {
     id: "ig-master-liu-reel",
@@ -482,11 +480,7 @@ export const socialPosts: SocialPost[] = [
       zh: "无剪辑直拍：热铁板摊面糊、磕鲜蛋、刷秘制酱、加满脆料一气呵成。",
     },
     href: "https://www.instagram.com/gina_liu__/reel/DbQNKmfN9vH/",
-    image: "/images/griddle-batter-egg.webp",
-    imageAlt: {
-      en: "Swirling batter and egg on the round Jian Bing griddle",
-      zh: "圆铁板上现摊煎饼面糊与鸡蛋",
-    },
+    embedUrl: "https://www.instagram.com/reel/DbQNKmfN9vH/embed/captioned/",
   },
   {
     id: "tt-pinned-viral",
@@ -502,11 +496,8 @@ export const socialPosts: SocialPost[] = [
       zh: "390+ 点赞置顶视频，感受卡姆登人气煎饼档口的热闹烟火气。",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7671489076666682646",
-    image: "/images/fancy-lace-dessert-cone.webp",
-    imageAlt: {
-      en: "Hand-piped fancy lace dessert cone from Jian Bing Liu TikTok",
-      zh: "煎饼刘 TikTok 置顶视频展示的花式蕾丝甜筒",
-    },
+    embedUrl:
+      "https://www.tiktok.com/player/v1/7671489076666682646?music_info=0&description=0&rel=0",
   },
   {
     id: "tt-halal-special",
@@ -522,11 +513,8 @@ export const socialPosts: SocialPost[] = [
       zh: "1.54 万播放推荐：清真牛肉/鸡肉煎饼与现做中式街头小吃，欢迎关注打卡。",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7678046964440714518",
-    image: "/images/beef-crepe-sleeve.webp",
-    imageAlt: {
-      en: "Warm sesame-crusted Halal beef Jian Bing in a kraft sleeve",
-      zh: "装在牛皮纸袋里撒满黑芝麻的清真牛肉煎饼",
-    },
+    embedUrl:
+      "https://www.tiktok.com/player/v1/7678046964440714518?music_info=0&description=0&rel=0",
   },
   {
     id: "tt-ucl-csm-chinese-stomach",
@@ -542,11 +530,8 @@ export const socialPosts: SocialPost[] = [
       zh: "就在 CSM 和 UCL 附近，真材实料分量足，还有现磨豆浆、杨枝甘露、煎饺与甜煎饼！",
     },
     href: "https://www.tiktok.com/@jianbingliu.uk/video/7559103569085975830",
-    image: "/images/golden-sesame-jianbing.webp",
-    imageAlt: {
-      en: "Golden sesame Jian Bing sliced in half showing crisp fillings",
-      zh: "切开展示丰富内馅的金黄黑芝麻煎饼",
-    },
+    embedUrl:
+      "https://www.tiktok.com/player/v1/7559103569085975830?music_info=0&description=0&rel=0",
   },
   {
     id: "ig-strawberry-crepe-post",
@@ -562,11 +547,7 @@ export const socialPosts: SocialPost[] = [
       zh: "新鲜草莓搭配细腻奶油与现摊焦香甜饼皮，颜值与口感双在线。",
     },
     href: "https://www.instagram.com/jian_bing_liu/p/DPrmEAQjZRl/",
-    image: "/images/nutella-strawberry-crepe.webp",
-    imageAlt: {
-      en: "Strawberry sweet crepe post on Jian Bing Liu Instagram",
-      zh: "煎饼刘 Instagram 草莓甜煎饼贴文",
-    },
+    embedUrl: "https://www.instagram.com/p/DPrmEAQjZRl/embed/captioned/",
   },
   {
     id: "ig-ruff-leah-reel",
@@ -582,11 +563,7 @@ export const socialPosts: SocialPost[] = [
       zh: "每日新鲜食材现做，咸味果蔬煎饼与花式甜煎饼一次满足。",
     },
     href: "https://www.instagram.com/ruff.leah/reel/DF3YvDIoAyH/",
-    image: "/images/folded-rainbow-crepe.webp",
-    imageAlt: {
-      en: "Colourful savoury crepe folded warm on the griddle",
-      zh: "热铁板上折叠中的彩色果蔬煎饼",
-    },
+    embedUrl: "https://www.instagram.com/reel/DF3YvDIoAyH/embed/captioned/",
   },
   {
     id: "threads-griddle-post",
@@ -602,11 +579,7 @@ export const socialPosts: SocialPost[] = [
       zh: "官方 Threads 分享的后厨现摊与热乎外带出品瞬间。",
     },
     href: "https://www.threads.com/@jian_bing_liu/post/DOnN-zOiucB",
-    image: "/images/jianbing-apron-hero.webp",
-    imageAlt: {
-      en: "Freshly folded Jian Bing held in front of the Jian Bing Liu apron",
-      zh: "煎饼刘围裙前新鲜出锅的咸味煎饼",
-    },
+    embedUrl: "https://www.threads.com/@jian_bing_liu/post/DOnN-zOiucB/embed",
   },
   {
     id: "threads-strawberry-post",
@@ -622,11 +595,7 @@ export const socialPosts: SocialPost[] = [
       zh: "点击查看官方 Threads 草莓甜煎饼贴文，也欢迎留言告诉我们你最爱的配料！",
     },
     href: "https://www.threads.com/@jian_bing_liu/post/DPrmEVEjduI",
-    image: "/images/lace-crepe-sheet.webp",
-    imageAlt: {
-      en: "Hand-piped pink lace crepe sheet in the Camden kitchen",
-      zh: "卡姆登厨房里的手工粉色蕾丝甜煎饼皮",
-    },
+    embedUrl: "https://www.threads.com/@jian_bing_liu/post/DPrmEVEjduI/embed",
   },
   {
     id: "reddit-highly-recommend",
@@ -638,15 +607,14 @@ export const socialPosts: SocialPost[] = [
       zh: "Reddit 伦敦美食社区热帖：强烈推荐卡姆登煎饼刘",
     },
     caption: {
-      en: "London foodies on r/LondonFood praising Jian Bing Liu as the most authentic Jian Bing outside of Beijing, with everything made fresh in-house.",
-      zh: "伦敦食客在 r/LondonFood 热烈讨论，盛赞煎饼刘是北京之外最地道的中式煎饼与自制辣椒油。",
+      en: "“Jian Bing Liu is by far the most authentic Jian Bing that I have ever had outside of Beijing… it is run by a lady who is also the owner. She is unbelievably friendly and sweet, explaining to you the details about the dish and what she's adding.”",
+      zh: "「煎饼刘是我在北京之外吃过迄今为止最正宗的煎饼果子……小店由老板娘亲自打理，人超级热情温柔，会细心讲解每一样食材和配料。」",
     },
     href: REDDIT_RECOMMEND_URL,
-    image: "/images/beef-crepe-sleeve.webp",
-    imageAlt: {
-      en: "Warm black-sesame Jian Bing crepe wrapped in a kraft sleeve",
-      zh: "装在牛皮纸袋里撒满黑芝麻的咸味煎饼",
-    },
+    highlights: [
+      { en: "Verified r/LondonFood community review", zh: "r/LondonFood 伦敦本地食客自发推荐" },
+      { en: "Praised for homemade chilli oil & friendly owner", zh: "盛赞正宗北方风味、自制辣椒油与亲切老板娘" },
+    ],
   },
   {
     id: "reddit-best-chinese-london",
@@ -658,34 +626,32 @@ export const socialPosts: SocialPost[] = [
       zh: "入选 r/LondonFood「伦敦最正宗中餐」推荐讨论",
     },
     caption: {
-      en: "Picked out by London locals as a go-to Camden spot for Northern Chinese street food.",
-      zh: "被伦敦本地吃货力荐为卡姆登必打卡的北方中式街头风味宝藏小店。",
+      en: "Picked out by London locals in r/LondonFood's community roundup of the most authentic independent Chinese food spots across London.",
+      zh: "在 r/LondonFood 社区「伦敦最地道中餐」热门讨论帖中，被伦敦本地吃货点名力荐为卡姆登必吃北方街头小店。",
     },
     href: "https://www.reddit.com/r/LondonFood/comments/1vkvncd/best_authentic_chinese_food_in_london/",
-    image: "/images/braised-beef-rice.webp",
-    imageAlt: {
-      en: "Slow-braised beef with carrots, potatoes, and steamed white rice",
-      zh: "慢炖土豆胡萝卜牛肉配热白米饭",
-    },
+    highlights: [
+      { en: "Recommended by London locals in NW1", zh: "伦敦本地老饕力荐的 NW1 独立中餐小店" },
+      { en: "Click to read the original Reddit thread", zh: "点击直达 Reddit 完整社区原帖讨论" },
+    ],
   },
   {
     id: "fantuan-camden-store",
     platform: "fantuan",
-    handle: "Fantuan · 4.5 ★",
+    handle: "Fantuan · 4.5 ★ Camden",
     postType: { en: "Fantuan Delivery", zh: "饭团外卖 · 4.5 ★" },
     title: {
       en: "Order Jian Bing Liu (Camden) on Fantuan Delivery",
-      zh: "饭团外卖直达：煎饼刘（Camden 店）",
+      zh: "饭团外卖官方门店：煎饼刘（Camden 店）",
     },
     caption: {
-      en: "Browse full Chinese & English delivery menu on Fantuan — savoury crepes, braised pork hock & roast duck crepes, rice bowls, wontons & drinks.",
-      zh: "在饭团外卖一键下单全套招牌果蔬煎饼、卤肘子/烤鸭煎饼、盖饭、鲜汤馄饨与饮品，查看最新评价与满减优惠。",
+      en: "“It's the best colorful jianbing I've ever had in the UK! The crepe batter is so soft, and the owner thoughtfully split it into two bags.”",
+      zh: "「这是我在英国吃过最好吃的彩色果蔬煎饼，饼皮特别柔软香甜，分量特别大，老板娘还很贴心地分装成两袋！」",
     },
     href: FANTUAN_STORE_URL,
-    image: "/images/beef-dumplings-plate.webp",
-    imageAlt: {
-      en: "Golden pan-fried beef dumplings plated with house dipping sauce",
-      zh: "金黄酥脆的牛肉煎饺配秘制蘸汁",
-    },
+    highlights: [
+      { en: "4.5 ★ Store Rating · Delivery & Pickup", zh: "饭团门店 4.5 ★ 好评 · 支持外卖配送与自取" },
+      { en: "Full Chinese & English menu live on Fantuan", zh: "全套咸甜果蔬煎饼、卤肘子/烤鸭煎饼、盖饭与饮品直达下单" },
+    ],
   },
 ];
