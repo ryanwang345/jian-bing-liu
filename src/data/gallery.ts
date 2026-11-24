@@ -218,12 +218,12 @@ export const galleryItems: GalleryItem[] = [
     id: "roujiamo-burger",
     src: "/images/roujiamo-burger.webp",
     alt: {
-      en: "Crisp golden Chinese flatbread stuffed generously with savoury braised meat and herbs",
-      zh: "金黄酥脆、塞满鲜嫩卤肉与香葱的热乎中式馅饼",
+      en: "Crisp flaky Chinese Roujiamo bun generously stuffed with slow-braised meat and spring onions",
+      zh: "金黄起酥、满满塞着慢炖卤肉与香葱的热乎肉夹馍",
     },
     caption: {
-      en: "Pan-Fried Beef Flatbread (£3.50) — crisp outside, juicy spiced filling",
-      zh: "牛肉馅饼（£3.50）——外酥里嫩、趁热最香",
+      en: "Crispy Chinese Roujiamo — choose Halal Beef or Classic Braised Pork",
+      zh: "酥脆肉夹馍——可选清真卤牛肉或老卤猪肉，外酥里嫩、趁热最香",
     },
     category: "mains",
     width: 1280,

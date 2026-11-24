@@ -424,10 +424,41 @@ export const menuCategories: MenuCategory[] = [
     title: { en: "Chinese Snacks, Dumplings & Soups", zh: "中式小吃 · 煎饺 · 鲜汤" },
     chineseTitle: "街头小吃",
     subtitle: {
-      en: "Pan-fried dumplings, Halal beef buns and flatbreads, handmade wontons and slow-simmered soups.",
-      zh: "脆底煎饺、清真牛肉大包与馅饼、手工鲜汤馄饨与现熬养生鸡汤，单点或加配都合适。",
+      en: "Crispy Chinese Roujiamo (Halal beef or braised pork), pan-fried dumplings, Halal beef buns and flatbreads, handmade wontons and slow-simmered soups.",
+      zh: "酥脆肉夹馍（清真牛肉/老卤猪肉）、脆底煎饺、清真牛肉大包与馅饼、手工鲜汤馄饨与现熬养生鸡汤，单点或加配都合适。",
     },
     items: [
+      {
+        id: "halal-beef-roujiamo",
+        name: { en: "Halal Beef Roujiamo", zh: "清真牛肉肉夹馍" },
+        chineseName: "清真牛肉肉夹馍",
+        description: {
+          en: "Crisp, flaky golden Chinese flatbread bun split warm and packed generously with tender slow-braised Halal beef, spring onions and rich savoury juices.",
+          zh: "外酥掉渣的金黄白吉馍趁热切开，满满塞进慢炖软烂入味的清真卤牛肉与香葱，咬一口肉汁四溢特别过瘾。",
+        },
+        price: null,
+        dietary: ["halal"],
+        image: "/images/roujiamo-burger.webp",
+        imageAlt: {
+          en: "Crisp flaky Chinese Roujiamo flatbread generously stuffed with tender braised beef and spring onions",
+          zh: "金黄起酥、塞满慢炖卤牛肉与香葱的热乎清真牛肉肉夹馍",
+        },
+      },
+      {
+        id: "pork-roujiamo",
+        name: { en: "Braised Pork Roujiamo", zh: "老卤猪肉肉夹馍" },
+        chineseName: "老卤猪肉肉夹馍",
+        description: {
+          en: "Flaky, oven-crisp Chinese bun stuffed generously with melt-in-the-mouth slow-braised pork, aromatic spices and fresh spring onions — classic Northern street food.",
+          zh: "酥香脆皮馍夹满肥瘦相间、慢火老卤炖到入口即化的剁碎猪肉与香葱，地道老陕街头味，趁热吃最香。",
+        },
+        price: null,
+        image: "/images/roujiamo-burger.webp",
+        imageAlt: {
+          en: "Flaky golden Chinese Roujiamo stuffed generously with classic slow-braised pork and spring onions",
+          zh: "金黄酥脆、满满夹着老卤剁碎猪肉与香葱的热乎猪肉肉夹馍",
+        },
+      },
       {
         id: "halal-beef-bun",
         name: { en: "Halal Beef Stuffed Bun", zh: "清真牛肉大馅肉包子" },
@@ -449,11 +480,6 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£3.50",
         dietary: ["halal"],
-        image: "/images/roujiamo-burger.webp",
-        imageAlt: {
-          en: "Warm crisp Chinese flatbread generously stuffed with savoury braised meat and spring onions",
-          zh: "金黄酥香、塞满鲜嫩肉馅与香葱的热乎中式肉饼",
-        },
       },
       {
         id: "spring-onion-flatbread",
