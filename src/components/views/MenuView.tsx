@@ -43,8 +43,8 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
               </h1>
               <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
                 {pick(
-                  "从外脆里软的果蔬咸煎饼、£6.5 午市简餐，到慢炖土豆牛肉饭、温和醇香的纯素咖喱、£1 脆底煎饺与现磨热豆浆——清真与素食都照顾周全。",
-                  "Crisp savoury Jian Bing, £6.50 lunch crepes, slow-braised beef over rice, warming vegan curry, £1 pan-fried dumplings and silky house soya milk."
+                  "招牌烤鸭、清真牛鸡与素菜果蔬煎饼（中份 £8 起）、优惠套餐（£12 起）、焦糖布蕾与抹茶开心果可丽饼、卤肉/炖牛肉盖饭、手工煎饺馄饨与港式特色饮品——价格以门店最新菜单为准。",
+                  "Roast Duck, Halal beef & chicken and veggie Jian Bing (medium from £8), £12+ Meal Deals, Crème Brûlée & Matcha Pistachio crepes, braised beef & pork rice bowls, pan-fried dumplings and Hong Kong milk teas."
                 )}
               </p>
             </div>
@@ -102,12 +102,12 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                 <>
                   <p>
                     {zhText(
-                      "清真牛肉煎饼、清真鸡肉煎饼及牛肉煎饺均选用清真肉类食材，并同时供应蛋奶素煎饼、素煎饺与纯素日式咖喱，点单时可通过顶部「饮食筛选」一键查看。"
+                      "清真牛肉煎饼、清真鸡肉煎饼、清真牛肉夹馍、牛肉煎饺及牛肉馄饨均选用清真肉类食材，并同时供应蛋奶素果蔬煎饼、菠菜芝士煎饼、素煎饺及纯素春卷与多款饮品，点单时可通过顶部「饮食筛选」一键查看。"
                     )}
                   </p>
                   <p>
                     {zhText(
-                      "本店厨房日常使用小麦/麸质、鸡蛋、芝麻、大豆、乳制品、甲壳类（鲜虾馄饨）及坚果（榛子巧克力酱）。如您对任何食材过敏，请在下单前致电 "
+                      "本店厨房日常使用小麦/麸质、鸡蛋、芝麻、大豆、乳制品、甲壳类（鲜虾馄饨、芝麻虾多士）及坚果（榛子巧克力酱、开心果）。如您对任何食材过敏，请在下单前致电 "
                     )}
                     <a
                       href={restaurant.phone.href}
@@ -118,9 +118,7 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                     {zhText("或在点单时告知店员。")}
                   </p>
                   <p>
-                    {zhText("标注")}
-                    <strong>{zhText("「价格以店内为准」")}</strong>
-                    {zhText("的实拍菜品，其当日售价请以门店现场或 ")}
+                    {zhText("本页所有菜品与售价均已同步门店 2026 最新菜单。线上外卖可直接前往 ")}
                     <a
                       href={restaurant.links.orderOnline}
                       target="_blank"
@@ -129,7 +127,7 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                     >
                       {zhText(`${restaurant.links.orderOnlineProviderZh}页面`)}
                     </a>
-                    {zhText("为准。如需到店自取，可前往 ")}
+                    {zhText("下单；如需到店自取，可前往 ")}
                     <Link
                       href="/visit-us"
                       className="font-semibold text-ink underline underline-offset-4 hover:text-cinnabar"
@@ -142,17 +140,18 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
               ) : (
                 <>
                   <p>
-                    Our signature Beef &amp; Chicken Jian Bing crepes and
-                    pan-fried beef dumplings are made with{" "}
-                    <strong>Halal meat</strong>, alongside dedicated vegetarian
-                    crepes, veggie dumplings, and vegan Japanese curry. Use the
-                    dietary filter bar above to narrow the menu in one tap.
+                    Our Beef &amp; Chicken Jian Bing crepes, Beef Stuffed Bun,
+                    pan-fried beef dumplings, and beef wontons are made with{" "}
+                    <strong>Halal meat</strong>, alongside vegetarian crepes
+                    (Veggie Lover &amp; Spinach &amp; Cheese), veggie dumplings,
+                    and vegan spring rolls &amp; drinks. Use the dietary filter
+                    bar above to narrow the menu in one tap.
                   </p>
                   <p>
                     Our kitchen handles wheat/gluten, eggs, sesame, soy, dairy,
-                    crustaceans (prawn wontons), and nuts (Nutella). If you
-                    have a food allergy or intolerance, please speak with our
-                    team on{" "}
+                    crustaceans (prawn wontons &amp; prawn toast), and nuts
+                    (Nutella &amp; pistachio). If you have a food allergy or
+                    intolerance, please speak with our team on{" "}
                     <a
                       href={restaurant.phone.href}
                       className="font-semibold text-ink underline decoration-cinnabar/40 underline-offset-4 hover:text-cinnabar"
@@ -162,8 +161,8 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                     before placing your order.
                   </p>
                   <p>
-                    Items marked <strong>Price TBC</strong> vary seasonally or by
-                    toppings; please check at the counter or on our{" "}
+                    All prices match our current Camden Road counter menu. Order
+                    for delivery on our{" "}
                     <a
                       href={restaurant.links.orderOnline}
                       target="_blank"
@@ -172,7 +171,7 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
                     >
                       {restaurant.links.orderOnlineProvider} page
                     </a>
-                    . Heading over in person?{" "}
+                    , or heading over in person?{" "}
                     <Link
                       href="/visit-us"
                       className="font-semibold text-ink underline underline-offset-4 hover:text-cinnabar"

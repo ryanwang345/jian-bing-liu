@@ -27,10 +27,10 @@ const griddleSteps: Array<{
       en: "Fresh red dragon fruit, beetroot, and spinach batters (zero food dye) are poured onto sizzling cast iron and spread paper-thin with cracked egg.",
       zh: "零色素！新鲜红心火龙果、甜菜根与菠菜现榨调成的果蔬面糊淋上热铁板，迅速摊圆磕入鲜蛋，激出麦香与蛋香。",
     },
-    image: "/images/griddle-batter-egg.webp",
+    image: "/images/mrs-liu-rainbow-griddle.webp",
     alt: {
-      en: "Fresh vegetable batter and cracked egg cooking evenly across a seasoned cast-iron Jian Bing griddle",
-      zh: "圆铁板上正在均匀摊开的彩色果蔬面糊与鲜蛋",
+      en: "Mrs Liu spreading a vibrant natural fruit-and-veg batter onto a sizzling cast-iron Jian Bing griddle",
+      zh: "刘阿姨在圆铁板上现场摊开鲜榨多彩果蔬面糊",
     },
   },
   {
@@ -38,13 +38,13 @@ const griddleSteps: Array<{
     title: { en: "Brushed & Layered", zh: "刷秘制酱铺满料" },
     chinese: "刷酱加料",
     description: {
-      en: "We brush on our savoury homemade sauce and pile on crisp lettuce, spring onions, crispy fried onions, and your choice of Halal beef, chicken, or veggies.",
-      zh: "刷上自家调制的咸香酱汁，铺满脆生菜、香葱、酥脆炸洋葱，再按口味加入清真牛肉、鸡肉或爽脆时蔬。",
+      en: "We brush on our savoury homemade sauce and pile on crisp lettuce, spring onions, crispy fried onions, and your choice of Roast Duck, Halal beef, chicken, char siu, or veggies.",
+      zh: "刷上自家调制的咸香酱汁，铺满脆生菜、香葱、酥脆炸洋葱，再按口味加入烤鸭、清真牛肉、鸡肉、叉烧或爽脆时蔬。",
     },
-    image: "/images/folded-rainbow-crepe.webp",
+    image: "/images/mrs-liu-adding-filling.webp",
     alt: {
-      en: "Colourful savoury Jian Bing crepe layered with fresh greens and folded warm on the griddle",
-      zh: "热铁板上刷好酱、铺满青菜并折起一半的果蔬煎饼",
+      en: "Mrs Liu adding generous savoury meat and fresh toppings onto a freshly spun crepe on the hot griddle",
+      zh: "刘阿姨往刚摊好的铁板煎饼上大方铺满肉料与配菜",
     },
   },
   {
@@ -55,10 +55,10 @@ const griddleSteps: Array<{
       en: "Folded straight into our 煎饼刘 (爱民) brown paper sleeve while the eggy crepe is still soft and the centre is piping hot and crisp.",
       zh: "迅速折好装入印有「煎饼刘 · 爱民」印章的暖黄牛皮纸袋，每一口都是外柔内脆的热乎满足。",
     },
-    image: "/images/jianbing-apron-hero.webp",
+    image: "/images/dragonfruit-pink-jianbing.webp",
     alt: {
-      en: "Generously filled Jian Bing wrapped in a kraft sleeve held in front of the embroidered Jian Bing Liu apron",
-      zh: "装在牛皮纸袋里饱满厚实的咸味煎饼，背景为印有煎饼刘与爱民印章的黑色围裙",
+      en: "Freshly griddled pink dragon-fruit Jian Bing packed with fillings and served piping hot",
+      zh: "刚出锅的粉嫩火龙果果蔬煎饼，内馅扎实饱满、趁热飘香",
     },
   },
 ];

@@ -5,9 +5,9 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "Menu",
   description:
-    "Menu and prices for Jian Bing Liu on Camden Road, London: Halal Beef & Chicken Jian Bing, Veggie Lover crepes, braised beef rice, vegan Japanese curry, dumplings, wonton soups, sweet crepes, and drinks.",
+    "2026 menu and prices for Jian Bing Liu on Camden Road, London: Roast Duck, Halal Beef & Chicken Jian Bing, Crème Brûlée & Matcha Pistachio sweet crepes, meal deals from £12, braised rice bowls, dumplings, wontons, and drinks.",
   path: "/menu",
-  image: "/images/beef-crepe-sleeve.webp",
+  image: "/images/roast-duck-jianbing.webp",
 });
 
 function parseDietParam(raw: string | string[] | undefined): MenuDietaryFilter {

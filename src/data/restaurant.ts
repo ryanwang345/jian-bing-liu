@@ -32,8 +32,8 @@ export const restaurant = {
   sealText: "爱民",
   chineseTagline: "正宗风味 · 果蔬煎饼",
   description: {
-    en: "Warm, freshly griddled Northern Chinese Jian Bing tucked away on Camden Road. Natural dragon fruit, beetroot and spinach batters — never food dye — with Halal beef & chicken, veggie & vegan choices, £1 dumplings and sweet crepes. Takeaway & delivery. 4.9★ on Google.",
-    zh: "藏在伦敦卡姆登路上的家常煎饼小店。刘阿姨国内退休后赴英三次从零开始，每天现切红心火龙果、甜菜根与菠菜榨汁和面（零色素），现摊清真牛鸡与素食煎饼、脆底煎饺与现磨豆浆。仅限外带与配送，Google 4.9★ 好评。",
+    en: "Warm, freshly griddled Northern Chinese Jian Bing tucked away on Camden Road. Natural dragon fruit, beetroot and spinach batters — never food dye — with Roast Duck, Halal beef & chicken, veggie choices, Crème Brûlée & Matcha crepes and Hong Kong milk teas. Takeaway & delivery. 4.9★ on Google.",
+    zh: "藏在伦敦卡姆登路上的家常煎饼小店。刘阿姨国内退休后赴英三次从零开始，每天现切红心火龙果、甜菜根与菠菜榨汁和面（零色素），现摊招牌烤鸭、清真牛鸡与素菜煎饼、焦糖布蕾与抹茶开心果可丽饼、手工煎饺与港式饮品。仅限外带与配送，Google 4.9★ 好评。",
   },
   shortIntro: {
     en: "After retiring in China, Mrs Liu started over in London — third time lucky. One cast-iron griddle on Camden Road, fresh dragon fruit & beetroot squeezed every morning, and crisp Jian Bing folded hot to order.",
@@ -152,8 +152,8 @@ export const restaurant = {
         zh: "绝不用一滴食用色素。粉色和翠绿的饼皮，来自后厨每天现切鲜榨的红心火龙果、甜菜根和菠菜。再刷上刘阿姨自己熬的咸香酱、辣椒油，旁边还有慢炖土豆牛肉、纯素咖喱、脆底煎饺与现磨热豆浆。",
       },
       {
-        en: "Whether you're a UCL or CSM student missing the taste of home, a Camden local grabbing a £6.50 lunch crepe, or a group mixing Halal beef, veggie and vegan orders, pop in for something hot to go or order delivery straight to your door.",
-        zh: "不管是想念老家味道的留学生、路过顺手买份 £6.5 午市煎饼的卡姆登街坊，还是清真、素食朋友一起拼单，只要铁板还热着，我们就在卡姆登路 124 号现点现做，等你趁热带走。",
+        en: "Whether you're a UCL or CSM student missing the taste of home, a Camden local grabbing an £8 medium Jian Bing or £12 Meal Deal, or a group mixing Halal beef, Roast Duck and veggie orders, pop in for something hot to go or order delivery straight to your door.",
+        zh: "不管是想念老家味道的留学生、路过顺手买份 £8 中份煎饼或 £12 优惠套餐的卡姆登街坊，还是清真牛鸡、烤鸭与素食朋友一起拼单，只要铁板还热着，我们就在卡姆登路 124 号现点现做，等你趁热带走。",
       },
     ],
     pillars: [
@@ -177,8 +177,8 @@ export const restaurant = {
         title: { en: "Halal, Veggie & Vegan Friendly", zh: "清真、素食与纯素皆全" },
         chinese: "丰俭由人",
         description: {
-          en: "Halal beef and chicken Jian Bing and £1 beef dumplings sit right alongside veggie crepes, veg dumplings and warming vegan curry.",
-          zh: "清真牛鸡煎饼与 £1 牛肉煎饺之外，同样备齐素食果蔬煎饼、素煎饺与暖胃纯素咖喱，一家人或朋友拼单都方便。",
+          en: "Halal beef & chicken Jian Bing, Halal Beef Buns and 6-piece Beef Dumplings sit alongside veggie crepes, spring onion flatbread, veggie dumplings and refreshing vegan teas.",
+          zh: "清真牛鸡煎饼、清真牛肉大包与 6 只牛肉煎饺之外，同样备齐素菜煎饼、葱油饼、素煎饺与多款纯素鲜果茶饮，拼单特别方便。",
         },
       },
     ],

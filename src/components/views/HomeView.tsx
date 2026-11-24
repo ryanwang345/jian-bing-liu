@@ -46,50 +46,50 @@ const craftGalleryStrip: Array<{
   hashtag: string;
 }> = [
   {
-    src: "/images/veggie-crepe-griddle.webp",
+    src: "/images/roast-duck-jianbing.webp",
     alt: {
-      en: "Colourful fruit-and-vegetable batter crepe topped with herbs and shredded fillings on the hot griddle",
-      zh: "热铁板上天然调色的彩色果蔬面糊煎饼，铺满鲜绿青菜与香葱",
+      en: "Crisp-skinned roast duck sliced generously onto a freshly griddled green vegetable-batter Jian Bing",
+      zh: "翠绿果蔬煎饼皮上铺满现切片的金黄脆皮烤鸭",
     },
-    label: { en: "Natural Fruit & Veg Batter", zh: "鲜榨果蔬饼皮" },
-    hashtag: "#ZeroFoodDye",
+    label: { en: "Roast Duck Jian Bing · £12", zh: "招牌烤鸭煎饼 · £12" },
+    hashtag: "#RoastDuckJianBing",
   },
   {
-    src: "/images/fancy-lace-dessert-cone.webp",
+    src: "/images/creme-brulee-crepe.webp",
     alt: {
-      en: "Hand-piped pink lace dessert crepe cone with whipped cream, fresh fruit, and biscuit sticks",
-      zh: "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与抹茶饼干棒",
+      en: "Caramelised Crème Brûlée & Mascarpone sweet crepe cone ringed with fresh strawberries",
+      zh: "围满新鲜草莓与巧克力脆卷的现烤焦糖布蕾蛋糕可丽饼",
     },
-    label: { en: "Pink Lace Crepe Cones", zh: "手工粉色蕾丝甜筒" },
-    hashtag: "#PinkLaceCrepe",
+    label: { en: "Crème Brûlée Crepe · £11", zh: "焦糖布蕾可丽饼 · £11" },
+    hashtag: "#CremeBruleeCrepe",
   },
   {
-    src: "/images/veg-spring-rolls.webp",
+    src: "/images/matcha-pistachio-crepe.webp",
     alt: {
-      en: "Golden crispy vegetarian spring rolls served on a heart-shaped plate",
-      zh: "心形白盘上金黄酥脆的传统素春卷",
+      en: "Green tea matcha crepe cone piled with pistachio crumble and rich matcha dusting",
+      zh: "铺满细腻抹茶开心果碎与可爱小兔点缀的抹茶布蕾可丽饼",
     },
-    label: { en: "Crispy Veggie Spring Rolls", zh: "金黄酥脆素春卷" },
-    hashtag: "#CamdenSnacks",
+    label: { en: "Matcha Pistachio Crepe · £12", zh: "抹茶开心果可丽饼 · £12" },
+    hashtag: "#MatchaPistachio",
   },
   {
-    src: "/images/spiced-tea-eggs.webp",
+    src: "/images/brulee-boba-milk-tea.webp",
     alt: {
-      en: "Spiced Chinese tea eggs steeping in dark soy and aromatic black tea marinade",
-      zh: "浓郁红茶五香卤汁里浸泡的整颗茶叶蛋",
+      en: "Two cups of iced Hong Kong boba milk tea crowned with caramelised pudding and glossy black pearls",
+      zh: "两杯顶着焦糖布丁与晶莹黑糖珍珠的冰爽港式奶茶",
     },
-    label: { en: "Spiced Tea Eggs", zh: "古法五香茶叶蛋" },
-    hashtag: "#ChineseStreetFood",
+    label: { en: "HK Boba Milk Tea · £6", zh: "港式奶茶撞珍珠 · £6" },
+    hashtag: "#HKMilkTea",
   },
 ];
 
 const featuredDishTags: LocalizedText[] = [
-  { en: "Crisp, hot & properly filling", zh: "外脆里软 · 拿在手里沉甸甸" },
-  { en: "Fresh fruit & veg batter, 0% dye", zh: "每日鲜榨果蔬皮 · 零色素" },
-  { en: "Slow-braised until fork-tender", zh: "慢火咕嘟炖烂 · 拌饭最香" },
-  { en: "Mild, velvety & warming", zh: "温和顺滑 · 暖胃纯素热饭" },
-  { en: "Golden crispy bottoms · £1 each", zh: "现煎金黄脆底 · £1 一只" },
-  { en: "Warm, soft & generously spread", zh: "热乎松软 · 现抹榛子巧克力" },
+  { en: "Crisp roast duck · green batter", zh: "现切脆皮烤鸭 · 果蔬饼皮" },
+  { en: "Halal beef · Med £9 / Reg £12", zh: "清真牛肉 · 中份 £9 / 标准 £12" },
+  { en: "Fresh fruit & veg batter · 0% dye", zh: "每日鲜榨果蔬皮 · 零色素" },
+  { en: "Torched caramelised custard top", zh: "现烤焦糖脆壳 · 鲜草莓" },
+  { en: "Matcha & nutty pistachio fluff", zh: "清香抹茶 · 开心果奶油脆" },
+  { en: "Slow-braised · £15 / Large £17", zh: "慢火咕嘟炖烂 · 拌饭最香" },
 ];
 
 const trendingTickerItems: Array<{
@@ -97,10 +97,10 @@ const trendingTickerItems: Array<{
   dot: string;
 }> = [
   { label: { en: "FRESH DRAGON FRUIT & BEETROOT BATTER · NEVER FOOD DYE", zh: "每天现切红心火龙果 · 甜菜根榨汁和面" }, dot: "bg-cinnabar" },
-  { label: { en: "CRACKED EGG, WONTON CRUNCH & HOUSE CHILLI OIL", zh: "热锅磕双蛋 · 现炸薄脆与自家熬制辣椒油" }, dot: "bg-turmeric" },
-  { label: { en: "HALAL BEEF & CHICKEN · VEGGIE & VEGAN CHOICES", zh: "清真牛鸡与素食纯素皆全 · 怎么点都合适" }, dot: "bg-jade" },
-  { label: { en: "HOUSE SOYA MILK £2 · PAN-FRIED DUMPLINGS £1", zh: "温润现磨豆浆 £2 · 金黄脆底煎饺 £1 一只" }, dot: "bg-turmeric" },
-  { label: { en: "WARM SWEET CREPES FROM £4 · PINK LACE CONES", zh: "热乎甜煎饼 £4 起 · 手工粉色蕾丝甜筒" }, dot: "bg-cinnabar" },
+  { label: { en: "ROAST DUCK £12 · HALAL BEEF & CHICKEN FROM £8", zh: "新品烤鸭煎饼 £12 · 清真牛鸡煎饼 £8 起" }, dot: "bg-turmeric" },
+  { label: { en: "MEAL DEALS FROM £12 (JIAN BING + DRINK)", zh: "优惠套餐 £12 起（招牌煎饼 + 港式柠檬茶/豆浆）" }, dot: "bg-jade" },
+  { label: { en: "CRÈME BRÛLÉE £11 · MATCHA PISTACHIO CREPE £12", zh: "焦糖布蕾可丽饼 £11 · 抹茶开心果可丽饼 £12" }, dot: "bg-turmeric" },
+  { label: { en: "PAN-FRIED DUMPLINGS (6 PCS) FROM £5 · WARM SOYA MILK £4", zh: "现煎手工饺子 6 只 £5 起 · 热豆奶 / 黑芝麻糊 £4" }, dot: "bg-cinnabar" },
   { label: { en: "4.9★ ON GOOGLE (287+ REVIEWS) · 124 CAMDEN RD NW1", zh: "Google 4.9★ 街坊口碑 · 卡姆登路 124 号" }, dot: "bg-jade" },
 ];
 
@@ -168,8 +168,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
               <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted sm:text-[17px]">
                 {pick(
-                  "红心火龙果、甜菜根和菠菜每天现切榨汁和面，不加一滴色素；热锅磕双蛋、刷刘阿姨自家熬的咸香酱、夹上酥脆薄脆——像在家门口买的一样热乎实在。",
-                  "Natural fruit-and-veg batters — never food dye — cracked with egg, brushed with Mrs Liu's savoury house sauce and folded around a proper wonton crunch. Warm, filling street food made the way it's done back home."
+                  "新鲜红心火龙果、甜菜根和菠菜直接榨汁和面，出锅就是自然果蔬色。每一张都是现点现摊，磕鲜蛋、刷刘阿姨自家熬的酱、裹上金黄薄脆，捧在手里沉甸甸的，还是国内街口那股热乎香。",
+                  "Real dragon fruit, beetroot and spinach go straight into our batter for natural colour. Cooked to order with fresh egg, Mrs Liu's savoury house sauce and a crisp golden cracker folded right into the middle — hearty, comforting street food just like back home."
                 )}
               </p>
 
@@ -223,10 +223,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   {pick("素食 · 纯素可选", "Veggie & Vegan")}
                 </Link>
                 <Link
-                  href="/menu#lunchtime-specials"
+                  href="/menu#meal-deals"
                   className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white px-3 py-1.5 tabular-nums text-ink-soft transition-all hover:-translate-y-0.5 hover:border-cinnabar/45 hover:text-cinnabar"
                 >
-                  {pick("午市煎饼 £6.50 起", "Lunch From £6.50")}
+                  {pick("优惠套餐 £12 起", "Meal Deals From £12")}
                 </Link>
               </div>
 
@@ -334,7 +334,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                         </p>
                       </div>
                       <span className="shrink-0 rounded-full border border-[#F0C26E]/45 bg-ink/80 px-3.5 py-1 font-sans text-xs font-bold tabular-nums text-[#F0C26E] backdrop-blur-md">
-                        £6.50 – £10
+                        £8 – £14
                       </span>
                     </div>
                   </Link>
@@ -343,14 +343,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 {/* Two Flush Unobstructed Supporting Food Photos Underneath */}
                 <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
                   <Link
-                    href="/menu?diet=halal"
+                    href="/menu#savoury-crepes"
                     className="apple-card group relative aspect-[16/10] overflow-hidden rounded-[22px] border-2 border-white/95 bg-kraft shadow-md ring-1 ring-kraft-deep/80"
                   >
                     <Image
-                      src="/images/veggie-crepe-griddle.webp"
+                      src="/images/roast-duck-jianbing.webp"
                       alt={pick(
-                        "热铁板上天然红心火龙果与菠菜调色的果蔬煎饼",
-                        "Naturally pink and green fruit-and-vegetable Jian Bing batter sizzling on the griddle"
+                        "翠绿果蔬煎饼皮上铺满现切片的金黄脆皮烤鸭",
+                        "Sliced crisp roast duck laid across a freshly griddled natural green Jian Bing crepe"
                       )}
                       fill
                       sizes="(max-width: 1024px) 48vw, 28vw"
@@ -358,10 +358,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-3.5 pt-10 pb-3 text-parchment">
                       <p className="text-xs font-bold text-[#F0C26E]">
-                        {pick("鲜切火龙果 · 甜菜根", "Real Dragon Fruit & Veg")}
+                        {pick("新品热卖 · £12", "Roast Duck · £12")}
                       </p>
                       <p className="mt-0.5 text-xs text-parchment/95 sm:text-sm sm:font-semibold">
-                        {pick("天然果蔬饼皮现摊", "Natural Colour Batters")}
+                        {pick("招牌烤鸭果蔬煎饼", "Roast Duck Jian Bing")}
                       </p>
                     </div>
                   </Link>
@@ -371,10 +371,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                     className="apple-card group relative aspect-[16/10] overflow-hidden rounded-[22px] border-2 border-white/95 bg-kraft shadow-md ring-1 ring-kraft-deep/80"
                   >
                     <Image
-                      src="/images/fancy-lace-dessert-cone.webp"
+                      src="/images/creme-brulee-crepe.webp"
                       alt={pick(
-                        "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与抹茶饼干棒",
-                        "Hand-piped pink lace sweet crepe cone with cream and fresh strawberries"
+                        "围满新鲜草莓与巧克力脆卷的现烤焦糖布蕾蛋糕可丽饼",
+                        "Caramelised Crème Brûlée custard sweet crepe cone ringed with fresh strawberries"
                       )}
                       fill
                       sizes="(max-width: 1024px) 48vw, 28vw"
@@ -382,10 +382,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-3.5 pt-10 pb-3 text-parchment">
                       <p className="text-xs font-bold text-[#F0C26E]">
-                        {pick("甜煎饼 £4 起", "Sweet Crepes · From £4")}
+                        {pick("可丽饼 £5 起 · 布蕾 £11", "Sweet Crepes · From £5")}
                       </p>
                       <p className="mt-0.5 text-xs text-parchment/95 sm:text-sm sm:font-semibold">
-                        {pick("手工花式蕾丝甜筒", "Hand-Piped Lace Cones")}
+                        {pick("焦糖布蕾蛋糕可丽饼", "Crème Brûlée Crepe")}
                       </p>
                     </div>
                   </Link>
@@ -499,8 +499,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 "Cooked warm to order, just like back home"
               )}
               description={pick(
-                "现摊果蔬咸煎饼、慢炖土豆牛肉饭、£1 金黄脆底煎饺与温热甜煎饼——料足价实，趁热最好吃。",
-                "From crisp savoury Jian Bing and slow-braised beef over rice to £1 pan-fried dumplings and warm sweet crepes — simple, generous food with nothing hidden."
+                "招牌烤鸭与清真牛鸡煎饼、焦糖布蕾与抹茶开心果可丽饼、萝卜炖牛肉饭与手工煎饺——全线明码实价，现点现做。",
+                "From Roast Duck and Halal Beef Jian Bing to torched Crème Brûlée crepes, Matcha Pistachio crepes and slow-braised beef rice — simple, generous food cooked warm to order."
               )}
             />
             <Link
@@ -635,49 +635,49 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {[
               {
-                tag: pick("招牌咸口 · 清真可选", "The Classic · Halal"),
-                title: pick("牛肉 / 鸡肉煎饼 + 热豆浆", "Beef or Chicken Jian Bing + House Soya Milk"),
-                price: "£10 + £2",
+                tag: pick("优惠套餐 · 清真可选", "Meal Deal · Halal"),
+                title: pick("牛肉 / 鸡肉煎饼 + 港式柠檬茶或豆浆", "Beef or Chicken Jian Bing Meal Deal"),
+                price: "£12 – £13",
                 desc: pick(
-                  "现摊双蛋果蔬饼皮刷自家咸香酱，裹满酥脆炸洋葱和清真牛肉或鸡肉，再配一杯温润顺滑的热豆浆，最妥帖的一顿。",
-                  "A crisp two-egg savoury crepe brushed with house sauce, crunchy fried shallots and Halal beef or chicken, alongside silky warm soya milk."
+                  "招牌清真鸡肉（£12）或牛肉煎饼（£13），直接配一杯冰爽港式冻柠茶或温润现磨豆浆，热乎顶饱又划算。",
+                  "Signature Halal Chicken (£12) or Beef (£13) Jian Bing paired with Hong Kong Iced Lemon Tea or freshly ground house soya milk."
                 ),
-                image: "/images/beef-crepe-sleeve.webp",
+                image: "/images/beef-jianbing-stack.webp",
                 alt: pick(
-                  "牛皮纸袋里撒满黑芝麻的热乎招牌牛肉煎饼",
-                  "Warm black-sesame Halal Beef Jian Bing crepe in a brown paper sleeve"
+                  "印有煎饼刘字样的牛皮纸袋下对半切开的满馅招牌牛肉煎饼",
+                  "Stacked Halal Beef Jian Bing sliced in half beneath the Jian Bing Liu kraft sleeve"
                 ),
-                href: "/menu?diet=halal",
-                cta: pick("查看清真煎饼", "See Halal Crepes"),
+                href: "/menu#meal-deals",
+                cta: pick("查看优惠套餐", "See Meal Deals"),
               },
               {
-                tag: pick("午后甜口", "Something Sweet"),
-                title: pick("粉色蕾丝甜筒 / 榛子巧克力甜煎饼", "Pink Lace Crepe Cone or Warm Nutella Crepe"),
-                price: pick("£4 起", "From £4"),
+                tag: pick("午后甜口", "Sweet Crepes"),
+                title: pick("焦糖布蕾 / 抹茶开心果可丽饼", "Crème Brûlée or Matcha Pistachio Crepe"),
+                price: "£11 – £12",
                 desc: pick(
-                  "铁板手挤轻脆粉色蕾丝卷成甜筒，装满绵密奶油与鲜果，或来一份热乎松软的榛子巧克力甜煎饼，甜而不腻。",
-                  "Hand-piped pink lace crepe rolled with whipped cream and fresh fruit, or a soft warm Nutella crepe straight off the griddle."
+                  "现烤焦糖脆壳马斯卡彭布蕾配鲜草莓（£11），或茶香浓郁的抹茶开心果布蕾可丽饼（£12）；也有 £5 热乎巧克力可丽饼。",
+                  "Torched Crème Brûlée & Mascarpone with fresh strawberries (£11), or rich Matcha & Pistachio Fluff (£12) — plus warm Chocolate Crepes for £5."
                 ),
-                image: "/images/fancy-lace-dessert-cone.webp",
+                image: "/images/matcha-pistachio-crepe.webp",
                 alt: pick(
-                  "粉色手工蕾丝边甜筒煎饼，装满奶油、鲜果与饼干棒",
-                  "Hand-piped pink lace sweet crepe cone with cream, strawberries, and biscuit sticks"
+                  "铺满细腻抹茶粉与开心果碎的抹茶开心果布蕾蛋糕可丽饼",
+                  "Green tea matcha crepe cone topped with generous pistachio crumble"
                 ),
                 href: "/menu#sweet-crepes-and-desserts",
-                cta: pick("看甜煎饼菜单", "See Sweet Crepes"),
+                cta: pick("看可丽饼菜单", "See Sweet Crepes"),
               },
               {
-                tag: pick("暖胃热饭 · 含纯素", "Warm Bowls & Dumplings"),
-                title: pick("慢炖牛肉饭 / 纯素咖喱 + 脆底煎饺", "Slow-Braised Beef or Vegan Curry + Dumplings"),
-                price: "£7.95 – £12.95",
+                tag: pick("暖胃热饭 · 小吃", "Warm Rice & Dumplings"),
+                title: pick("卤肉饭 / 萝卜炖牛肉饭 + 6 只煎饺", "Braised Pork or Beef Rice + 6 Dumplings"),
+                price: "£10 – £17",
                 desc: pick(
-                  "炖得软烂入味的土豆胡萝卜牛肉或温和浓香的纯素日式咖喱，浇在热白米饭上，再顺手加几只 £1 金黄脆底煎饺，特别暖胃。",
-                  "Fork-tender braised beef or gently spiced vegan Japanese curry over steamed white rice, plus golden pan-fried beef or veggie dumplings from £1."
+                  "油润入味的台湾卤肉饭（£10）或软烂炖牛肉饭（£15/£17），顺手加一份 6 只装脆底素饺（£5）或牛肉煎饺（£6），格外暖胃。",
+                  "Taiwanese Braised Pork Rice (£10) or Slow-Braised Beef Rice (£15/£17), paired with 6 golden pan-fried veggie (£5) or Halal beef dumplings (£6)."
                 ),
                 image: "/images/braised-beef-rice.webp",
                 alt: pick(
-                  "慢炖土豆胡萝卜牛肉配热腾腾的白米饭",
-                  "Slow-braised beef with potatoes, carrots, and steamed white rice"
+                  "慢炖萝卜胡萝卜牛肉配热腾腾的白米饭",
+                  "Slow-braised beef with radish, carrots, and steamed white rice"
                 ),
                 href: "/menu#mains-and-rice",
                 cta: pick("查看热菜与煎饺", "See Mains & Dumplings"),
@@ -752,14 +752,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </div>
                 <h2 className="mt-3.5 font-display text-xl font-semibold text-ink">
                   {pick(
-                    "清真牛肉与鸡肉，午市 £6.5 起",
-                    "Halal beef & chicken, lunch from £6.50"
+                    "清真牛肉与鸡肉，中份 £8 起",
+                    "Halal beef & chicken, medium from £8"
                   )}
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                   {pick(
-                    "招牌牛肉煎饼、鸡肉煎饼（£10）、午市简餐（£6.5）及脆底牛肉煎饺（£1/只）均采用清真肉类食材，支持一键筛选全部清真菜品。",
-                    "Signature Halal Beef & Chicken Jian Bing (£10), £6.50 lunch crepes, and £1 pan-fried beef dumplings. Filter all Halal dishes in one tap."
+                    "招牌清真鸡肉煎饼（£8/£11）、清真牛肉煎饼（£9/£12）、优惠套餐（£12 起）、清真牛肉大包（£3.50）与牛肉煎饺（6 个 £6）均选用清真肉类食材。",
+                    "Signature Halal Chicken (£8/£11) & Beef Jian Bing (£9/£12), Meal Deals from £12, Halal Beef Buns (£3.50) and 6-piece Beef Dumplings (£6). Filter all Halal dishes in one tap."
                   )}
                 </p>
               </div>
@@ -849,8 +849,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                   {pick(
-                    "价格透明（£1 起），到店现摊外带或外卖直达；除经典咸甜煎饼外，还提供素食果蔬煎饼、菠菜芝士煎饼、素煎饺与纯素日式咖喱。",
-                    "Clear in-store prices from £1 for quick takeaway and delivery, plus Veggie Lover crepes, veg dumplings, and Vegan Japanese Curry."
+                    "明码实价（小吃 £2.50 起），到店现摊外带或外卖直达；除咸甜煎饼外，还备有素菜煎饼（£9）、菠菜芝士煎饼（£10）、葱油饼（£2.50）与 6 只素煎饺（£5）。",
+                    "Clear in-store prices from £2.50 for quick takeaway and delivery, plus Veggie Lover (£9) & Spinach Cheese (£10) Jian Bing, Spring Onion Flatbread (£2.50) and 6-piece Veggie Dumplings (£5)."
                   )}
                 </p>
               </div>
@@ -877,10 +877,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             <Reveal variant="scale" className="col-span-7">
             <div className="relative aspect-[3/4] overflow-hidden rounded-3xl border-2 border-parchment bg-kraft shadow-lg">
               <Image
-                src="/images/chef-lace-crepe.webp"
+                src="/images/mrs-liu-sweet-cones.webp"
                 alt={pick(
-                  "煎饼刘主厨在卡姆登厨房里微笑展示刚出锅的手工蕾丝煎饼",
-                  "Chef at Jian Bing Liu in Camden smiling while lifting a freshly made lace crepe in the kitchen"
+                  "刘阿姨在卡姆登档口后微笑举起两份刚做好的鲜草莓甜煎饼",
+                  "Mrs Liu smiling warmly behind the Camden counter holding two freshly made strawberry sweet crepes"
                 )}
                 fill
                 sizes="(max-width: 1024px) 60vw, 30vw"
@@ -892,10 +892,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               <Reveal variant="scale" delay={120}>
               <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
-                  src="/images/brand-kraft-sleeve.webp"
+                  src="/images/mrs-liu-rainbow-griddle.webp"
                   alt={pick(
-                    "印有煎饼刘毛笔书法与爱民朱红印章的招牌牛皮纸袋",
-                    "Jian Bing Liu kraft crepe wrapper stamped with red script, Chinese calligraphy 煎饼刘, and our 爱民 seal"
+                    "刘阿姨身穿煎饼刘围裙在圆铁板上现摊红心火龙果与菠菜双色果蔬煎饼",
+                    "Mrs Liu in her Jian Bing Liu apron swirling naturally pink dragon-fruit and green spinach batter on the griddle"
                   )}
                   fill
                   sizes="(max-width: 1024px) 40vw, 20vw"
@@ -906,10 +906,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               <Reveal variant="scale" delay={220} className="flex flex-1 flex-col">
               <div className="relative flex-1 overflow-hidden rounded-2xl border-2 border-parchment bg-kraft shadow-md">
                 <Image
-                  src="/images/griddle-batter-egg.webp"
+                  src="/images/dragonfruit-blender-prep.webp"
                   alt={pick(
-                    "圆铁板上正在摊匀的彩色果蔬面糊与新鲜鸡蛋",
-                    "Swirling colourful vegetable batter and fresh egg on the round Jian Bing griddle"
+                    "卡姆登后厨搅拌机里现打的新鲜红心火龙果与甜菜根原汁",
+                    "Fresh red dragon fruit and beetroot blended daily in our Camden kitchen with zero food dye"
                   )}
                   fill
                   sizes="(max-width: 1024px) 40vw, 20vw"

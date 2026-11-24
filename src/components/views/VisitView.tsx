@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -266,6 +267,27 @@ export function VisitView() {
           </div>
 
           <div className="min-w-0 space-y-6 lg:col-span-7">
+            <figure className="relative overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
+              <div className="relative aspect-[16/10] w-full">
+                <Image
+                  src="/images/storefront-camden.webp"
+                  alt={pick(
+                    "伦敦卡姆登路 124 号煎饼刘门店外景，门口挂着红底中式果蔬煎饼旗帜",
+                    "Exterior of Jian Bing Liu at 124 Camden Road, London NW1 9EE with the red Chinese Jian Bing banner outside"
+                  )}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 58vw"
+                  className="object-cover"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pt-10 pb-3.5 text-xs font-medium text-parchment sm:text-sm">
+                  {pick(
+                    "门店外景 · 伦敦卡姆登路 124 号（认准门口红底中式果蔬煎饼旗帜）",
+                    "124 Camden Rd, NW1 9EE — look for the red Jian Bing banner outside"
+                  )}
+                </figcaption>
+              </div>
+            </figure>
+
             <div className="overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
               {mapReady ? (
                 <iframe
