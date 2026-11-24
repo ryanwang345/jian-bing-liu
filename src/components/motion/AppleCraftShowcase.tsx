@@ -137,6 +137,8 @@ export function AppleCraftShowcase() {
   const { isTraditional, t, zhText, pick } = useLocale();
   const [activeIndex, setActiveIndex] = useState(0);
   const runwayRef = useRef<HTMLElement>(null);
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const tabBtnRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const activeIdxRef = useRef(0);
   const pillFillRef = useRef<HTMLSpanElement>(null);
   const photoZoomRef = useRef<HTMLDivElement>(null);
@@ -145,7 +147,17 @@ export function AppleCraftShowcase() {
   const total = highlights.length;
   const current = highlights[activeIndex] ?? highlights[0];
 
-  // Scroll-scrubbed playback loop (pure rAF + direct DOM refs for 60/120fps)
+  // Keep the active pill tab centered inside the mobile horizontal strip without affecting vertical scroll
+  useEffect(() => {
+    const list = tabListRef.current;
+    const btn = tabBtnRefs.current[activeIndex];
+    if (!list || !btn || list.scrollWidth <= list.clientWidth) return;
+    const targetLeft =
+      btn.offsetLeft - (list.clientWidth - btn.offsetWidth) / 2;
+    list.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
+  }, [activeIndex]);
+
+  // Scroll-scrubbed playback loop across Desktop, iPad, and iPhone (pure rAF + direct DOM refs)
   useEffect(() => {
     const runway = runwayRef.current;
     if (!runway) return;
@@ -158,12 +170,6 @@ export function AppleCraftShowcase() {
 
     const updateFromScroll = () => {
       rafId = 0;
-      if (window.innerWidth < 1024) {
-        if (photoZoomRef.current) {
-          photoZoomRef.current.style.transform = "";
-        }
-        return;
-      }
       const rect = runway.getBoundingClientRect();
       const scrollable = runway.offsetHeight - window.innerHeight;
 
@@ -220,7 +226,6 @@ export function AppleCraftShowcase() {
 
       const scrollable = runway.offsetHeight - window.innerHeight;
       if (
-        window.innerWidth >= 1024 &&
         scrollable > 20 &&
         !window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
@@ -271,10 +276,10 @@ export function AppleCraftShowcase() {
       ref={runwayRef}
       aria-label={pick("铁板匠心亮点", "Crafted on the Griddle")}
       onKeyDown={handleKeyDown}
-      className="gradient-light-edge relative border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[250vh]"
+      className="gradient-light-edge relative h-[235svh] border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[250vh]"
     >
-      {/* Natural swipeable flow on iPhone & iPad portrait; sticky single-screen scrub on lg+ (iPad landscape & Desktop) */}
-      <div className="relative flex items-center overflow-x-clip motion-reduce:static motion-reduce:min-h-0 lg:sticky lg:top-[72px] lg:min-h-[calc(100svh-72px)]">
+      {/* Compact sticky single-viewport stage across iPhone, iPad, and Desktop (clears MobileActionBar at bottom!) */}
+      <div className="sticky top-[57px] flex min-h-[calc(100svh-57px)] items-center overflow-x-clip pb-[74px] motion-reduce:static motion-reduce:min-h-0 sm:top-[72px] sm:min-h-[calc(100svh-72px)] md:pb-6">
         {/* Subtle ambient glow that shifts with active slide */}
         <div
           aria-hidden="true"
@@ -282,24 +287,24 @@ export function AppleCraftShowcase() {
           style={{ backgroundImage: current.glow }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-6 xl:py-10">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 sm:py-6 lg:px-8 lg:py-6 xl:py-10">
           {/* Top Row: Heading + 4 Instant Step Tabs */}
-          <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end lg:gap-6">
-            <div>
-              <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
-                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+          <div className="flex flex-col justify-between gap-2.5 sm:gap-4 lg:flex-row lg:items-end lg:gap-6">
+            <div className="min-w-0">
+              <p className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#F0C26E] uppercase sm:text-xs">
+                <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 <span>{pick("滑动浏览后厨亮点", "Scroll to Explore")}</span>
                 <span aria-hidden="true" className="text-parchment/30">
                   ·
                 </span>
                 <span
                   lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                  className="font-calligraphy text-lg font-normal tracking-normal text-parchment/90 normal-case"
+                  className="font-calligraphy text-base font-normal tracking-normal text-parchment/90 normal-case sm:text-lg"
                 >
                   {zhText("匠心工艺")}
                 </span>
               </p>
-              <h2 className="mt-1.5 font-display text-2xl leading-[1.15] font-medium tracking-[-0.025em] text-parchment sm:text-4xl">
+              <h2 className="mt-1 font-display text-xl leading-[1.16] font-medium tracking-[-0.025em] text-parchment sm:mt-1.5 sm:text-3xl lg:text-4xl">
                 {pick(
                   "一口铁板，四件让人排队的理由。",
                   "One cast-iron griddle. Four reasons people queue."
@@ -307,22 +312,26 @@ export function AppleCraftShowcase() {
               </h2>
             </div>
 
-            {/* Always-Readable Pill Tabs */}
+            {/* Single-row horizontal strip on mobile so tabs never crowd out the photo; wraps nicely on sm+ */}
             <div
+              ref={tabListRef}
               role="tablist"
               aria-label={pick("选择查看亮点", "Choose a highlight")}
-              className="flex flex-wrap gap-1.5 sm:gap-2"
+              className="no-scrollbar flex w-full max-w-full flex-nowrap gap-1.5 overflow-x-auto pb-0.5 sm:w-auto sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0"
             >
               {highlights.map((item, idx) => {
                 const isActive = idx === activeIndex;
                 return (
                   <button
                     key={item.id}
+                    ref={(el) => {
+                      tabBtnRefs.current[idx] = el;
+                    }}
                     type="button"
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => jumpToIndex(idx)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300 sm:px-3.5 sm:py-2 ${
+                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-all duration-300 sm:px-3.5 sm:py-2 sm:text-xs ${
                       isActive
                         ? "bg-[#F0C26E] text-ink shadow-md"
                         : "border border-parchment/20 bg-white/[0.06] text-parchment/85 hover:border-parchment/40 hover:bg-white/[0.12] hover:text-parchment"
@@ -340,11 +349,11 @@ export function AppleCraftShowcase() {
           <div
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="mt-5 overflow-hidden rounded-[24px] border border-parchment/15 bg-white/[0.04] shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-xs sm:mt-7 sm:rounded-[28px]"
+            className="mt-3 overflow-hidden rounded-[22px] border border-parchment/15 bg-white/[0.04] shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-xs sm:mt-6 sm:rounded-[28px]"
           >
             <div className="grid grid-cols-1 items-stretch lg:grid-cols-12">
               {/* Full-Bleed Visual Stage with Live Scroll-Scrubbed Zoom */}
-              <div className="relative aspect-[16/10] w-full min-w-0 overflow-hidden bg-black/50 lg:col-span-7 lg:aspect-auto lg:min-h-[360px] xl:min-h-[420px]">
+              <div className="relative aspect-[16/9] w-full min-w-0 overflow-hidden bg-black/50 sm:aspect-[16/10] lg:col-span-7 lg:aspect-auto lg:min-h-[360px] xl:min-h-[420px]">
                 <div
                   ref={photoZoomRef}
                   className="absolute inset-0 will-change-transform"
@@ -374,28 +383,33 @@ export function AppleCraftShowcase() {
                 </div>
 
                 {/* Minimal Corner Counter */}
-                <span className="absolute top-3.5 left-3.5 z-10 rounded-full border border-white/15 bg-ink/70 px-3 py-1 font-sans text-xs font-semibold tabular-nums text-parchment/90 backdrop-blur-md">
+                <span className="absolute top-3 left-3 z-10 rounded-full border border-white/15 bg-ink/70 px-2.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums text-parchment/90 backdrop-blur-md sm:top-3.5 sm:left-3.5 sm:px-3 sm:py-1 sm:text-xs">
                   {current.number} / 0{total}
+                </span>
+
+                {/* Compact Mobile Stat Pill over bottom-right of image so mobile card stays crisp and fits 100% in viewport */}
+                <span className="absolute right-3 bottom-3 z-10 rounded-full border border-[#F0C26E]/35 bg-ink/80 px-3 py-1 font-display text-xs font-semibold tabular-nums text-[#F0C26E] backdrop-blur-md sm:hidden">
+                  {t(current.metricValue)}
                 </span>
               </div>
 
               {/* Crisp Editorial Content Column */}
-              <div className="flex min-w-0 flex-col justify-between p-5 sm:p-8 lg:col-span-5 lg:p-7 xl:p-10">
+              <div className="flex min-w-0 flex-col justify-between p-4 sm:p-7 lg:col-span-5 lg:p-7 xl:p-10">
                 <div key={current.id} className="animate-fade-up">
-                  <p className="text-xs font-semibold tracking-[0.18em] text-[#F0C26E] uppercase">
+                  <p className="text-[11px] font-semibold tracking-[0.16em] text-[#F0C26E] uppercase sm:text-xs">
                     {t(current.eyebrow)}
                   </p>
 
-                  <h3 className="mt-2 font-display text-xl leading-snug font-medium text-parchment sm:mt-3 sm:text-[1.85rem]">
+                  <h3 className="mt-1.5 font-display text-lg leading-snug font-medium text-parchment sm:mt-3 sm:text-[1.85rem]">
                     {t(current.title)}
                   </h3>
 
-                  <p className="mt-2.5 text-sm leading-relaxed text-parchment/80 sm:mt-4 sm:text-[15px]">
+                  <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-parchment/80 sm:mt-4 sm:line-clamp-none sm:text-[15px]">
                     {t(current.description)}
                   </p>
 
-                  {/* Key Stat Callout */}
-                  <div className="mt-4 rounded-2xl border border-parchment/12 bg-white/[0.05] px-4 py-3 sm:mt-6 sm:py-3.5">
+                  {/* Full Key Stat Callout on sm+ (compact pill shown on photo for mobile) */}
+                  <div className="mt-4 hidden rounded-2xl border border-parchment/12 bg-white/[0.05] px-4 py-3 sm:mt-6 sm:block sm:py-3.5">
                     <p className="font-display text-lg font-semibold tabular-nums text-[#F0C26E] sm:text-xl">
                       {t(current.metricValue)}
                     </p>
@@ -405,22 +419,22 @@ export function AppleCraftShowcase() {
                   </div>
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-parchment/12 pt-4 sm:mt-7 sm:pt-5">
+                <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2.5 border-t border-parchment/12 pt-3 sm:mt-7 sm:gap-3 sm:pt-5">
                   <Link
                     href={current.href}
-                    className="inline-flex items-center gap-2 rounded-full bg-parchment px-5 py-2.5 text-sm font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#F0C26E]"
+                    className="inline-flex items-center gap-2 rounded-full bg-parchment px-4 py-2 text-xs font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#F0C26E] sm:px-5 sm:py-2.5 sm:text-sm"
                   >
                     {t(current.cta)}
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
                   </Link>
 
                   {/* Quick Prev / Next Arrows */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
                     <button
                       type="button"
                       onClick={goPrev}
                       aria-label={pick("上一条亮点", "Previous highlight")}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-[#F0C26E] hover:bg-white/[0.14] hover:text-[#F0C26E] sm:h-10 sm:w-10"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-[#F0C26E] hover:bg-white/[0.14] hover:text-[#F0C26E] sm:h-10 sm:w-10"
                     >
                       <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -428,7 +442,7 @@ export function AppleCraftShowcase() {
                       type="button"
                       onClick={goNext}
                       aria-label={pick("下一条亮点", "Next highlight")}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-[#F0C26E] hover:bg-white/[0.14] hover:text-[#F0C26E] sm:h-10 sm:w-10"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-[#F0C26E] hover:bg-white/[0.14] hover:text-[#F0C26E] sm:h-10 sm:w-10"
                     >
                       <ChevronRight className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -438,9 +452,9 @@ export function AppleCraftShowcase() {
             </div>
           </div>
 
-          {/* Scroll-Scrubbed Capsule Progress Dock */}
-          <div className="mt-4 flex items-center justify-center gap-3 sm:mt-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-parchment/15 bg-white/[0.07] px-4 py-2 backdrop-blur-md">
+          {/* Scroll-Scrubbed Capsule Progress Dock (Visible on Mobile & Desktop!) */}
+          <div className="mt-3 flex items-center justify-center gap-2.5 sm:mt-5 sm:gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-parchment/15 bg-white/[0.07] px-3.5 py-1.5 backdrop-blur-md sm:px-4 sm:py-2">
               {highlights.map((item, idx) => {
                 const isActive = idx === activeIndex;
                 const isPassed = idx < activeIndex;
@@ -453,7 +467,7 @@ export function AppleCraftShowcase() {
                     aria-current={isActive ? "step" : undefined}
                     className={`relative h-2 overflow-hidden rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                       isActive
-                        ? "w-12 bg-parchment/25"
+                        ? "w-10 bg-parchment/25 sm:w-12"
                         : isPassed
                           ? "w-2.5 bg-[#F0C26E]/65 hover:bg-[#F0C26E]"
                           : "w-2 bg-parchment/35 hover:bg-parchment/65"
@@ -471,9 +485,9 @@ export function AppleCraftShowcase() {
               })}
             </div>
 
-            <span className="hidden items-center gap-1 text-xs font-medium text-parchment/55 sm:inline-flex">
-              <ArrowDown className="h-3.5 w-3.5 animate-bounce" aria-hidden="true" />
-              {pick("继续向下滑动切换", "Scroll to play")}
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-parchment/60 sm:text-xs">
+              <ArrowDown className="h-3 w-3 animate-bounce sm:h-3.5 sm:w-3.5" aria-hidden="true" />
+              {pick("上下滑动切换", "Scroll to play")}
             </span>
           </div>
         </div>
