@@ -113,10 +113,13 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://www.tiktok.com" />
         <link rel="dns-prefetch" href="https://www.threads.com" />
         <link
-          rel="stylesheet"
+          rel="preload"
+          as="style"
           href={calligraphyHref}
-          data-calligraphy-locale={initialLocale}
         />
+        <noscript>
+          <link rel="stylesheet" href={calligraphyHref} />
+        </noscript>
       </head>
       <body className="flex min-h-screen flex-col bg-parchment text-ink selection:bg-cinnabar/20 selection:text-ink">
         <script

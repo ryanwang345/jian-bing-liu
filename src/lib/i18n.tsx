@@ -81,6 +81,11 @@ export function LocaleProvider({
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
+  // Load the active calligraphy stylesheet asynchronously (non-render-blocking) on mount.
+  useEffect(() => {
+    ensureCalligraphyFont(initialLocale);
+  }, [initialLocale]);
+
   // One-time migration for returning visitors who had saved localStorage before cookies existed.
   useEffect(() => {
     if (hasSavedPreference) return;

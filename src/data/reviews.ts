@@ -19,6 +19,8 @@ export interface CustomerReview {
   quote: LocalizedText;
   /** Verified customer-uploaded photos attached to this review */
   photos?: string[];
+  /** True when the card represents a live Google Maps guest photo check-in synced from Places API */
+  isLivePhotoCard?: boolean;
 }
 
 export interface SocialPost {

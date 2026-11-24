@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,10 +17,8 @@ import {
 } from "lucide-react";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import { LiveOpenBadge } from "@/components/LiveOpenBadge";
-import { AppleCraftShowcase } from "@/components/motion/AppleCraftShowcase";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal } from "@/components/motion/Reveal";
-import { ReviewsSection } from "@/components/ReviewsSection";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ShareSpotButton } from "@/components/ShareSpotButton";
 import { SocialIcon } from "@/components/SocialIcon";
@@ -27,6 +26,16 @@ import { featuredMenuItems } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 import type { ReviewsPayload } from "@/lib/reviews-service";
+
+// Code-split below-the-fold interactive bands out of the critical above-the-fold Hero chunk
+const ReviewsSection = dynamic(() =>
+  import("@/components/ReviewsSection").then((m) => m.ReviewsSection)
+);
+const AppleCraftShowcase = dynamic(() =>
+  import("@/components/motion/AppleCraftShowcase").then(
+    (m) => m.AppleCraftShowcase
+  )
+);
 
 const craftGalleryStrip: Array<{
   src: string;

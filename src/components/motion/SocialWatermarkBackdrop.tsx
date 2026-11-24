@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SocialIcon } from "@/components/SocialIcon";
 import type { SocialLink } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
@@ -86,10 +86,26 @@ export function SocialWatermarkBackdrop() {
   const { zhText } = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const sealRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [inView, setInView] = useState(false);
 
+  // Pause marquee animations and scroll parallax completely when off-screen
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setInView(entries.some((e) => e.isIntersecting));
+      },
+      { rootMargin: "200px 0px 200px 0px" }
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !inView) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
@@ -127,7 +143,11 @@ export function SocialWatermarkBackdrop() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [inView]);
+
+  const marqueeStyle = {
+    animationPlayState: inView ? ("running" as const) : ("paused" as const),
+  };
 
   return (
     <div
@@ -138,21 +158,22 @@ export function SocialWatermarkBackdrop() {
       {/* Subtle warm radial paper vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(201,134,31,0.09),transparent_55%),radial-gradient(ellipse_at_50%_100%,rgba(184,37,28,0.07),transparent_55%)]" />
 
-      {/* Top embossed drifting brand watermark ribbon */}
+      {/* Top embossed drifting brand watermark ribbon (2x loop, pauses off-screen) */}
       <div className="watermark-mask absolute inset-x-0 top-4 overflow-hidden opacity-[0.07]">
-        <div className="animate-watermark-left flex w-max items-center gap-10 whitespace-nowrap">
-          {[...marqueePlatforms, ...marqueePlatforms, ...marqueePlatforms].map(
-            (item, idx) => (
-              <span
-                key={`top-${item.platform}-${idx}`}
-                className="inline-flex items-center gap-2.5 text-sm font-semibold tracking-[0.14em] text-ink uppercase [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.8))]"
-              >
-                <SocialIcon platform={item.platform} className="h-4 w-4" />
-                <span>{zhText(item.text)}</span>
-                <span className="ml-6 text-ink/40">✦</span>
-              </span>
-            )
-          )}
+        <div
+          style={marqueeStyle}
+          className="animate-watermark-left flex w-max items-center gap-10 whitespace-nowrap"
+        >
+          {[...marqueePlatforms, ...marqueePlatforms].map((item, idx) => (
+            <span
+              key={`top-${item.platform}-${idx}`}
+              className="inline-flex items-center gap-2.5 text-sm font-semibold tracking-[0.14em] text-ink uppercase [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.8))]"
+            >
+              <SocialIcon platform={item.platform} className="h-4 w-4" />
+              <span>{zhText(item.text)}</span>
+              <span className="ml-6 text-ink/40">✦</span>
+            </span>
+          ))}
         </div>
       </div>
 
@@ -178,19 +199,20 @@ export function SocialWatermarkBackdrop() {
 
       {/* Bottom embossed reverse-drifting watermark ribbon */}
       <div className="watermark-mask absolute inset-x-0 bottom-3 overflow-hidden opacity-[0.065]">
-        <div className="animate-watermark-right flex w-max items-center gap-10 whitespace-nowrap">
-          {[...marqueePlatforms, ...marqueePlatforms, ...marqueePlatforms].map(
-            (item, idx) => (
-              <span
-                key={`bot-${item.platform}-${idx}`}
-                className="inline-flex items-center gap-2.5 text-sm font-semibold tracking-[0.14em] text-ink uppercase [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.8))]"
-              >
-                <SocialIcon platform={item.platform} className="h-4 w-4" />
-                <span>{zhText(item.text)}</span>
-                <span className="ml-6 text-ink/40">✦</span>
-              </span>
-            )
-          )}
+        <div
+          style={marqueeStyle}
+          className="animate-watermark-right flex w-max items-center gap-10 whitespace-nowrap"
+        >
+          {[...marqueePlatforms, ...marqueePlatforms].map((item, idx) => (
+            <span
+              key={`bot-${item.platform}-${idx}`}
+              className="inline-flex items-center gap-2.5 text-sm font-semibold tracking-[0.14em] text-ink uppercase [filter:drop-shadow(0_1px_0_rgba(255,255,255,0.8))]"
+            >
+              <SocialIcon platform={item.platform} className="h-4 w-4" />
+              <span>{zhText(item.text)}</span>
+              <span className="ml-6 text-ink/40">✦</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>

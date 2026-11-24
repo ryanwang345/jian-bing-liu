@@ -84,6 +84,16 @@ html[lang="zh-Hant"] h3.font-display {
   font-synthesis-weight: none;
 }
 
+/* Hide scrollbars cleanly on custom horizontal carousels */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Defer layout and paint for off-screen sections to speed up initial FCP/LCP */
 .cv-auto {
   content-visibility: auto;
@@ -173,13 +183,13 @@ html[lang="zh-Hant"] h3.font-display {
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(-33.3333%, 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 @keyframes watermarkRight {
   from {
-    transform: translate3d(-33.3333%, 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
   to {
     transform: translate3d(0, 0, 0);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
   ArrowDown,
@@ -12,10 +13,18 @@ import {
   Star,
 } from "lucide-react";
 import { SocialIcon } from "@/components/SocialIcon";
-import { SocialWatermarkBackdrop } from "@/components/motion/SocialWatermarkBackdrop";
 import { restaurant } from "@/data/restaurant";
 import { socialPosts, type SocialPost } from "@/data/reviews";
 import { useLocale } from "@/lib/i18n";
+
+// Client-only lazy decorative watermarks: strips ~28 KB of SVG DOM out of initial SSR HTML
+const SocialWatermarkBackdrop = dynamic(
+  () =>
+    import("@/components/motion/SocialWatermarkBackdrop").then(
+      (m) => m.SocialWatermarkBackdrop
+    ),
+  { ssr: false }
+);
 
 type SocialFilter =
   | "all"
@@ -141,15 +150,15 @@ export function SocialShowcaseBand() {
   const [activePlatform, setActivePlatform] =
     useState<SocialPost["platform"]>("rednote");
   const [sectionNear, setSectionNear] = useState(false);
-  // Progressive high-water mark: start with first 6 cards (2 RedNote + 4 live embeds), then unlock +3 ahead on scroll
-  const [loadedUpTo, setLoadedUpTo] = useState(5);
+  // Start with first 4 cards (2 RedNote + first 2 live embeds), then unlock +3 ahead as user scrolls
+  const [loadedUpTo, setLoadedUpTo] = useState(3);
 
   const runwayRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLSpanElement>(null);
   const activePlatformRef = useRef<SocialPost["platform"]>("rednote");
-  const loadedUpToRef = useRef(5);
+  const loadedUpToRef = useRef(3);
 
   const filteredPosts =
     socialFilter === "all"
@@ -165,23 +174,30 @@ export function SocialShowcaseBand() {
   const redditCount = socialPosts.filter((p) => p.platform === "reddit").length;
   const fantuanCount = socialPosts.filter((p) => p.platform === "fantuan").length;
 
-  // Early vertical pre-warming (1400px ahead): first visible embeds finish loading BEFORE user arrives
+  // Defer live social iframes until visitor scrolls within 480px AND initial LCP paint settles
   useEffect(() => {
     const el = runwayRef.current;
     if (!el || sectionNear) return;
 
+    let idleTimer: number | null = null;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
-          setSectionNear(true);
+          // Small idle deferral ensures above-the-fold Hero LCP finishes uncontested
+          idleTimer = window.setTimeout(() => {
+            setSectionNear(true);
+          }, window.scrollY > 120 ? 0 : 900);
           observer.disconnect();
         }
       },
-      { rootMargin: "1400px 0px 1400px 0px" }
+      { rootMargin: "480px 0px 480px 0px" }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (idleTimer !== null) window.clearTimeout(idleTimer);
+    };
   }, [sectionNear]);
 
   // Also unlock additional cards on mobile horizontal swipe
