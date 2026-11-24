@@ -82,7 +82,7 @@ const storyHighlights: StoryHighlight[] = [
   },
   {
     id: "matcha-pistachio",
-    label: { en: "Matcha Crepe", zh: "抹茶开心果" },
+    label: { en: "Matcha", zh: "抹茶开心果" },
     tag: { en: "Matcha & Pistachio · £12", zh: "招牌甜口 · £12" },
     headline: {
       en: "Matcha & Pistachio Crème Brûlée Crepe",
@@ -116,7 +116,7 @@ const storyHighlights: StoryHighlight[] = [
   },
   {
     id: "camden-shop",
-    label: { en: "Camden Shop", zh: "卡姆登门店" },
+    label: { en: "Our Shop", zh: "卡姆登门店" },
     tag: { en: "124 Camden Rd · NW1", zh: "认准红旗门面" },
     headline: {
       en: "Pop In to Take Away or Order on Fantuan",
@@ -200,16 +200,28 @@ export function SocialStoryStrip() {
   return (
     <>
       <div className="mt-6 w-full min-w-0">
-        <div className="mb-2.5 flex items-center justify-between gap-2">
-          <span className="inline-flex min-w-0 items-center gap-1.5 truncate text-[11px] font-semibold tracking-wider text-ink-muted uppercase">
+        <div className="mb-2.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-ink-muted uppercase">
             <Sparkles className="h-3.5 w-3.5 shrink-0 text-turmeric" aria-hidden="true" />
-            <span className="truncate">
+            <span>
               {pick("点开看今日现做实拍", "Fresh From Our Kitchen")}
             </span>
           </span>
-          <span className="shrink-0 text-[11px] font-semibold text-cinnabar">
-            @jian_bing_liu
+          <span aria-hidden="true" className="text-kraft-deep">
+            ·
           </span>
+          <a
+            href={
+              restaurant.verifiedSocialLinks.find(
+                (s) => s.platform === "instagram"
+              )?.href ?? "https://www.instagram.com/jian_bing_liu/"
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center rounded-full bg-cinnabar/[0.08] px-2 py-0.5 text-[11px] font-semibold text-cinnabar transition-colors hover:bg-cinnabar hover:text-parchment"
+          >
+            @jian_bing_liu
+          </a>
         </div>
 
         <div className="no-scrollbar flex w-full max-w-full items-center gap-3 overflow-x-auto pb-1">
@@ -239,7 +251,7 @@ export function SocialStoryStrip() {
                     />
                   </span>
                 </span>
-                <span className="max-w-[70px] truncate text-[11px] font-semibold text-ink-soft transition-colors group-hover:text-cinnabar">
+                <span className="max-w-[78px] truncate text-[11px] font-semibold text-ink-soft transition-colors group-hover:text-cinnabar">
                   {t(story.label)}
                 </span>
               </button>

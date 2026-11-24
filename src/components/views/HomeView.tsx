@@ -120,10 +120,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_18%_22%,rgba(235,176,78,0.16),transparent_55%),radial-gradient(ellipse_at_84%_28%,rgba(184,37,28,0.08),transparent_50%)]"
         />
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-10 sm:px-6 sm:pt-12 sm:pb-14 lg:px-8 lg:pt-14 lg:pb-16">
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
-            {/* Left Column: Warm Food-First Hierarchy */}
-            <div className="animate-fade-up min-w-0 lg:col-span-5">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-5 pb-10 sm:px-6 sm:pt-8 sm:pb-14 lg:px-8 lg:pt-14 lg:pb-16">
+          <div className="grid grid-cols-1 items-center gap-7 sm:gap-9 lg:grid-cols-12 lg:gap-12">
+            {/* Left Column (Desktop) / Below Photos (Mobile & Tablet): Warm Food-First Hierarchy */}
+            <div className="animate-fade-up order-2 min-w-0 lg:order-1 lg:col-span-5">
               {/* Beat 1: Instant Trust + Live Open Status */}
               <div className="flex flex-wrap items-center gap-2">
                 <a
@@ -296,8 +296,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </div>
             </div>
 
-            {/* Right Column: Clean, Unobstructed Food-First Bento Visual Stage */}
-            <div className="animate-fade-up-delay-1 min-w-0 lg:col-span-7">
+            {/* Right Column (Desktop) / First on Top (Mobile & Tablet): Unobstructed Food-First Bento */}
+            <div className="animate-fade-up-delay-1 order-1 min-w-0 lg:order-2 lg:col-span-7">
               <div className="grid min-w-0 gap-3.5 sm:gap-4">
                 {/* Main Hero Dish Photo — Full-Bleed Unobstructed Food Showcase */}
                 <ParallaxLayer offset={-10}>
