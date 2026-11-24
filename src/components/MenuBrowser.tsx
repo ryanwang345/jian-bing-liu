@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, ShieldCheck, X, ZoomIn } from "lucide-react"
 import { DietaryBadge } from "@/components/DietaryBadge";
 import {
   dietaryLabels,
+  formatPricePence,
   type DietaryTagKey,
   type MenuCategory,
   type MenuItem,
@@ -317,10 +318,25 @@ export function MenuBrowser({
                               {pick("价格以店内为准", "Price TBC")}
                             </span>
                           )}
-                          {item.secondaryPrice && (
-                            <p className="mt-1 text-[11px] font-medium text-ink-muted">
-                              {t(item.secondaryPrice)}
-                            </p>
+                          {item.variants && item.variants.length > 1 ? (
+                            <div className="mt-1 space-y-0.5">
+                              {item.variants
+                                .filter((v) => !v.isDefault)
+                                .map((v) => (
+                                  <p
+                                    key={v.id}
+                                    className="text-[11px] font-medium tabular-nums text-ink-muted"
+                                  >
+                                    {t(v.size)} {formatPricePence(v.pricePence)}
+                                  </p>
+                                ))}
+                            </div>
+                          ) : (
+                            item.secondaryPrice && (
+                              <p className="mt-1 text-[11px] font-medium text-ink-muted">
+                                {t(item.secondaryPrice)}
+                              </p>
+                            )
                           )}
                         </div>
                       </div>
@@ -471,10 +487,26 @@ export function MenuBrowser({
                         {activeEntry.item.price}
                       </span>
                     )}
-                    {activeEntry.item.secondaryPrice && (
-                      <p className="mt-1 text-xs font-medium text-parchment/75">
-                        {t(activeEntry.item.secondaryPrice)}
-                      </p>
+                    {activeEntry.item.variants &&
+                    activeEntry.item.variants.length > 1 ? (
+                      <div className="mt-1 space-y-0.5">
+                        {activeEntry.item.variants
+                          .filter((v) => !v.isDefault)
+                          .map((v) => (
+                            <p
+                              key={v.id}
+                              className="text-xs font-medium tabular-nums text-parchment/75"
+                            >
+                              {t(v.size)} {formatPricePence(v.pricePence)}
+                            </p>
+                          ))}
+                      </div>
+                    ) : (
+                      activeEntry.item.secondaryPrice && (
+                        <p className="mt-1 text-xs font-medium text-parchment/75">
+                          {t(activeEntry.item.secondaryPrice)}
+                        </p>
+                      )
                     )}
                   </div>
                 </div>

@@ -106,10 +106,18 @@ const trendingTickerItems: Array<{
 
 interface HomeViewProps {
   initialReviews?: ReviewsPayload;
+  featuredItems?: typeof featuredMenuItems;
 }
 
-export function HomeView({ initialReviews }: HomeViewProps = {}) {
+export function HomeView({
+  initialReviews,
+  featuredItems,
+}: HomeViewProps = {}) {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
+  const displayFeatured =
+    featuredItems && featuredItems.length > 0
+      ? featuredItems
+      : featuredMenuItems;
 
   return (
     <>
@@ -514,7 +522,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </Reveal>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredMenuItems.slice(0, 6).map((item, idx) => {
+          {displayFeatured.slice(0, 6).map((item, idx) => {
             const dishNote =
               featuredDishTags[idx % featuredDishTags.length];
             return (

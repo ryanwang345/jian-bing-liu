@@ -6,15 +6,19 @@ import {
   MenuBrowser,
   type MenuDietaryFilter,
 } from "@/components/MenuBrowser";
-import { menuCategories } from "@/data/menu";
+import { menuCategories as defaultMenuCategories, type MenuCategory } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
 
 interface MenuViewProps {
+  categories?: MenuCategory[];
   initialDietary?: MenuDietaryFilter;
 }
 
-export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
+export function MenuView({
+  categories = defaultMenuCategories,
+  initialDietary = "all",
+}: MenuViewProps = {}) {
   const { isZh, isTraditional, zhText, pick } = useLocale();
 
   return (
@@ -78,7 +82,7 @@ export function MenuView({ initialDietary = "all" }: MenuViewProps = {}) {
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <MenuBrowser
-          categories={menuCategories}
+          categories={categories}
           initialDietary={initialDietary}
         />
 

@@ -1,6 +1,9 @@
 import type { MenuDietaryFilter } from "@/components/MenuBrowser";
 import { MenuView } from "@/components/views/MenuView";
+import { getPublicMenuCategories } from "@/lib/menu-service";
 import { buildPageMetadata } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildPageMetadata({
   title: "Menu",
@@ -23,7 +26,10 @@ export default async function MenuPage({
 }: {
   searchParams: Promise<{ diet?: string | string[] }>;
 }) {
-  const params = await searchParams;
+  const [params, categories] = await Promise.all([
+    searchParams,
+    getPublicMenuCategories(),
+  ]);
   const initialDietary = parseDietParam(params.diet);
-  return <MenuView initialDietary={initialDietary} />;
+  return <MenuView categories={categories} initialDietary={initialDietary} />;
 }

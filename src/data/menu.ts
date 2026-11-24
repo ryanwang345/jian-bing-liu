@@ -8,6 +8,15 @@ export const dietaryLabels: Record<DietaryTagKey, LocalizedText> = {
   vegan: { en: "Vegan", zh: "纯素" },
 };
 
+export interface MenuVariant {
+  id: string;
+  size: LocalizedText;
+  /** Stored in integer pence (e.g. 1200 = £12.00) to avoid floating-point errors */
+  pricePence: number;
+  isDefault?: boolean;
+  sortOrder?: number;
+}
+
 export interface MenuItem {
   id: string;
   name: LocalizedText;
@@ -16,11 +25,90 @@ export interface MenuItem {
   /** Verified price string matched to the official in-store menu */
   price: string | null;
   secondaryPrice?: LocalizedText;
+  /** Optional structured size & price rows loaded from Cloudflare D1 */
+  variants?: MenuVariant[];
   dietary?: DietaryTagKey[];
   featured?: boolean;
+  isAvailable?: boolean;
+  sortOrder?: number;
   image?: string;
   imageAlt?: LocalizedText;
   note?: LocalizedText;
+}
+
+export function formatPricePence(pence: number): string {
+  return `£${(pence / 100).toFixed(2)}`;
+}
+
+export function parsePoundsToPence(raw: string | null | undefined): number | null {
+  if (!raw) return null;
+  const match = raw.match(/(\d+(?:\.\d{1,2})?)/);
+  if (!match) return null;
+  const value = Number.parseFloat(match[1]);
+  if (!Number.isFinite(value) || value < 0) return null;
+  return Math.round(value * 100);
+}
+
+/**
+ * Converts a legacy static MenuItem (`price` + optional `secondaryPrice`) into
+ * normalized multi-size `MenuVariant[]` rows for D1 seeding or fallback rendering.
+ */
+export function deriveVariantsFromStaticItem(item: MenuItem): MenuVariant[] {
+  if (item.variants && item.variants.length > 0) {
+    return item.variants;
+  }
+
+  const variants: MenuVariant[] = [];
+  const mainPence = parsePoundsToPence(item.price);
+
+  if (mainPence !== null) {
+    let defaultSize: LocalizedText = { en: "Regular", zh: "标准" };
+    if (/6\s*pcs|6\s*pieces/i.test(item.name.en) || /6个|6只/.test(item.name.zh)) {
+      defaultSize = { en: "6 Pieces", zh: "6个" };
+    } else if (/small|小份/i.test(item.secondaryPrice?.en ?? "") || /大份/.test(item.secondaryPrice?.zh ?? "")) {
+      if (item.id === "herbal-chicken-soup") {
+        defaultSize = { en: "Small", zh: "小份" };
+      }
+    } else if (/8\s*pieces|8个/.test(item.secondaryPrice?.en ?? "") || /8个/.test(item.secondaryPrice?.zh ?? "")) {
+      defaultSize = { en: "6 Pieces", zh: "6个" };
+    } else if (/\(medium\)/i.test(item.name.en) || /（中）/.test(item.name.zh)) {
+      defaultSize = { en: "Medium", zh: "中份" };
+    }
+
+    variants.push({
+      id: `${item.id}-default`,
+      size: defaultSize,
+      pricePence: mainPence,
+      isDefault: true,
+      sortOrder: 0,
+    });
+  }
+
+  if (item.secondaryPrice) {
+    const secPence = parsePoundsToPence(item.secondaryPrice.en) ?? parsePoundsToPence(item.secondaryPrice.zh);
+    if (secPence !== null) {
+      const enClean = item.secondaryPrice.en
+        .replace(/£\d+(?:\.\d{1,2})?/g, "")
+        .replace(/\(\s*\)/g, "")
+        .trim();
+      const zhClean = item.secondaryPrice.zh
+        .replace(/£\d+(?:\.\d{1,2})?/g, "")
+        .replace(/（\s*）/g, "")
+        .trim();
+      variants.push({
+        id: `${item.id}-alt`,
+        size: {
+          en: enClean || "Alternative",
+          zh: zhClean || "可选规格",
+        },
+        pricePence: secPence,
+        isDefault: variants.length === 0,
+        sortOrder: 1,
+      });
+    }
+  }
+
+  return variants;
 }
 
 export interface MenuCategory {

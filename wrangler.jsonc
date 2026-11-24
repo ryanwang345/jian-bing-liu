@@ -17,6 +17,20 @@
       "service": "jian-bing-liu"
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "MENU_DB",
+      "database_name": "jian-bing-liu-menu",
+      "database_id": "b3cd1570-275f-4722-be99-a8cd56b9d7f2",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MENU_IMAGES",
+      "bucket_name": "jian-bing-liu-images"
+    }
+  ],
   "keep_vars": true,
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://jianbingliu.uk"
