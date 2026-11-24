@@ -532,8 +532,7 @@ export function HomeView({
             return (
               <Reveal key={item.id} delay={(idx % 3) * 95} className="h-full">
                 <article
-                  data-sold-out={item.isAvailable === false || undefined}
-                  className="data-[sold-out]:bg-neutral-100 data-[sold-out]:grayscale apple-card social-card-shadow group flex h-full flex-col overflow-hidden rounded-[26px] border border-kraft-deep/80 bg-white hover:border-cinnabar/40 hover:shadow-xl"
+                  className="apple-card social-card-shadow group flex h-full flex-col overflow-hidden rounded-[26px] border border-kraft-deep/80 bg-white hover:border-cinnabar/40 hover:shadow-xl"
                 >
                   {item.image && (
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-kraft">

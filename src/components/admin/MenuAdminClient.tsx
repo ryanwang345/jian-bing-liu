@@ -703,11 +703,7 @@ export function MenuAdminClient({
           return (
             <article
               key={item.id}
-              className={`flex flex-col justify-between gap-4 rounded-2xl border bg-white p-4 shadow-2xs transition-all sm:flex-row ${
-                soldOut
-                  ? "border-dashed border-kraft-deep/80 opacity-65"
-                  : "border-kraft-deep/80"
-              }`}
+              className="flex flex-col justify-between gap-4 rounded-2xl border border-kraft-deep/80 bg-white p-4 shadow-2xs transition-all sm:flex-row"
             >
               <div className="flex min-w-0 flex-1 gap-3.5">
                 <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-kraft-deep/60 bg-kraft">
@@ -732,7 +728,7 @@ export function MenuAdminClient({
                       {item.name.zh}
                     </h2>
                     {soldOut && (
-                      <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink-muted">
+                      <span className="rounded-full bg-cinnabar px-2 py-0.5 text-[10px] font-bold text-white">
                         已售罄
                       </span>
                     )}
