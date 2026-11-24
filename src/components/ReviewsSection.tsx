@@ -20,6 +20,7 @@ import {
   customerReviews as initialReviews,
   googleRating as initialRating,
   type CustomerReview,
+  type SocialPost,
   type ReviewSource,
 } from "@/data/reviews";
 import type { ReviewsPayload } from "@/lib/reviews-service";
@@ -69,6 +70,7 @@ function mergeLiveAndFallback(
 type ReviewFilter = "all" | ReviewSource;
 
 interface ReviewsSectionProps {
+  posts: SocialPost[];
   initialData?: ReviewsPayload;
 }
 
@@ -220,7 +222,7 @@ function ReviewCardPhotos({
   );
 }
 
-export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
+export function ReviewsSection({ initialData, posts }: ReviewsSectionProps) {
   const { t, pick } = useLocale();
 
   const [reviews, setReviews] = useState<CustomerReview[]>(() =>
@@ -907,7 +909,7 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
         )}
 
       {/* Full-Bleed Edge-to-Edge Social Media Showcase Band */}
-      <SocialShowcaseBand />
+      <SocialShowcaseBand posts={posts} />
     </section>
   );
 }

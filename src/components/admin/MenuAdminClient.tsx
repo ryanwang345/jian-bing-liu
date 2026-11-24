@@ -611,6 +611,13 @@ export function MenuAdminClient({
           )}
 
           <Link
+            href="/admin/posts"
+            className="rounded-full border border-kraft-deep bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-cinnabar hover:text-cinnabar"
+          >
+            展示帖子
+          </Link>
+
+          <Link
             href="/admin/social"
             className="rounded-full border border-kraft-deep bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-cinnabar hover:text-cinnabar"
           >

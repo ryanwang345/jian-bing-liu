@@ -1,5 +1,6 @@
 import { HomeView } from "@/components/views/HomeView";
 import { restaurant } from "@/data/restaurant";
+import { getShowcasePosts } from "@/lib/showcase-posts";
 import { getFeaturedMenuItems } from "@/lib/menu-service";
 import { getInitialReviewsForSsr } from "@/lib/reviews-service";
 import { buildPageMetadata } from "@/lib/seo";
@@ -11,14 +12,16 @@ export const metadata = buildPageMetadata({
 });
 
 export default async function HomePage() {
-  const [initialReviews, featuredItems] = await Promise.all([
+  const [initialReviews, featuredItems, { posts }] = await Promise.all([
     getInitialReviewsForSsr(),
     getFeaturedMenuItems(),
+    getShowcasePosts(true),
   ]);
   return (
     <HomeView
       initialReviews={initialReviews}
       featuredItems={featuredItems}
+      posts={posts}
     />
   );
 }

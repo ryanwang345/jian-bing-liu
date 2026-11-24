@@ -13,7 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import { SocialIcon } from "@/components/SocialIcon";
-import { REDNOTE_PROFILE_URL, socialPosts as curatedPosts, type SocialPost } from "@/data/reviews";
+import { REDNOTE_PROFILE_URL, type SocialPost } from "@/data/reviews";
 import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale } from "@/lib/i18n";
 
@@ -111,7 +111,7 @@ function LiveEmbedCard({
         {shouldMount && post.embedUrl && (
           <iframe
             src={post.embedUrl}
-            title={`${post.handle} — ${t(post.title)}`}
+            title={post.handle ? `${post.handle} — ${t(post.title)}` : t(post.title)}
             onLoad={() => setLoaded(true)}
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -144,15 +144,15 @@ function LiveEmbedCard({
  * - Progressively mounts remaining embeds in small waves as you scroll horizontally (never choking bandwidth with 10 simultaneous iframes).
  * - Displays rich instant previews underneath with silky onLoad cross-fade.
  */
-export function SocialShowcaseBand() {
+export function SocialShowcaseBand({ posts }: { posts: SocialPost[] }) {
   const { t, zhText, pick } = useLocale();
   const socialLinks = useSocialLinks();
   const rednote = socialLinks.find((link) => link.platform === "rednote");
-  const socialPosts = useMemo(() => curatedPosts.flatMap((post) => {
+  const socialPosts = useMemo(() => posts.flatMap((post) => {
     if (post.href !== REDNOTE_PROFILE_URL) return [post];
     return rednote ? [{ ...post, handle: rednote.handle, href: rednote.href }] : [];
-  }), [rednote]);
-  const [socialFilter, setSocialFilter] = useState<SocialFilter>("all");
+  }), [posts, rednote]);
+  const [selectedPlatform, setSocialFilter] = useState<SocialFilter>("all");
   const [activePlatform, setActivePlatform] =
     useState<SocialPost["platform"]>("rednote");
   const [sectionNear, setSectionNear] = useState(false);
@@ -166,19 +166,29 @@ export function SocialShowcaseBand() {
   const activePlatformRef = useRef<SocialPost["platform"]>("rednote");
   const loadedUpToRef = useRef(3);
 
+  const socialFilter = socialPosts.some((post) => post.platform === selectedPlatform) ? selectedPlatform : "all";
   const filteredPosts =
     socialFilter === "all"
       ? socialPosts
       : socialPosts.filter((post) => post.platform === socialFilter);
 
-  const isScrollGallery = socialFilter === "all";
+  const isScrollGallery = socialFilter === "all" && socialPosts.length > 1;
 
-  const rednoteCount = socialPosts.filter((p) => p.platform === "rednote").length;
-  const igCount = socialPosts.filter((p) => p.platform === "instagram").length;
-  const ttCount = socialPosts.filter((p) => p.platform === "tiktok").length;
-  const threadsCount = socialPosts.filter((p) => p.platform === "threads").length;
-  const redditCount = socialPosts.filter((p) => p.platform === "reddit").length;
-  const fantuanCount = socialPosts.filter((p) => p.platform === "fantuan").length;
+  const platforms = [
+    { key: "rednote", label: pick("小红书", "RedNote") },
+    { key: "instagram", label: "Instagram" },
+    { key: "tiktok", label: "TikTok" },
+    { key: "threads", label: "Threads" },
+    { key: "reddit", label: "Reddit" },
+    { key: "fantuan", label: pick("饭团", "Fantuan") },
+  ] as const;
+  const tabs: Array<{ key: SocialFilter; label: string }> = [
+    { key: "all", label: `${pick("全部动态", "All posts")} (${socialPosts.length})` },
+  ];
+  for (const platform of platforms) {
+    const count = socialPosts.filter((post) => post.platform === platform.key).length;
+    if (count) tabs.push({ key: platform.key, label: `${platform.label} (${count})` });
+  }
 
   // Defer live social iframes until visitor scrolls within 480px AND initial LCP paint settles
   useEffect(() => {
@@ -360,8 +370,11 @@ export function SocialShowcaseBand() {
               ? pick("前往饭团外卖下单", "Order on Fantuan")
               : pick("在 Threads 查看原帖", "Open on Threads");
 
+  if (!socialPosts.length) return null;
+
   return (
     <div
+      id="social-posts"
       ref={runwayRef}
       className={`kraft-grain relative w-full border-t border-kraft-deep/90 bg-parchment/85 ${
         isScrollGallery ? "lg:h-[280vh] motion-reduce:lg:h-auto" : ""
@@ -382,17 +395,8 @@ export function SocialShowcaseBand() {
             <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-end">
               <div>
                 <h3 className="font-display text-2xl font-bold text-ink sm:text-3xl">
-                  {pick(
-                    "全平台真实动态与社媒直连",
-                    "Live From RedNote, Instagram, TikTok, Threads, Reddit & Fantuan"
-                  )}
+                  {pick("社交动态", "Social posts")}
                 </h3>
-                <p className="mt-1 text-sm text-ink-muted">
-                  {pick(
-                    "直连官方 TikTok 实时视频、Instagram / Threads 原帖嵌入、小红书实拍笔记与社区热帖",
-                    "Real embedded TikTok videos, live Instagram & Threads posts, RedNote notes, r/LondonFood threads & Fantuan"
-                  )}
-                </p>
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -437,47 +441,7 @@ export function SocialShowcaseBand() {
                 aria-label={pick("按社媒平台筛选帖子", "Filter posts by platform")}
                 className="flex flex-wrap gap-2"
               >
-                {(
-                  [
-                    {
-                      key: "all",
-                      label: pick(
-                        `全部动态 (${socialPosts.length})`,
-                        `All Posts (${socialPosts.length})`
-                      ),
-                    },
-                    {
-                      key: "rednote",
-                      label: pick(
-                        `小红书 (${rednoteCount})`,
-                        `RedNote (${rednoteCount})`
-                      ),
-                    },
-                    {
-                      key: "instagram",
-                      label: `Instagram (${igCount})`,
-                    },
-                    {
-                      key: "tiktok",
-                      label: `TikTok (${ttCount})`,
-                    },
-                    {
-                      key: "threads",
-                      label: `Threads (${threadsCount})`,
-                    },
-                    {
-                      key: "reddit",
-                      label: `Reddit (${redditCount})`,
-                    },
-                    {
-                      key: "fantuan",
-                      label: pick(
-                        `饭团 (${fantuanCount})`,
-                        `Fantuan (${fantuanCount})`
-                      ),
-                    },
-                  ] as const
-                ).filter((tab) => tab.key !== "rednote" || rednoteCount > 0).map((tab) => {
+                {tabs.map((tab) => {
                   const active = socialFilter === tab.key;
                   return (
                     <button
@@ -505,8 +469,8 @@ export function SocialShowcaseBand() {
                       aria-hidden="true"
                     />
                     {pick(
-                      "向下滚动自动浏览全部 6 大平台真实内容",
-                      "Scroll down to glide through live content from all 6 platforms"
+                      "向下滚动浏览帖子",
+                      "Scroll down to browse the posts"
                     )}
                   </span>
                 )}
@@ -638,7 +602,7 @@ export function SocialShowcaseBand() {
                   );
                 }
 
-                // 3) AUTHENTIC NATIVE REDDIT & FANTUAN COMMUNITY CARDS
+                // Linked posts without an embedded player or cover photo.
                 const isFantuan = post.platform === "fantuan";
                 return (
                   <a
@@ -675,7 +639,7 @@ export function SocialShowcaseBand() {
                       </span>
 
                       <div className="relative z-10">
-                        {isFantuan && (
+                        {post.id === "fantuan-camden-store" && isFantuan && post.highlights && (
                           <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-[#0EA5A4]/12 px-3 py-1 text-xs font-bold text-[#0D7B7A]">
                             <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                             <span>4.5 ★ Fantuan Camden</span>
@@ -686,13 +650,16 @@ export function SocialShowcaseBand() {
                           {t(post.title)}
                         </h4>
 
-                        <blockquote className="mt-4 rounded-2xl border border-kraft-deep/70 bg-parchment/75 p-4 text-sm leading-relaxed text-ink-soft">
-                          <Quote
+                        {!post.handle && (
+                          <p className="mt-2 line-clamp-2 break-all text-xs text-ink-muted">{post.href}</p>
+                        )}
+                        {t(post.caption) && <div className="mt-4 rounded-2xl border border-kraft-deep/70 bg-parchment/75 p-4 text-sm leading-relaxed text-ink-soft">
+                          {post.highlights && <Quote
                             className="mb-1 inline-block h-3.5 w-3.5 -translate-y-0.5 text-cinnabar/60"
                             aria-hidden="true"
-                          />{" "}
+                          />}{" "}
                           {t(post.caption)}
-                        </blockquote>
+                        </div>}
 
                         {post.highlights && post.highlights.length > 0 && (
                           <ul className="mt-4 space-y-2">
@@ -736,8 +703,8 @@ export function SocialShowcaseBand() {
               </div>
               <span className="shrink-0 text-xs font-semibold tabular-nums text-ink-muted">
                 {pick(
-                  `共 ${socialPosts.length} 条全平台真实动态`,
-                  `${socialPosts.length} live & verified posts`
+                  `共 ${socialPosts.length} 条动态`,
+                  `${socialPosts.length} posts`
                 )}
               </span>
             </div>

@@ -13,6 +13,7 @@ export default async function SocialAdminPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 pb-24">
       <Link href="/admin" className="text-sm font-semibold text-cinnabar">← 返回管理后台</Link>
+      <Link href="/admin/posts" className="ml-5 text-sm font-semibold text-cinnabar">管理展示帖子 →</Link>
       <h1 className="mt-4 font-display text-3xl font-bold">社交媒体账号</h1>
       <p className="mt-2 text-sm text-ink-muted">修改账号或粘贴新的主页链接，然后点该平台的「保存」。</p>
       {!writable && (

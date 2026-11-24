@@ -25,6 +25,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { ShareSpotButton } from "@/components/ShareSpotButton";
 import { SocialIcon } from "@/components/SocialIcon";
 import { SocialStoryStrip } from "@/components/SocialStoryStrip";
+import type { SocialPost } from "@/data/reviews";
 import { featuredMenuItems } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
 import { useSocialLinks } from "@/components/SocialLinksProvider";
@@ -107,6 +108,7 @@ const trendingTickerItems: Array<{
 ];
 
 interface HomeViewProps {
+  posts: SocialPost[];
   initialReviews?: ReviewsPayload;
   featuredItems?: typeof featuredMenuItems;
 }
@@ -114,7 +116,8 @@ interface HomeViewProps {
 export function HomeView({
   initialReviews,
   featuredItems,
-}: HomeViewProps = {}) {
+  posts,
+}: HomeViewProps) {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
   const socialLinks = useSocialLinks();
   const rednote = socialLinks.find((link) => link.platform === "rednote");
@@ -743,7 +746,7 @@ export function HomeView({
       </section>
 
       {/* 3. Verified Google Reviews & Live Full-Bleed Social Proof — Build trust early */}
-      <ReviewsSection initialData={initialReviews} />
+      <ReviewsSection initialData={initialReviews} posts={posts} />
 
       {/* 4. Multicultural Audience Highlights: Halal, Asian Street Food, UK Locals & Plant-Based */}
       <section className="border-b border-kraft-deep/80 bg-kraft/35">
