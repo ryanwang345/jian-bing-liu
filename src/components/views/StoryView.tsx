@@ -9,6 +9,7 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Reveal } from "@/components/motion/Reveal";
 import { restaurant } from "@/data/restaurant";
 import { googleRating } from "@/data/reviews";
+import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 const griddleSteps: Array<{
@@ -65,6 +66,7 @@ const griddleSteps: Array<{
 
 export function StoryView() {
   const { isTraditional, t, zhText, pick } = useLocale();
+  const socialLinks = useSocialLinks();
 
   return (
     <div className="pb-20">
@@ -116,11 +118,11 @@ export function StoryView() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {restaurant.verifiedSocialLinks
+                  {socialLinks
                     .filter((s) => s.platform !== "google-maps")
                     .map((social) => (
                       <a
-                        key={social.href}
+                        key={social.platform}
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -134,8 +136,8 @@ export function StoryView() {
               </div>
               <p className="mt-2.5 text-xs leading-relaxed text-ink-muted">
                 {pick(
-                  "每一张煎饼都由刘阿姨亲手现摊，配鲜榨果蔬面糊与自制辣椒油。欢迎在小红书（煎饼刘 · ID: 1162231947）、Instagram（@jian_bing_liu）与 TikTok（@jianbingliu.uk）看我们的厨房日常。",
-                  "Every crepe is spun by hand with natural fruit-and-veg batters and homemade chilli oil. Follow our kitchen clips on RedNote (ID: 1162231947), Instagram (@jian_bing_liu), and TikTok (@jianbingliu.uk)."
+                  "每一张煎饼都由刘阿姨亲手现摊，配鲜榨果蔬面糊与自制辣椒油。",
+                  "Every crepe is spun by hand with natural fruit-and-veg batters and homemade chilli oil."
                 )}
               </p>
             </div>

@@ -437,10 +437,10 @@ export function MenuAdminClient({
             <Lock className="h-6 w-6" aria-hidden="true" />
           </div>
           <h1 className="mt-4 text-center font-display text-2xl font-bold text-ink">
-            煎饼刘 · 菜单管理后台
+            煎饼刘 · 店铺管理后台
           </h1>
           <p className="mt-1.5 text-center text-sm text-ink-muted">
-            Menu &amp; Price Manager (Cloudflare D1 + R2)
+            Menu &amp; Social Media Manager (Cloudflare D1 + R2)
           </p>
 
           {!session.configured && (
@@ -543,7 +543,7 @@ export function MenuAdminClient({
             Jian Bing Liu · Admin Console
           </p>
           <h1 className="mt-1 font-display text-2xl font-bold text-ink sm:text-3xl">
-            菜单、规格价格与图片管理
+            菜单与社交媒体管理
           </h1>
           <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs">
             <span
@@ -609,6 +609,13 @@ export function MenuAdminClient({
               一键导入默认菜单到 D1
             </button>
           )}
+
+          <Link
+            href="/admin/social"
+            className="rounded-full border border-kraft-deep bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-cinnabar hover:text-cinnabar"
+          >
+            社交媒体账号
+          </Link>
 
           <Link
             href="/menu"
@@ -713,7 +720,7 @@ export function MenuAdminClient({
                     </h2>
                     {soldOut && (
                       <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink-muted">
-                        已下架 / 售罄
+                        已售罄
                       </span>
                     )}
                     {item.featured && (
@@ -768,13 +775,13 @@ export function MenuAdminClient({
                   onClick={() =>
                     handleQuickToggle(item, { isAvailable: soldOut })
                   }
-                  title={soldOut ? "恢复上架" : "标记售罄"}
+                  title={soldOut ? "恢复供应" : "标记售罄"}
                   className="inline-flex items-center gap-1 rounded-lg border border-kraft-deep bg-white px-2.5 py-1.5 text-xs font-semibold text-ink-soft hover:border-cinnabar hover:text-cinnabar disabled:opacity-40"
                 >
                   {soldOut ? (
                     <>
                       <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-                      上架
+                      恢复供应
                     </>
                   ) : (
                     <>

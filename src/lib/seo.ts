@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { restaurant, SITE_URL } from "@/data/restaurant";
+import { restaurant, SITE_URL, type SocialLink } from "@/data/restaurant";
 import { googleRating } from "@/data/reviews";
 
 interface PageMetadataOptions {
@@ -47,7 +47,7 @@ export function buildPageMetadata({
   };
 }
 
-export function buildRestaurantJsonLd() {
+export function buildRestaurantJsonLd(socialLinks: SocialLink[]) {
   return {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -66,7 +66,7 @@ export function buildRestaurantJsonLd() {
     priceRange: restaurant.priceRange,
     acceptsReservations: false,
     hasMenu: `${SITE_URL}/menu`,
-    sameAs: restaurant.verifiedSocialLinks
+    sameAs: socialLinks
       .filter(
         (s) =>
           s.platform === "instagram" ||

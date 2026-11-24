@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ShieldCheck, X, ZoomIn } from "lucide-react";
+import { SoldOutBadge } from "@/components/SoldOutBadge";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import {
   dietaryLabels,
@@ -261,7 +262,8 @@ export function MenuBrowser({
               {category.items.map((item) => (
                 <article
                   key={item.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white/80 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-kraft-deep hover:shadow-md sm:flex-row"
+                  data-sold-out={item.isAvailable === false || undefined}
+                  className="data-[sold-out]:bg-neutral-100 data-[sold-out]:grayscale group flex flex-col overflow-hidden rounded-2xl border border-kraft-deep/80 bg-white/80 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-kraft-deep hover:shadow-md sm:flex-row"
                 >
                   {item.image && (
                     <button
@@ -298,6 +300,7 @@ export function MenuBrowser({
                           <h3 className="font-display text-lg font-bold text-ink">
                             {t(item.name)}
                           </h3>
+                          {item.isAvailable === false && <SoldOutBadge />}
                           {!isZh && item.chineseName && (
                             <p
                               lang="zh-Hans"
@@ -471,6 +474,7 @@ export function MenuBrowser({
                     <h3 className="font-display text-lg font-bold text-parchment sm:text-xl">
                       {t(activeEntry.item.name)}
                     </h3>
+                    {activeEntry.item.isAvailable === false && <SoldOutBadge />}
                     {!isZh && activeEntry.item.chineseName && (
                       <p
                         lang="zh-Hans"

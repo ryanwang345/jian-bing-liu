@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { restaurant } from "@/data/restaurant";
+import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 interface StoryHighlight {
@@ -136,6 +137,8 @@ const storyHighlights: StoryHighlight[] = [
 
 export function SocialStoryStrip() {
   const { t, pick } = useLocale();
+  const socialLinks = useSocialLinks();
+  const instagram = socialLinks.find((link) => link.platform === "instagram");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [viewedIds, setViewedIds] = useState<Set<string>>(() => new Set());
   const [isPaused, setIsPaused] = useState(false);
@@ -207,21 +210,19 @@ export function SocialStoryStrip() {
               {pick("点开看今日现做实拍", "Fresh From Our Kitchen")}
             </span>
           </span>
-          <span aria-hidden="true" className="text-kraft-deep">
-            ·
-          </span>
-          <a
-            href={
-              restaurant.verifiedSocialLinks.find(
-                (s) => s.platform === "instagram"
-              )?.href ?? "https://www.instagram.com/jian_bing_liu/"
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center rounded-full bg-cinnabar/[0.08] px-2 py-0.5 text-[11px] font-semibold text-cinnabar transition-colors hover:bg-cinnabar hover:text-parchment"
-          >
-            @jian_bing_liu
-          </a>
+          {instagram && (
+            <>
+              <span aria-hidden="true" className="text-kraft-deep">·</span>
+              <a
+                href={instagram.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-full bg-cinnabar/[0.08] px-2 py-0.5 text-[11px] font-semibold text-cinnabar transition-colors hover:bg-cinnabar hover:text-parchment"
+              >
+                {instagram.handle}
+              </a>
+            </>
+          )}
         </div>
 
         <div className="no-scrollbar flex w-full max-w-full items-center gap-3 overflow-x-auto pb-1">
@@ -326,7 +327,7 @@ export function SocialStoryStrip() {
                   </span>
                   <div className="leading-tight">
                     <p className="text-xs font-bold text-parchment">
-                      @jian_bing_liu
+                      {instagram?.handle ?? t({ en: restaurant.name, zh: restaurant.chineseName })}
                     </p>
                     <p className="inline-flex items-center gap-1 text-[10px] text-parchment/75">
                       <MapPin className="h-2.5 w-2.5 text-yolk" aria-hidden="true" />

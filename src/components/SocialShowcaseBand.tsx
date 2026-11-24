@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
@@ -13,8 +13,8 @@ import {
   Star,
 } from "lucide-react";
 import { SocialIcon } from "@/components/SocialIcon";
-import { restaurant } from "@/data/restaurant";
-import { socialPosts, type SocialPost } from "@/data/reviews";
+import { REDNOTE_PROFILE_URL, socialPosts as curatedPosts, type SocialPost } from "@/data/reviews";
+import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale } from "@/lib/i18n";
 
 // Client-only lazy decorative watermarks: strips ~28 KB of SVG DOM out of initial SSR HTML
@@ -146,6 +146,12 @@ function LiveEmbedCard({
  */
 export function SocialShowcaseBand() {
   const { t, zhText, pick } = useLocale();
+  const socialLinks = useSocialLinks();
+  const rednote = socialLinks.find((link) => link.platform === "rednote");
+  const socialPosts = useMemo(() => curatedPosts.flatMap((post) => {
+    if (post.href !== REDNOTE_PROFILE_URL) return [post];
+    return rednote ? [{ ...post, handle: rednote.handle, href: rednote.href }] : [];
+  }), [rednote]);
   const [socialFilter, setSocialFilter] = useState<SocialFilter>("all");
   const [activePlatform, setActivePlatform] =
     useState<SocialPost["platform"]>("rednote");
@@ -390,14 +396,14 @@ export function SocialShowcaseBand() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {restaurant.verifiedSocialLinks
+                {socialLinks
                   .filter((s) => s.platform !== "google-maps")
                   .map((social) => {
                     const isCruising =
                       isScrollGallery && activePlatform === social.platform;
                     return (
                       <a
-                        key={social.href}
+                        key={social.platform}
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -471,7 +477,7 @@ export function SocialShowcaseBand() {
                       ),
                     },
                   ] as const
-                ).map((tab) => {
+                ).filter((tab) => tab.key !== "rednote" || rednoteCount > 0).map((tab) => {
                   const active = socialFilter === tab.key;
                   return (
                     <button

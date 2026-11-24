@@ -5,6 +5,7 @@ import { Clock, ExternalLink, Lock, MapPin, Phone, ShoppingBag } from "lucide-re
 import { BrandMark } from "@/components/BrandMark";
 import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
+import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 const quickLinks: Array<{ href: string; label: LocalizedText }> = [
@@ -17,6 +18,8 @@ const quickLinks: Array<{ href: string; label: LocalizedText }> = [
 
 export function Footer() {
   const { isZh, t, zhText, pick } = useLocale();
+  const socialLinks = useSocialLinks();
+  const instagram = socialLinks.find((link) => link.platform === "instagram");
 
   return (
     <footer className="relative z-10 border-t border-ink-soft bg-ink pb-28 text-parchment/90 md:pb-0">
@@ -40,9 +43,11 @@ export function Footer() {
               )}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
-              <span className="rounded-full border border-[#F0C26E]/35 bg-[#F0C26E]/12 px-3 py-1 text-[#F0C26E]">
-                @jian_bing_liu
-              </span>
+              {instagram && (
+                <span className="rounded-full border border-[#F0C26E]/35 bg-[#F0C26E]/12 px-3 py-1 text-[#F0C26E]">
+                  {instagram.handle}
+                </span>
+              )}
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
                 {pick("支持到店自取", "Takeaway")}
               </span>
@@ -152,8 +157,8 @@ export function Footer() {
               {pick("关注我们", "Follow Us")}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
-              {restaurant.verifiedSocialLinks.map((social) => (
-                <li key={social.href}>
+              {socialLinks.map((social) => (
+                <li key={social.platform}>
                   <a
                     href={social.href}
                     target="_blank"

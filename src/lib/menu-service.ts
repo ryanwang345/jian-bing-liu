@@ -116,8 +116,7 @@ function hydrateStaticCategories(): MenuCategory[] {
 function rowsToMenuCategories(
   catRows: CategoryRow[],
   itemRows: ItemRow[],
-  variantRows: VariantRow[],
-  includeUnavailable: boolean
+  variantRows: VariantRow[]
 ): MenuCategory[] {
   const variantsByItem = new Map<string, MenuVariant[]>();
   for (const row of variantRows) {
@@ -134,8 +133,6 @@ function rowsToMenuCategories(
 
   const itemsByCategory = new Map<string, MenuItem[]>();
   for (const row of itemRows) {
-    if (!includeUnavailable && row.is_available === 0) continue;
-
     const variants = (variantsByItem.get(row.id) ?? []).sort(
       (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
     );
@@ -185,20 +182,17 @@ function rowsToMenuCategories(
     itemsByCategory.set(row.category_id, list);
   }
 
-  return catRows
-    .map((cat) => ({
-      id: cat.id,
-      title: { en: cat.title_en, zh: cat.title_zh },
-      chineseTitle: cat.chinese_title,
-      subtitle: { en: cat.subtitle_en, zh: cat.subtitle_zh },
-      items: itemsByCategory.get(cat.id) ?? [],
-    }))
-    .filter((cat) => includeUnavailable || cat.items.length > 0);
+  return catRows.map((cat) => ({
+    id: cat.id,
+    title: { en: cat.title_en, zh: cat.title_zh },
+    chineseTitle: cat.chinese_title,
+    subtitle: { en: cat.subtitle_en, zh: cat.subtitle_zh },
+    items: itemsByCategory.get(cat.id) ?? [],
+  }));
 }
 
 async function queryMenuFromDb(
-  db: D1Database,
-  includeUnavailable: boolean
+  db: D1Database
 ): Promise<MenuCategory[] | null> {
   try {
     const [catRes, itemRes, varRes] = await db.batch([
@@ -218,7 +212,7 @@ async function queryMenuFromDb(
 
     const itemRows = (itemRes?.results ?? []) as unknown as ItemRow[];
     const variantRows = (varRes?.results ?? []) as unknown as VariantRow[];
-    return rowsToMenuCategories(catRows, itemRows, variantRows, includeUnavailable);
+    return rowsToMenuCategories(catRows, itemRows, variantRows);
   } catch {
     return null;
   }
@@ -227,9 +221,9 @@ async function queryMenuFromDb(
 export async function getPublicMenuCategories(): Promise<MenuCategory[]> {
   const db = await getMenuDb();
   if (db) {
-    const live = await queryMenuFromDb(db, false);
-    if (live && live.length > 0) {
-      return live;
+    const live = await queryMenuFromDb(db);
+    if (live) {
+      return live.filter((category) => category.items.length > 0);
     }
   }
   return hydrateStaticCategories();
@@ -245,7 +239,7 @@ export async function getFeaturedMenuItems(): Promise<MenuItem[]> {
 export async function getAdminMenuSnapshot(): Promise<AdminMenuSnapshot> {
   const [db, bucket] = await Promise.all([getMenuDb(), getMenuImagesBucket()]);
   if (db) {
-    const live = await queryMenuFromDb(db, true);
+    const live = await queryMenuFromDb(db);
     if (live && live.length > 0) {
       return {
         categories: live,

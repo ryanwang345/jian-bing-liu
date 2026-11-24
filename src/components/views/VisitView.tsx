@@ -18,10 +18,13 @@ import { LiveOpenBadge } from "@/components/LiveOpenBadge";
 import { ShareSpotButton } from "@/components/ShareSpotButton";
 import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
+import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale } from "@/lib/i18n";
 
 export function VisitView() {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
+  const socialLinks = useSocialLinks();
+  const messagingLinks = socialLinks.filter((link) => ["rednote", "instagram", "tiktok"].includes(link.platform));
   const [mapReady, setMapReady] = useState(false);
   const mapEmbedUrl = `https://maps.google.com/maps?q=${restaurant.links.googleMapsEmbedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
 
@@ -190,77 +193,20 @@ export function VisitView() {
                     </div>
                   )}
 
-                  <div className="mt-4 flex items-start gap-2 rounded-xl border border-kraft-deep/80 bg-parchment p-3 text-xs text-ink-muted">
-                    <MessageCircle
-                      className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar"
-                      aria-hidden="true"
-                    />
-                    <span>
-                      {isZh ? (
-                        <>
-                          {zhText("也可以在 ")}
-                          <a
-                            href="https://xhslink.cn/m/24xL12L1i1R"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
-                          >
-                            {zhText("小红书 (ID: 1162231947)")}
+                  {messagingLinks.length > 0 && (
+                    <div className="mt-4 flex items-start gap-2 rounded-xl border border-kraft-deep/80 bg-parchment p-3 text-xs text-ink-muted">
+                      <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar" aria-hidden="true" />
+                      <div className="flex flex-wrap gap-x-2 gap-y-1">
+                        {pick("也可以通过这些平台给我们留言：", "Message us on")}
+                        {messagingLinks.map((link) => (
+                          <a key={link.platform} href={link.href} target="_blank" rel="noopener noreferrer"
+                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar">
+                            {t(link.label)} ({link.handle})
                           </a>
-                          {zhText("、")}
-                          <a
-                            href="https://www.instagram.com/jian_bing_liu/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
-                          >
-                            Instagram (@jian_bing_liu)
-                          </a>{" "}
-                          {zhText("或 ")}
-                          <a
-                            href="https://www.tiktok.com/@jianbingliu.uk"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
-                          >
-                            TikTok (@jianbingliu.uk)
-                          </a>{" "}
-                          {zhText("给我们留言咨询。")}
-                        </>
-                      ) : (
-                        <>
-                          Prefer messaging? Reach us on{" "}
-                          <a
-                            href="https://xhslink.cn/m/24xL12L1i1R"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
-                          >
-                            RedNote (ID: 1162231947)
-                          </a>
-                          ,{" "}
-                          <a
-                            href="https://www.instagram.com/jian_bing_liu/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
-                          >
-                            Instagram (@jian_bing_liu)
-                          </a>{" "}
-                          or{" "}
-                          <a
-                            href="https://www.tiktok.com/@jianbingliu.uk"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
-                          >
-                            TikTok (@jianbingliu.uk)
-                          </a>
-                          .
-                        </>
-                      )}
-                    </span>
-                  </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -374,11 +320,11 @@ export function VisitView() {
                 )}
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
-                {restaurant.verifiedSocialLinks
+                {socialLinks
                   .filter((item) => item.platform !== "google-maps")
                   .map((social) => (
                     <a
-                      key={social.href}
+                      key={social.platform}
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
 import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
+import { SocialLinksProvider } from "@/components/SocialLinksProvider";
+import { getSocialProfiles } from "@/lib/social-profiles";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileActionBar } from "@/components/MobileActionBar";
@@ -95,8 +97,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = buildRestaurantJsonLd();
-  const cookieStore = await cookies();
+  const [cookieStore, { profiles }] = await Promise.all([cookies(), getSocialProfiles()]);
+  const visibleLinks = profiles.filter((profile) => profile.visible);
+  const jsonLd = buildRestaurantJsonLd(visibleLinks);
   const savedCookie = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
   const hasSavedPreference = isValidLocale(savedCookie);
 
@@ -133,34 +136,36 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col bg-parchment text-ink selection:bg-cinnabar/20 selection:text-ink">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
 
         <LocaleProvider
           initialLocale={initialLocale}
           hasSavedPreference={hasSavedPreference}
         >
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-cinnabar focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
-          >
-            {initialLocale === "zh"
-              ? "跳到正文"
-              : initialLocale === "zh-Hant"
-                ? "跳至正文"
-                : "Skip to main content"}
-          </a>
+          <SocialLinksProvider links={visibleLinks}>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-cinnabar focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+            >
+              {initialLocale === "zh"
+                ? "跳到正文"
+                : initialLocale === "zh-Hant"
+                  ? "跳至正文"
+                  : "Skip to main content"}
+            </a>
 
-          <ScrollAmbientLights />
-          <ScrollProgressBar />
-          <Header />
+            <ScrollAmbientLights />
+            <ScrollProgressBar />
+            <Header />
 
-          <main id="main-content" className="relative z-10 flex-1">
-            <RouteTransition>{children}</RouteTransition>
-          </main>
+            <main id="main-content" className="relative z-10 flex-1">
+              <RouteTransition>{children}</RouteTransition>
+            </main>
 
-          <Footer />
-          <MobileActionBar />
+            <Footer />
+            <MobileActionBar />
+          </SocialLinksProvider>
         </LocaleProvider>
       </body>
     </html>

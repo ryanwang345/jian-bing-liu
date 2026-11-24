@@ -15,6 +15,7 @@ import {
   Star,
   UtensilsCrossed,
 } from "lucide-react";
+import { SoldOutBadge } from "@/components/SoldOutBadge";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import { DishSocialActions } from "@/components/DishSocialActions";
 import { LiveOpenBadge } from "@/components/LiveOpenBadge";
@@ -26,6 +27,7 @@ import { SocialIcon } from "@/components/SocialIcon";
 import { SocialStoryStrip } from "@/components/SocialStoryStrip";
 import { featuredMenuItems } from "@/data/menu";
 import { restaurant } from "@/data/restaurant";
+import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 import type { ReviewsPayload } from "@/lib/reviews-service";
 
@@ -114,10 +116,9 @@ export function HomeView({
   featuredItems,
 }: HomeViewProps = {}) {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
-  const displayFeatured =
-    featuredItems && featuredItems.length > 0
-      ? featuredItems
-      : featuredMenuItems;
+  const socialLinks = useSocialLinks();
+  const rednote = socialLinks.find((link) => link.platform === "rednote");
+  const displayFeatured = featuredItems ?? featuredMenuItems;
 
   return (
     <>
@@ -247,7 +248,7 @@ export function HomeView({
                   {pick("关注官方社媒 · 刷最新实拍", "Follow Our Official Socials")}
                 </p>
                 <div className="flex flex-wrap items-center gap-2.5">
-                  {restaurant.verifiedSocialLinks
+                  {socialLinks
                     .filter((s) => s.platform !== "google-maps")
                     .map((social) => {
                       const brandStyle =
@@ -278,7 +279,7 @@ export function HomeView({
 
                       return (
                         <a
-                          key={social.href}
+                          key={social.platform}
                           href={social.href}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -527,7 +528,10 @@ export function HomeView({
               featuredDishTags[idx % featuredDishTags.length];
             return (
               <Reveal key={item.id} delay={(idx % 3) * 95} className="h-full">
-                <article className="apple-card social-card-shadow group flex h-full flex-col overflow-hidden rounded-[26px] border border-kraft-deep/80 bg-white hover:border-cinnabar/40 hover:shadow-xl">
+                <article
+                  data-sold-out={item.isAvailable === false || undefined}
+                  className="data-[sold-out]:bg-neutral-100 data-[sold-out]:grayscale apple-card social-card-shadow group flex h-full flex-col overflow-hidden rounded-[26px] border border-kraft-deep/80 bg-white hover:border-cinnabar/40 hover:shadow-xl"
+                >
                   {item.image && (
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-kraft">
                       <Image
@@ -551,6 +555,7 @@ export function HomeView({
                         <h3 className="font-display text-xl font-bold text-ink transition-colors group-hover:text-cinnabar">
                           {t(item.name)}
                         </h3>
+                        {item.isAvailable === false && <SoldOutBadge />}
                         {!isZh && item.chineseName && (
                           <span
                             lang="zh-Hans"
@@ -621,15 +626,17 @@ export function HomeView({
 
             <div className="flex flex-wrap items-center gap-2.5">
               <ShareSpotButton variant="dark" />
-              <a
-                href="https://xhslink.cn/m/24xL12L1i1R"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-parchment/25 bg-white/10 px-4 py-2 text-xs font-semibold text-parchment transition-colors hover:border-[#F0C26E] hover:text-[#F0C26E]"
-              >
-                <SocialIcon platform="rednote" className="h-3.5 w-3.5" />
-                {pick("小红书 1162231947", "RedNote · 1162231947")}
-              </a>
+              {rednote && (
+                <a
+                  href={rednote.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-parchment/25 bg-white/10 px-4 py-2 text-xs font-semibold text-parchment transition-colors hover:border-[#F0C26E] hover:text-[#F0C26E]"
+                >
+                  <SocialIcon platform="rednote" className="h-3.5 w-3.5" />
+                  {t(rednote.label)} · {rednote.handle}
+                </a>
+              )}
               <a
                 href="#reviews"
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#F0C26E]/40 bg-[#F0C26E]/10 px-4 py-2 text-xs font-semibold text-[#F0C26E] transition-colors hover:bg-[#F0C26E] hover:text-ink"
