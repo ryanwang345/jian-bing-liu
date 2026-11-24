@@ -123,7 +123,7 @@ export function GalleryGrid({ categories, items }: GalleryGridProps) {
           onClick={() => setLightboxIndex(null)}
         >
           <div
-            className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
+            className="relative flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-parchment/15 bg-ink shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-parchment/15 px-5 py-3.5 text-parchment">

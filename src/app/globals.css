@@ -107,6 +107,7 @@ html[lang="zh-Hant"] h3.font-display {
     scroll-behavior: smooth;
     background-color: var(--color-parchment);
     color: var(--color-ink);
+    overflow-x: clip;
   }
 
   body {
@@ -115,6 +116,7 @@ html[lang="zh-Hant"] h3.font-display {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   a:focus-visible,

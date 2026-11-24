@@ -22,11 +22,13 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
       seal: "px-1 py-0.5 text-[10px]",
     },
     md: {
-      logo: "h-11 w-11 sm:h-12 sm:w-12",
+      logo: "h-9 w-9 sm:h-12 sm:w-12",
       logoPx: 48,
-      top: isZh ? "text-[11px] tracking-[0.24em]" : "text-xs tracking-[0.16em]",
-      chinese: "text-2xl sm:text-[26px] leading-none",
-      seal: "px-1.5 py-0.5 text-[11px]",
+      top: isZh
+        ? "text-[10px] tracking-[0.18em] sm:text-[11px] sm:tracking-[0.24em]"
+        : "text-[10px] tracking-[0.12em] sm:text-xs sm:tracking-[0.16em]",
+      chinese: "text-xl sm:text-[26px] leading-none",
+      seal: "px-1 py-0.5 text-[10px] sm:px-1.5 sm:text-[11px]",
     },
     lg: {
       logo: "h-14 w-14 sm:h-16 sm:w-16",
@@ -38,7 +40,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
   }[size];
 
   return (
-    <span className="inline-flex items-center gap-3">
+    <span className="inline-flex items-center gap-2 sm:gap-3">
       <span
         className={`relative shrink-0 overflow-hidden rounded-full bg-black shadow-xs ${sizeStyles.logo} ${
           isLight ? "ring-1 ring-[#F0C26E]/40" : "ring-1 ring-ink/15"

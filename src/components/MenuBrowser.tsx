@@ -73,18 +73,18 @@ export function MenuBrowser({
 
   return (
     <div>
-      <div className="sticky top-[69px] z-30 -mx-4 border-y border-kraft-deep/80 bg-parchment/95 px-4 py-3.5 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="sticky top-[57px] z-30 -mx-4 border-y border-kraft-deep/80 bg-parchment/95 px-4 py-3 backdrop-blur-md sm:top-[72px] sm:-mx-6 sm:px-6 sm:py-3.5 lg:-mx-8 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2.5 sm:gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             <div
               role="group"
               aria-label={pick(
                 "按饮食偏好筛选菜单",
                 "Filter menu by dietary preference"
               )}
-              className="flex flex-wrap items-center gap-1.5"
+              className="no-scrollbar flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-visible sm:pb-0"
             >
-              <span className="mr-1 text-xs font-semibold tracking-wider text-ink-muted uppercase">
+              <span className="mr-1 shrink-0 text-xs font-semibold tracking-wider text-ink-muted uppercase">
                 {pick("饮食筛选：", "Dietary:")}
               </span>
               {dietaryFilters.map((filter) => {
@@ -100,7 +100,7 @@ export function MenuBrowser({
                     type="button"
                     onClick={() => handleSelectDietary(filter)}
                     aria-pressed={selected}
-                    className={`rounded-full px-3.5 py-1 text-xs font-semibold tabular-nums transition-all ${
+                    className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold tabular-nums transition-all ${
                       selected
                         ? filter === "halal"
                           ? "bg-cinnabar text-parchment shadow-xs"
@@ -116,20 +116,20 @@ export function MenuBrowser({
               })}
             </div>
 
-            <span className="text-xs font-medium text-ink-muted">
+            <span className="hidden text-xs font-medium text-ink-muted sm:inline">
               {pick("快速跳转分类：", "Jump to section:")}
             </span>
           </div>
 
           <nav
             aria-label={pick("菜单分类导航", "Menu categories")}
-            className="flex flex-wrap gap-1.5"
+            className="no-scrollbar flex flex-nowrap gap-1.5 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-visible sm:pb-0"
           >
             {filteredCategories.map((cat) => (
               <a
                 key={cat.id}
                 href={`#${cat.id}`}
-                className="rounded-full border border-kraft-deep bg-kraft/50 px-3 py-1 text-xs font-semibold text-ink-soft transition-colors hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
+                className="shrink-0 rounded-full border border-kraft-deep bg-kraft/50 px-3 py-1 text-xs font-semibold text-ink-soft transition-colors hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
               >
                 {t(cat.title)}
               </a>

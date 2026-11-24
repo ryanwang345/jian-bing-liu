@@ -431,7 +431,7 @@ export function ReviewsSection({ initialData }: ReviewsSectionProps = {}) {
     <article
       key={`${review.id}-${keySuffix}`}
       aria-hidden={isDuplicate ? true : undefined}
-      className="apple-card group flex w-[305px] shrink-0 flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white p-5 shadow-xs hover:border-cinnabar/45 hover:shadow-md sm:w-[355px] sm:p-6 lg:w-[385px]"
+      className="apple-card group flex w-[min(84vw,310px)] shrink-0 flex-col justify-between rounded-2xl border border-kraft-deep/80 bg-white p-5 shadow-xs hover:border-cinnabar/45 hover:shadow-md sm:w-[355px] sm:p-6 lg:w-[385px]"
     >
       <div>
         <div className="flex items-center justify-between gap-3">

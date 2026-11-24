@@ -250,7 +250,7 @@ export function SocialStoryStrip() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative flex h-[min(86vh,680px)] w-full max-w-[390px] flex-col justify-between overflow-hidden rounded-[30px] border border-parchment/20 bg-ink text-parchment shadow-2xl"
+            className="relative flex h-[min(86dvh,680px)] w-full max-w-[390px] flex-col justify-between overflow-hidden rounded-[30px] border border-parchment/20 bg-ink text-parchment shadow-2xl"
           >
             {/* Full-bleed Story Image */}
             <Image

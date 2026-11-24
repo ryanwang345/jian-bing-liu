@@ -264,10 +264,10 @@ export function AppleCraftShowcase() {
       ref={runwayRef}
       aria-label={pick("铁板匠心亮点", "Crafted on the Griddle")}
       onKeyDown={handleKeyDown}
-      className="relative h-[240svh] border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[260vh]"
+      className="relative border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[250vh]"
     >
-      {/* Sticky Single-Viewport Stage (no overflow-hidden on section so sticky works cleanly!) */}
-      <div className="sticky top-[64px] flex min-h-[calc(100svh-64px)] items-center overflow-x-clip motion-reduce:static motion-reduce:min-h-0 lg:top-[72px] lg:min-h-[calc(100vh-72px)]">
+      {/* Natural swipeable flow on iPhone & iPad portrait; sticky single-screen scrub on lg+ (iPad landscape & Desktop) */}
+      <div className="relative flex items-center overflow-x-clip motion-reduce:static motion-reduce:min-h-0 lg:sticky lg:top-[72px] lg:min-h-[calc(100svh-72px)]">
         {/* Subtle ambient glow that shifts with active slide */}
         <div
           aria-hidden="true"
@@ -275,7 +275,7 @@ export function AppleCraftShowcase() {
           style={{ backgroundImage: current.glow }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-6 xl:py-10">
           {/* Top Row: Heading + 4 Instant Step Tabs */}
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end lg:gap-6">
             <div>
@@ -337,7 +337,7 @@ export function AppleCraftShowcase() {
           >
             <div className="grid items-stretch lg:grid-cols-12">
               {/* Full-Bleed Visual Stage with Live Scroll-Scrubbed Zoom */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/50 lg:col-span-7 lg:aspect-auto lg:min-h-[420px]">
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/50 lg:col-span-7 lg:aspect-auto lg:min-h-[360px] xl:min-h-[420px]">
                 <div
                   ref={photoZoomRef}
                   className="absolute inset-0 will-change-transform"
@@ -373,7 +373,7 @@ export function AppleCraftShowcase() {
               </div>
 
               {/* Crisp Editorial Content Column */}
-              <div className="flex flex-col justify-between p-5 sm:p-8 lg:col-span-5 lg:p-10">
+              <div className="flex flex-col justify-between p-5 sm:p-8 lg:col-span-5 lg:p-7 xl:p-10">
                 <div key={current.id} className="animate-fade-up">
                   <p className="text-xs font-semibold tracking-[0.18em] text-[#F0C26E] uppercase">
                     {t(current.eyebrow)}

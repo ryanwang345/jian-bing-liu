@@ -57,7 +57,7 @@ function LiveEmbedCard({
 
   return (
     <article
-      className={`apple-card flex h-[500px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-kraft-deep/85 bg-white shadow-sm hover:border-cinnabar/45 hover:shadow-xl ${cardWidth}`}
+      className={`apple-card flex h-[440px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-kraft-deep/85 bg-white shadow-sm hover:border-cinnabar/45 hover:shadow-xl sm:h-[460px] lg:h-[430px] xl:h-[500px] ${cardWidth}`}
     >
       <div className="flex items-center justify-between gap-2 border-b border-kraft-deep/60 bg-parchment/70 px-4 py-2.5">
         <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink">
@@ -364,7 +364,7 @@ export function SocialShowcaseBand() {
       <div
         className={`relative w-full overflow-x-clip py-12 sm:py-16 ${
           isScrollGallery
-            ? "lg:sticky lg:top-[72px] lg:flex lg:min-h-[calc(100vh-72px)] lg:flex-col lg:justify-center lg:py-8 motion-reduce:lg:static motion-reduce:lg:min-h-0"
+            ? "lg:sticky lg:top-[72px] lg:flex lg:min-h-[calc(100svh-72px)] lg:flex-col lg:justify-center lg:py-5 xl:py-8 motion-reduce:lg:static motion-reduce:lg:min-h-0"
             : ""
         }`}
       >
@@ -557,7 +557,7 @@ export function SocialShowcaseBand() {
               >
               {filteredPosts.map((post, idx) => {
                 const cardWidth = isScrollGallery
-                  ? "w-[320px] sm:w-[345px]"
+                  ? "w-[min(84vw,320px)] sm:w-[345px]"
                   : "w-full sm:w-[345px]";
 
                 // 1) LIVE EMBED CARDS: Instagram Reels/Posts, TikTok Video Player, Threads Posts
@@ -583,7 +583,7 @@ export function SocialShowcaseBand() {
                       href={post.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`apple-card group relative flex h-[500px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-kraft-deep/85 bg-white shadow-sm hover:border-[#FF2442]/50 hover:shadow-xl ${cardWidth}`}
+                      className={`apple-card group relative flex h-[440px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-kraft-deep/85 bg-white shadow-sm hover:border-[#FF2442]/50 hover:shadow-xl sm:h-[460px] lg:h-[430px] xl:h-[500px] ${cardWidth}`}
                     >
                       <div className="flex items-center justify-between gap-2 border-b border-kraft-deep/60 bg-[#FF2442]/[0.06] px-4 py-2.5">
                         <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#FF2442]">
@@ -595,7 +595,7 @@ export function SocialShowcaseBand() {
                         </span>
                       </div>
 
-                      <div className="relative h-[275px] w-full overflow-hidden bg-kraft">
+                      <div className="relative h-[220px] w-full overflow-hidden bg-kraft sm:h-[240px] lg:h-[215px] xl:h-[275px]">
                         <Image
                           src={post.image}
                           alt={post.imageAlt ? t(post.imageAlt) : t(post.title)}
@@ -640,7 +640,7 @@ export function SocialShowcaseBand() {
                     href={post.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`apple-card group relative flex h-[500px] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-2xl border border-kraft-deep/85 bg-white shadow-sm hover:border-cinnabar/45 hover:shadow-xl ${cardWidth}`}
+                    className={`apple-card group relative flex h-[440px] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-2xl border border-kraft-deep/85 bg-white shadow-sm hover:border-cinnabar/45 hover:shadow-xl sm:h-[460px] lg:h-[430px] xl:h-[500px] ${cardWidth}`}
                   >
                     <div
                       className={`flex items-center justify-between gap-2 border-b border-kraft-deep/60 px-4 py-3 ${

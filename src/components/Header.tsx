@@ -99,7 +99,7 @@ function LanguageToggle() {
               title={opt.title}
               onClick={() => handleSelect(opt.code)}
               aria-pressed={isSelected}
-              className={`relative z-10 rounded-full px-2.5 py-1 transition-colors duration-250 ${
+              className={`relative z-10 rounded-full px-2 py-1 transition-colors duration-250 sm:px-2.5 ${
                 isSelected
                   ? pill
                     ? "text-parchment"
@@ -204,10 +204,10 @@ export function Header() {
           : "border-kraft-deep/65"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8">
         <Link
           href="/"
-          className="group rounded-lg py-0.5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.015]"
+          className="group shrink-0 rounded-lg py-0.5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.015]"
           aria-label={pick(
             `${restaurant.chineseName}（${restaurant.sealText}）— 返回首页`,
             `${restaurant.name} — Home`
@@ -216,14 +216,14 @@ export function Header() {
           <BrandMark size="md" variant="dark" />
         </Link>
 
-        {/* Desktop Nav with Apple-Style Sliding Active & Hover Capsules */}
+        {/* Desktop Nav (lg+ so iPad portrait never squeezes or wraps tabs) */}
         <nav
           ref={navRef}
           aria-label={pick("主导航", "Primary navigation")}
           onMouseLeave={() =>
             setHoverPill((prev) => ({ ...prev, visible: false }))
           }
-          className="relative hidden items-center gap-0.5 rounded-full border border-kraft-deep/55 bg-white/55 p-1 backdrop-blur-xs md:flex"
+          className="relative hidden items-center gap-0.5 rounded-full border border-kraft-deep/55 bg-white/55 p-1 backdrop-blur-xs lg:flex"
         >
           {/* Hover Ghost Capsule */}
           <span
@@ -277,7 +277,7 @@ export function Header() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-2.5 md:flex">
+        <div className="hidden items-center gap-2.5 lg:flex">
           <LanguageToggle />
           {restaurant.links.orderOnline && (
             <a
@@ -296,9 +296,20 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile language toggle + menu button */}
-        <div className="flex items-center gap-2 md:hidden">
+        {/* Mobile & iPad Portrait: Language toggle + iPad Order button + Menu drawer trigger */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5 lg:hidden">
           <LanguageToggle />
+          {restaurant.links.orderOnline && (
+            <a
+              href={restaurant.links.orderOnline}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="sticker-shadow hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-cinnabar to-dragonfruit px-3.5 py-1.5 text-xs font-bold text-parchment transition-all active:scale-[0.97] sm:inline-flex"
+            >
+              {pick("饭团点餐", "Order")}
+              <ExternalLink className="h-3 w-3" aria-hidden="true" />
+            </a>
+          )}
           <button
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
@@ -309,7 +320,7 @@ export function Header() {
                 ? pick("关闭导航菜单", "Close navigation menu")
                 : pick("打开导航菜单", "Open navigation menu")
             }
-            className="inline-flex items-center justify-center rounded-full border border-kraft-deep bg-kraft/70 p-2.5 text-ink transition-transform duration-250 active:scale-95 hover:bg-kraft"
+            className="inline-flex items-center justify-center rounded-full border border-kraft-deep bg-kraft/70 p-2 text-ink transition-transform duration-250 active:scale-95 hover:bg-kraft sm:p-2.5"
           >
             {mobileOpen ? (
               <X className="h-5 w-5" aria-hidden="true" />
@@ -323,7 +334,7 @@ export function Header() {
       {mobileOpen && (
         <div
           id="mobile-navigation-drawer"
-          className="animate-drawer-down border-t border-kraft-deep bg-parchment px-4 pt-3 pb-6 shadow-lg md:hidden"
+          className="animate-drawer-down border-t border-kraft-deep bg-parchment px-4 pt-3 pb-6 shadow-lg lg:hidden"
         >
           <nav
             aria-label={pick("移动端导航", "Mobile navigation")}

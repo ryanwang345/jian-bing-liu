@@ -176,11 +176,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
               {/* Beat 2: Iconic Headline + Crisp Appetite Copy */}
               {isZh ? (
-                <h1 className="mt-5 font-display text-4xl leading-[1.18] tracking-[0.03em] text-ink sm:text-5xl lg:text-[3.35rem]">
+                <h1 className="mt-5 font-display text-[2.15rem] leading-[1.18] tracking-[0.02em] text-ink sm:text-5xl lg:text-[2.95rem] xl:text-[3.2rem]">
                   {zhText("鲜榨果蔬皮，")}
                   <br />
                   {zhText("铁板现摊的")}
-                  <span className="bg-gradient-to-r from-cinnabar via-dragonfruit to-turmeric bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cinnabar via-dragonfruit to-turmeric bg-clip-text text-transparent sm:whitespace-nowrap">
                     {zhText("热乎煎饼")}
                   </span>
                 </h1>
@@ -262,26 +262,66 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               {/* Beat 4: Interactive Instagram / RedNote Story Highlights Strip */}
               <SocialStoryStrip />
 
-              {/* Beat 5: Official Social Icon Bar */}
-              <div className="mt-5 flex flex-wrap items-center gap-2">
-                <span className="mr-1 text-xs font-semibold text-ink-muted">
-                  {pick("关注官方社媒", "Follow us")}
-                </span>
-                {restaurant.verifiedSocialLinks
-                  .filter((s) => s.platform !== "google-maps")
-                  .map((social) => (
-                    <a
-                      key={social.href}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={`${t(social.label)} · ${social.handle}`}
-                      aria-label={`${t(social.label)} ${social.handle}`}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-kraft-deep bg-white text-ink shadow-2xs transition-all hover:-translate-y-0.5 hover:border-dragonfruit hover:bg-gradient-to-tr hover:from-cinnabar hover:to-dragonfruit hover:text-parchment"
-                    >
-                      <SocialIcon platform={social.platform} className="h-3.5 w-3.5" />
-                    </a>
-                  ))}
+              {/* Beat 5: Bold Brand-Coloured Official Social App Tiles */}
+              <div className="mt-6">
+                <p className="mb-2.5 text-xs font-bold tracking-wider text-ink-soft uppercase">
+                  {pick("关注官方社媒 · 刷最新实拍", "Follow Our Official Socials")}
+                </p>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {restaurant.verifiedSocialLinks
+                    .filter((s) => s.platform !== "google-maps")
+                    .map((social) => {
+                      const brandStyle =
+                        social.platform === "instagram"
+                          ? "bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white shadow-[0_6px_16px_rgba(238,42,123,0.32)]"
+                          : social.platform === "tiktok"
+                            ? "bg-[#0f0f10] text-white shadow-[0_6px_16px_rgba(254,44,85,0.28)] ring-1 ring-[#25F4EE]/55"
+                            : social.platform === "rednote"
+                              ? "bg-[#FF2442] text-white shadow-[0_6px_16px_rgba(255,36,66,0.34)]"
+                              : social.platform === "threads"
+                                ? "bg-ink text-parchment shadow-[0_6px_16px_rgba(26,22,20,0.25)]"
+                                : social.platform === "reddit"
+                                  ? "bg-[#FF4500] text-white shadow-[0_6px_16px_rgba(255,69,0,0.32)]"
+                                  : "bg-[#0EA5A4] text-white shadow-[0_6px_16px_rgba(14,165,164,0.32)]";
+
+                      const shortLabel =
+                        social.platform === "rednote"
+                          ? pick("小红书", "RedNote")
+                          : social.platform === "fantuan"
+                            ? pick("饭团", "Fantuan")
+                            : social.platform === "instagram"
+                              ? "IG"
+                              : social.platform === "tiktok"
+                                ? "TikTok"
+                                : social.platform === "threads"
+                                  ? "Threads"
+                                  : "Reddit";
+
+                      return (
+                        <a
+                          key={social.href}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`${t(social.label)} · ${social.handle}`}
+                          aria-label={`${t(social.label)} ${social.handle}`}
+                          className="group flex flex-col items-center gap-1"
+                        >
+                          <span
+                            className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1 group-hover:scale-105 group-hover:shadow-lg group-active:scale-95 sm:h-12 sm:w-12 ${brandStyle}`}
+                          >
+                            <SocialIcon
+                              platform={social.platform}
+                              className="h-5 w-5 sm:h-[22px] sm:w-[22px]"
+                            />
+                          </span>
+                          <span className="text-[10px] font-bold text-ink-muted transition-colors group-hover:text-ink">
+                            {shortLabel}
+                          </span>
+                        </a>
+                      );
+                    })}
+                </div>
               </div>
             </div>
 

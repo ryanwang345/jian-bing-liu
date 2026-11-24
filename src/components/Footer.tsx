@@ -19,7 +19,7 @@ export function Footer() {
   const { isZh, t, zhText, pick } = useLocale();
 
   return (
-    <footer className="border-t border-ink-soft bg-ink pb-20 text-parchment/90 md:pb-0">
+    <footer className="border-t border-ink-soft bg-ink pb-28 text-parchment/90 md:pb-0">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
