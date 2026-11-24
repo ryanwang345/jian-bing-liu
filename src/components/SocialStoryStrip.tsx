@@ -202,13 +202,13 @@ export function SocialStoryStrip() {
     <>
       <div className="mt-6 w-full min-w-0">
         <div className="mb-2.5 flex items-center justify-between gap-2">
-          <span className="inline-flex min-w-0 items-center gap-1.5 truncate text-[11px] font-bold tracking-wider text-ink-muted uppercase">
-            <Sparkles className="h-3.5 w-3.5 shrink-0 text-dragonfruit" aria-hidden="true" />
+          <span className="inline-flex min-w-0 items-center gap-1.5 truncate text-[11px] font-semibold tracking-wider text-ink-muted uppercase">
+            <Sparkles className="h-3.5 w-3.5 shrink-0 text-turmeric" aria-hidden="true" />
             <span className="truncate">
-              {pick("点击看今日精选快拍 · Stories", "Tap Highlights · Stories")}
+              {pick("点开看今日现做实拍", "Fresh From Our Kitchen")}
             </span>
           </span>
-          <span className="shrink-0 text-[11px] font-semibold text-dragonfruit">
+          <span className="shrink-0 text-[11px] font-semibold text-cinnabar">
             @jian_bing_liu
           </span>
         </div>
@@ -227,7 +227,7 @@ export function SocialStoryStrip() {
                   className={`rounded-full p-[2.5px] transition-transform duration-300 group-hover:scale-105 group-active:scale-95 ${
                     isViewed
                       ? "bg-kraft-deep"
-                      : "story-ring shadow-[0_4px_14px_rgba(225,45,102,0.22)]"
+                      : "story-ring shadow-[0_4px_12px_rgba(184,37,28,0.18)]"
                   }`}
                 >
                   <span className="relative block h-14 w-14 overflow-hidden rounded-full border-2 border-parchment bg-kraft sm:h-[60px] sm:w-[60px]">
@@ -298,7 +298,7 @@ export function SocialStoryStrip() {
                         i < activeIndex
                           ? "w-full"
                           : i === activeIndex
-                            ? "w-full bg-gradient-to-r from-yolk to-dragonfruit"
+                            ? "w-full bg-gradient-to-r from-yolk to-cinnabar"
                             : "w-0"
                       }`}
                     />
@@ -363,7 +363,7 @@ export function SocialStoryStrip() {
 
             {/* Bottom Caption + Hashtag + CTA */}
             <div className="relative z-20 p-5">
-              <span className="inline-flex items-center rounded-full bg-dragonfruit px-3 py-1 text-[11px] font-bold text-white shadow-sm">
+              <span className="inline-flex items-center rounded-full bg-cinnabar px-3 py-1 text-[11px] font-bold text-parchment shadow-sm">
                 {t(activeStory.tag)}
               </span>
               <h3 className="mt-2.5 font-display text-2xl leading-snug font-semibold text-parchment">

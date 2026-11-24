@@ -23,13 +23,13 @@ export function SectionHeading({
   return (
     <div className={isCenter ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       <div
-        className={`inline-flex items-center gap-2 rounded-full border border-dragonfruit/20 bg-white/90 px-3.5 py-1 text-xs font-bold tracking-[0.06em] text-cinnabar shadow-2xs ${
+        className={`inline-flex items-center gap-2 rounded-full border border-kraft-deep/90 bg-white/90 px-3.5 py-1 text-xs font-bold tracking-[0.06em] text-cinnabar shadow-2xs ${
           isCenter ? "justify-center" : ""
         }`}
       >
         <span
           aria-hidden="true"
-          className="h-2 w-2 rounded-full bg-gradient-to-tr from-dragonfruit via-cinnabar to-yolk"
+          className="h-2 w-2 rounded-full bg-gradient-to-tr from-cinnabar via-turmeric to-yolk"
         />
         <span>{eyebrow}</span>
         {chineseAccent && (

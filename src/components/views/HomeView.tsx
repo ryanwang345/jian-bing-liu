@@ -83,54 +83,25 @@ const craftGalleryStrip: Array<{
   },
 ];
 
-const featuredDishStickers: Array<{
-  badge: LocalizedText;
-  hashtag: string;
-  tone: string;
-}> = [
-  {
-    badge: { en: "Top Pick", zh: "人气 Top 1" },
-    hashtag: "#CamdenJianBing",
-    tone: "bg-cinnabar text-parchment",
-  },
-  {
-    badge: { en: "Zero Dye", zh: "火龙果现榨" },
-    hashtag: "#DragonFruitCrepe",
-    tone: "bg-dragonfruit text-white",
-  },
-  {
-    badge: { en: "Photo Hit", zh: "出片甜品" },
-    hashtag: "#LaceCrepeCone",
-    tone: "bg-yolk text-ink",
-  },
-  {
-    badge: { en: "From £1", zh: "£1 脆底煎饺" },
-    hashtag: "#CrispyDumplings",
-    tone: "bg-ink text-yolk",
-  },
-  {
-    badge: { en: "Comfort Bowl", zh: "暖胃热饭" },
-    hashtag: "#UCLFoodie",
-    tone: "bg-jade text-parchment",
-  },
-  {
-    badge: { en: "Vegan Hit", zh: "纯素口碑" },
-    hashtag: "#LondonVegan",
-    tone: "bg-jade text-parchment",
-  },
+const featuredDishTags: LocalizedText[] = [
+  { en: "Spun hot to order", zh: "铁板现摊热乎" },
+  { en: "Fresh fruit & veg batter", zh: "每日鲜榨果蔬皮" },
+  { en: "Hand-piped on hot iron", zh: "铁板手挤花式蕾丝" },
+  { en: "Pan-fried crisp bottoms", zh: "现煎金黄脆底" },
+  { en: "Slow-braised comfort bowl", zh: "慢炖暖胃家常味" },
+  { en: "100% plant-based warm meal", zh: "香浓纯素热菜" },
 ];
 
 const trendingTickerItems: Array<{
   label: LocalizedText;
   dot: string;
 }> = [
-  { label: { en: "4.9★ GOOGLE (287+ REVIEWS)", zh: "Google 4.9★ · 287+ 真实好评" }, dot: "bg-yolk" },
-  { label: { en: "REAL DRAGON FRUIT & BEETROOT BATTER", zh: "鲜榨红心火龙果 · 甜菜根零色素饼皮" }, dot: "bg-dragonfruit" },
-  { label: { en: "HALAL BEEF & CHICKEN", zh: "清真牛肉 & 鸡肉 · 素食全都有" }, dot: "bg-jade" },
-  { label: { en: "18K+ VIEWS ON TIKTOK", zh: "TikTok 单条 1.8万+ 播放" }, dot: "bg-yolk" },
-  { label: { en: "REDNOTE ID: 1162231947", zh: "小红书官方号 1162231947" }, dot: "bg-dragonfruit" },
-  { label: { en: "124 CAMDEN RD · NW1 9EE", zh: "伦敦卡姆登路 124 号 · 铁板现摊" }, dot: "bg-cinnabar" },
-  { label: { en: "ORDER HOT ON FANTUAN (4.5★)", zh: "饭团外卖 4.5★ 热乎直达" }, dot: "bg-[#2dd4bf]" },
+  { label: { en: "FRESH DRAGON FRUIT & BEETROOT BATTER · 0% DYE", zh: "每日现切红心火龙果 · 甜菜根零色素饼皮" }, dot: "bg-cinnabar" },
+  { label: { en: "CRACKED EGG, CRISPY CRACKER & HOUSE CHILLI OIL", zh: "双蛋刷秘制酱 · 现炸薄脆与自制辣椒油" }, dot: "bg-turmeric" },
+  { label: { en: "HALAL BEEF & CHICKEN · VEGGIE & VEGAN", zh: "清真牛肉 & 鸡肉 · 素食与纯素全都有" }, dot: "bg-jade" },
+  { label: { en: "HOMEMADE HOT SOYA MILK £2 · DUMPLINGS FROM £1", zh: "每日现磨温热豆浆 £2 · 脆底煎饺 £1 起" }, dot: "bg-turmeric" },
+  { label: { en: "HAND-PIPED SWEET LACE CREPES FROM £4", zh: "铁板手挤花式蕾丝甜筒 £4 起" }, dot: "bg-cinnabar" },
+  { label: { en: "4.9★ GOOGLE (287+ REVIEWS) · 124 CAMDEN RD NW1", zh: "Google 4.9★ · 287+ 真人好评 · 卡姆登路 124 号" }, dot: "bg-jade" },
 ];
 
 interface HomeViewProps {
@@ -142,25 +113,25 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
   return (
     <>
-      {/* Hero Section — Vibrant Social-First Street-Food Bento Stage */}
+      {/* Hero Section — Warm, Homely Food-First Bento Stage */}
       <section className="kraft-grain relative overflow-hidden border-b border-kraft-deep/80">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_14%_20%,rgba(244,178,60,0.16),transparent_52%),radial-gradient(ellipse_at_84%_22%,rgba(225,45,102,0.11),transparent_48%),radial-gradient(ellipse_at_68%_85%,rgba(43,89,60,0.08),transparent_48%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_18%_22%,rgba(235,176,78,0.16),transparent_55%),radial-gradient(ellipse_at_84%_28%,rgba(184,37,28,0.08),transparent_50%)]"
         />
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-10 sm:px-6 sm:pt-12 sm:pb-14 lg:px-8 lg:pt-14 lg:pb-16">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
-            {/* Left Column: Crisp Social-First Hierarchy */}
+            {/* Left Column: Warm Food-First Hierarchy */}
             <div className="animate-fade-up min-w-0 lg:col-span-5">
               {/* Beat 1: Instant Trust + Live Open Status */}
               <div className="flex flex-wrap items-center gap-2">
                 <a
                   href="#reviews"
-                  className="sticker-shadow inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3.5 py-1.5 text-xs font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-dragonfruit/45 hover:text-cinnabar"
+                  className="sticker-shadow inline-flex items-center gap-1.5 rounded-full border border-kraft-deep/90 bg-white/95 px-3.5 py-1.5 text-xs font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-cinnabar/45 hover:text-cinnabar"
                 >
                   <Star
-                    className="h-3.5 w-3.5 fill-yolk text-yolk"
+                    className="h-3.5 w-3.5 fill-[#E59819] text-[#E59819]"
                     aria-hidden="true"
                   />
                   <span className="tabular-nums">
@@ -174,20 +145,20 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 <LiveOpenBadge />
               </div>
 
-              {/* Beat 2: Iconic Headline + Crisp Appetite Copy */}
+              {/* Beat 2: Warm Iconic Headline + Crisp Appetite Copy */}
               {isZh ? (
                 <h1 className="mt-5 font-display text-[2.15rem] leading-[1.18] tracking-[0.02em] text-ink sm:text-5xl lg:text-[2.95rem] xl:text-[3.2rem]">
                   {zhText("鲜榨果蔬皮，")}
                   <br />
                   {zhText("铁板现摊的")}
-                  <span className="bg-gradient-to-r from-cinnabar via-dragonfruit to-turmeric bg-clip-text text-transparent sm:whitespace-nowrap">
+                  <span className="text-cinnabar sm:whitespace-nowrap">
                     {zhText("热乎煎饼")}
                   </span>
                 </h1>
               ) : (
                 <h1 className="mt-5 font-display text-4xl leading-[1.06] font-semibold tracking-[-0.03em] text-ink sm:text-5xl lg:text-[3.45rem]">
                   Hot, crisp{" "}
-                  <em className="bg-gradient-to-r from-cinnabar via-dragonfruit to-turmeric bg-clip-text italic font-semibold text-transparent">
+                  <em className="italic font-semibold text-cinnabar">
                     Jian Bing
                   </em>
                   ,
@@ -197,8 +168,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
               <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted sm:text-[17px]">
                 {pick(
-                  "红心火龙果、甜菜根每天现切榨汁和面，零色素；磕双蛋、刷秘制酱、夹现炸薄脆——清真牛鸡与素食全都有，卡姆登路铁板现摊现带。",
-                  "Real dragon fruit & beetroot batters — never food dye. Folded hot off cast iron with crispy wonton cracker, Halal beef or chicken, fresh herbs, and house chilli oil."
+                  "红心火龙果、甜菜根每天现切榨汁和面，零色素；磕双蛋、刷秘制酱、夹现炸薄脆——清真牛鸡与素食全都有，像在家门口买的一样热乎实在。",
+                  "Real dragon fruit & beetroot batters — never food dye. Folded warm off cast iron with crispy wonton cracker, Halal beef or chicken, fresh herbs, and homemade chilli oil."
                 )}
               </p>
 
@@ -206,7 +177,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <Link
                   href="/menu"
-                  className="sticker-shadow inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cinnabar to-dragonfruit px-6 py-3.5 text-sm font-bold text-parchment transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.97]"
+                  className="sticker-shadow inline-flex items-center gap-2 rounded-full bg-cinnabar px-6 py-3.5 text-sm font-bold text-parchment transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-lg active:scale-[0.97]"
                 >
                   <UtensilsCrossed className="h-4 w-4" aria-hidden="true" />
                   {pick("查看完整菜单", "View Menu")}
@@ -228,7 +199,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   href={restaurant.links.googleMapsDirections}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep/90 bg-white/85 px-4 py-3 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:text-cinnabar"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep/90 bg-white/90 px-4 py-3 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:text-cinnabar"
                 >
                   <MapPin className="h-4 w-4 text-cinnabar" aria-hidden="true" />
                   {pick("导航到店", "Directions")}
@@ -253,7 +224,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                 </Link>
                 <Link
                   href="/menu#lunchtime-specials"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white px-3 py-1.5 tabular-nums text-ink-soft transition-all hover:-translate-y-0.5 hover:border-dragonfruit/40 hover:text-dragonfruit"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-kraft-deep bg-white px-3 py-1.5 tabular-nums text-ink-soft transition-all hover:-translate-y-0.5 hover:border-cinnabar/45 hover:text-cinnabar"
                 >
                   {pick("午市煎饼 £6.50 起", "Lunch From £6.50")}
                 </Link>
@@ -325,14 +296,14 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               </div>
             </div>
 
-            {/* Right Column: Social-Feed Bento Visual Stage (3 Unobstructed Signature Photos + Floating Tags) */}
+            {/* Right Column: Clean, Unobstructed Food-First Bento Visual Stage */}
             <div className="animate-fade-up-delay-1 min-w-0 lg:col-span-7">
               <div className="grid min-w-0 gap-3.5 sm:gap-4">
-                {/* Main Hero Dish Photo — Full-Bleed Unobstructed Showcase */}
+                {/* Main Hero Dish Photo — Full-Bleed Unobstructed Food Showcase */}
                 <ParallaxLayer offset={-10}>
                   <Link
                     href="/menu"
-                    className="animate-hero-media group relative block aspect-[16/10] w-full overflow-hidden rounded-[28px] border-2 border-white/90 bg-kraft shadow-xl ring-1 ring-kraft-deep/80"
+                    className="animate-hero-media group relative block aspect-[16/10] w-full overflow-hidden rounded-[28px] border-2 border-white/95 bg-kraft shadow-xl ring-1 ring-kraft-deep/80"
                   >
                     <Image
                       src="/images/hero-jianbing-platter.webp"
@@ -346,24 +317,12 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                       sizes="(max-width: 1024px) calc(100vw - 2rem), 56vw"
                       className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
                     />
-                    {/* Top-left floating social location tag */}
-                    <div className="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-ink/80 px-3 py-1 text-[11px] font-bold text-parchment backdrop-blur-md">
-                        <MapPin className="h-3 w-3 text-yolk" aria-hidden="true" />
-                        {pick("124 Camden Rd · 伦敦必打卡", "124 Camden Rd · NW1 Viral Spot")}
-                      </span>
-                    </div>
-                    {/* Top-right viral TikTok pill */}
-                    <span className="absolute top-3.5 right-3.5 hidden items-center gap-1 rounded-full bg-dragonfruit px-3 py-1 text-[11px] font-bold text-white shadow-sm sm:inline-flex">
-                      <SocialIcon platform="tiktok" className="h-3 w-3" />
-                      {pick("TikTok 1.8万+ 播放", "18K+ on TikTok")}
-                    </span>
 
-                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/88 via-ink/35 to-transparent px-5 pt-14 pb-4 text-parchment">
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pt-14 pb-4 text-parchment">
                       <div>
                         <p
                           lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                          className="font-calligraphy text-xl text-yolk sm:text-2xl"
+                          className="font-calligraphy text-xl text-[#F0C26E] sm:text-2xl"
                         >
                           {zhText(restaurant.chineseTagline)}
                         </p>
@@ -374,18 +333,18 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                           )}
                         </p>
                       </div>
-                      <span className="shrink-0 rounded-full border border-yolk/45 bg-ink/80 px-3.5 py-1 font-sans text-xs font-bold tabular-nums text-yolk backdrop-blur-md">
+                      <span className="shrink-0 rounded-full border border-[#F0C26E]/45 bg-ink/80 px-3.5 py-1 font-sans text-xs font-bold tabular-nums text-[#F0C26E] backdrop-blur-md">
                         £6.50 – £10
                       </span>
                     </div>
                   </Link>
                 </ParallaxLayer>
 
-                {/* Two Flush Bento Supporting Visual Tiles Underneath */}
+                {/* Two Flush Unobstructed Supporting Food Photos Underneath */}
                 <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
                   <Link
                     href="/menu?diet=halal"
-                    className="apple-card group relative aspect-[16/10] overflow-hidden rounded-[22px] border-2 border-white/90 bg-kraft shadow-md ring-1 ring-kraft-deep/80"
+                    className="apple-card group relative aspect-[16/10] overflow-hidden rounded-[22px] border-2 border-white/95 bg-kraft shadow-md ring-1 ring-kraft-deep/80"
                   >
                     <Image
                       src="/images/veggie-crepe-griddle.webp"
@@ -397,11 +356,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                       sizes="(max-width: 1024px) 48vw, 28vw"
                       className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                     />
-                    <span className="absolute top-2.5 right-2.5 rounded-full bg-dragonfruit px-2.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
-                      {pick("鲜榨零色素", "ZERO DYE")}
-                    </span>
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/88 via-ink/35 to-transparent px-3.5 pt-10 pb-3 text-parchment">
-                      <p className="text-xs font-bold text-yolk">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-3.5 pt-10 pb-3 text-parchment">
+                      <p className="text-xs font-bold text-[#F0C26E]">
                         {pick("鲜切火龙果 · 甜菜根", "Real Dragon Fruit & Veg")}
                       </p>
                       <p className="mt-0.5 text-xs text-parchment/95 sm:text-sm sm:font-semibold">
@@ -412,7 +368,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
                   <Link
                     href="/menu#sweet-crepes-and-desserts"
-                    className="apple-card group relative aspect-[16/10] overflow-hidden rounded-[22px] border-2 border-white/90 bg-kraft shadow-md ring-1 ring-kraft-deep/80"
+                    className="apple-card group relative aspect-[16/10] overflow-hidden rounded-[22px] border-2 border-white/95 bg-kraft shadow-md ring-1 ring-kraft-deep/80"
                   >
                     <Image
                       src="/images/fancy-lace-dessert-cone.webp"
@@ -424,11 +380,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                       sizes="(max-width: 1024px) 48vw, 28vw"
                       className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                     />
-                    <span className="absolute top-2.5 right-2.5 rounded-full bg-yolk px-2.5 py-0.5 text-[10px] font-bold text-ink shadow-xs">
-                      {pick("出片甜品", "PHOTO HIT")}
-                    </span>
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/88 via-ink/35 to-transparent px-3.5 pt-10 pb-3 text-parchment">
-                      <p className="text-xs font-bold text-yolk">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-3.5 pt-10 pb-3 text-parchment">
+                      <p className="text-xs font-bold text-[#F0C26E]">
                         {pick("甜煎饼 £4 起", "Sweet Crepes · From £4")}
                       </p>
                       <p className="mt-0.5 text-xs text-parchment/95 sm:text-sm sm:font-semibold">
@@ -505,10 +458,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* Trending Street-Food Social Marquee Ticker */}
+      {/* Warm Homely Kitchen Ingredients Marquee Strip */}
       <div
-        aria-label={pick("热门打卡亮点", "Trending highlights")}
-        className="ticker-group overflow-hidden border-b border-ink-soft bg-ink py-3 text-parchment"
+        aria-label={pick("招牌食材与美味亮点", "Fresh kitchen highlights")}
+        className="ticker-group overflow-hidden border-b border-kraft-deep/85 bg-kraft/80 py-3 text-ink-soft"
       >
         <div className="animate-ticker flex w-max items-center gap-6">
           {[0, 1].map((dup) => (
@@ -520,7 +473,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
               {trendingTickerItems.map((item, idx) => (
                 <span
                   key={`${dup}-${idx}`}
-                  className="inline-flex items-center gap-2.5 text-xs font-bold tracking-[0.08em] text-parchment/95 uppercase"
+                  className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.06em] text-ink-soft"
                 >
                   <span
                     className={`h-2 w-2 rounded-full ${item.dot}`}
@@ -534,25 +487,25 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </div>
 
-      {/* 1. Signature Menu Highlights — RedNote / Instagram Feed Style Dish Cards */}
+      {/* 1. Signature Menu Highlights — Clean Food-First Dish Cards */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <Reveal>
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading
-              eyebrow={pick("招牌种草榜", "What's Trending on the Griddle")}
+              eyebrow={pick("家的味道 · 热乎现摊", "Fresh Off the Griddle")}
               chineseAccent="招牌美味"
               title={pick(
-                "铁板现摊，出片又管饱的实在味道",
-                "Cooked hot to order on Camden Road"
+                "像在家门口买的一样热乎实在",
+                "Honest, piping-hot comfort food on Camden Road"
               )}
               description={pick(
-                "点亮小红心先种草！招牌果蔬咸煎饼、慢炖土豆牛肉饭、金黄脆底煎饺与花式甜筒，全线明码实价。",
-                "Tap the heart to save your cravings — savoury dragon-fruit Jian Bing, braised beef rice, £1 dumplings, and hand-piped lace cones."
+                "招牌果蔬咸煎饼、慢炖土豆牛肉饭、金黄脆底煎饺与手工花式甜筒，全线明码实价，现点现做。",
+                "Savoury natural-batter Jian Bing, slow-braised beef rice, £1 pan-fried dumplings, and hand-piped sweet crepes — cooked warm to order."
               )}
             />
             <Link
               href="/menu"
-              className="sticker-shadow inline-flex shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-white px-5 py-2.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-dragonfruit hover:text-cinnabar"
+              className="sticker-shadow inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:text-cinnabar"
             >
               {pick("浏览完整菜单", "See Full Menu")}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -562,11 +515,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {featuredMenuItems.slice(0, 6).map((item, idx) => {
-            const sticker =
-              featuredDishStickers[idx % featuredDishStickers.length];
+            const dishNote =
+              featuredDishTags[idx % featuredDishTags.length];
             return (
               <Reveal key={item.id} delay={(idx % 3) * 95} className="h-full">
-                <article className="apple-card social-card-shadow group flex h-full flex-col overflow-hidden rounded-[26px] border border-kraft-deep/80 bg-white hover:border-dragonfruit/35 hover:shadow-xl">
+                <article className="apple-card social-card-shadow group flex h-full flex-col overflow-hidden rounded-[26px] border border-kraft-deep/80 bg-white hover:border-cinnabar/40 hover:shadow-xl">
                   {item.image && (
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-kraft">
                       <Image
@@ -574,15 +527,10 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                         alt={item.imageAlt ? t(item.imageAlt) : t(item.name)}
                         fill
                         sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) 46vw, 356px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                       />
-                      <span
-                        className={`absolute top-3 left-3 -rotate-2 rounded-full px-3 py-1 text-[11px] font-bold shadow-sm transition-transform duration-300 group-hover:rotate-0 ${sticker.tone}`}
-                      >
-                        {t(sticker.badge)}
-                      </span>
                       {item.price && (
-                        <span className="absolute right-3 bottom-3 rounded-full bg-ink/88 px-3 py-1 font-sans text-sm font-bold tabular-nums text-yolk backdrop-blur-xs">
+                        <span className="absolute right-3 bottom-3 rounded-full bg-ink/85 px-3 py-1 font-sans text-sm font-bold tabular-nums text-[#F0C26E] backdrop-blur-xs">
                           {item.price}
                         </span>
                       )}
@@ -618,7 +566,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
 
                     <DishSocialActions
                       dishId={item.id}
-                      hashtag={sticker.hashtag}
+                      hashtag={t(dishNote)}
                     />
                   </div>
                 </article>
@@ -628,11 +576,11 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* 2. First-Time Ordering Cheat Sheet — Viral Street-Food Combos */}
-      <section className="cv-auto relative overflow-hidden border-y border-kraft-deep/80 bg-ink text-parchment">
+      {/* 2. First-Time Ordering Guide — Warm Kitchen Combos */}
+      <section className="cv-auto gradient-light-edge relative overflow-hidden border-y border-kraft-deep/80 bg-ink text-parchment">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_12%_18%,rgba(225,45,102,0.22),transparent_50%),radial-gradient(ellipse_at_88%_82%,rgba(244,178,60,0.18),transparent_50%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_0%,rgba(240,194,110,0.18),rgba(184,58,34,0.09)_48%,transparent_75%)]"
         />
         <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
@@ -748,16 +696,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                     sizes="(max-width: 768px) calc(100vw - 2rem), 356px"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <span
-                    className={`absolute top-3 left-3 rounded-full px-3 py-1 text-[11px] font-bold shadow-sm ${
-                      idx === 0
-                        ? "bg-dragonfruit text-white"
-                        : idx === 1
-                          ? "bg-yolk text-ink"
-                          : "bg-jade text-parchment"
-                    }`}
-                  >
-                    #{String(idx + 1).padStart(2, "0")} · {combo.tag}
+                  <span className="absolute top-3 left-3 rounded-full bg-ink/82 px-3 py-1 text-[11px] font-semibold text-[#F0C26E] backdrop-blur-xs">
+                    {combo.tag}
                   </span>
                   <span className="absolute right-3 bottom-3 rounded-full bg-parchment/95 px-3 py-1 font-sans text-xs font-bold tabular-nums text-ink shadow-xs">
                     {combo.price}
@@ -1028,24 +968,24 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* 7. Gallery Preview Strip — Social Feed Grid */}
+      {/* 7. Gallery Preview Strip — Clean Kitchen Food Showcase */}
       <section className="cv-auto mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
-            eyebrow={pick("@jian_bing_liu 后厨实拍", "@jian_bing_liu · Feed")}
+            eyebrow={pick("后厨实拍", "From Our Kitchen")}
             chineseAccent="色香俱全"
             title={pick(
-              "真实出餐，随手一拍都很出片",
-              "Real food, camera-ready off the griddle"
+              "真实出餐，每一份都热气腾腾",
+              "Real food, straight off the griddle"
             )}
             description={pick(
               "镜头直击伦敦卡姆登厨房——从天然果蔬咸味煎饼到手工花式蕾丝甜筒、金黄春卷与五香茶叶蛋。",
-              "Straight from our Camden counter: rainbow dragon-fruit crepes, hand-piped pink lace cones, crispy spring rolls, and tea eggs."
+              "Straight from our Camden kitchen: natural fruit-and-veg crepes, hand-piped lace cones, crisp spring rolls, and tea eggs."
             )}
           />
           <Link
             href="/gallery"
-            className="sticker-shadow inline-flex shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-white px-5 py-2.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-dragonfruit hover:text-cinnabar"
+            className="sticker-shadow inline-flex shrink-0 items-center gap-2 rounded-full border border-kraft-deep bg-white px-5 py-2.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:border-cinnabar hover:text-cinnabar"
           >
             {pick("查看全部图集", "See All Photos")}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -1057,7 +997,7 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
             <Reveal key={photo.src} variant="scale" delay={idx * 85}>
               <Link
                 href="/gallery"
-                className="apple-card social-card-shadow group relative block aspect-[3/4] overflow-hidden rounded-[24px] border-2 border-white bg-kraft ring-1 ring-kraft-deep/80 hover:ring-dragonfruit/50"
+                className="apple-card social-card-shadow group relative block aspect-[3/4] overflow-hidden rounded-[24px] border-2 border-white bg-kraft ring-1 ring-kraft-deep/80 hover:ring-cinnabar/45"
               >
                 <Image
                   src={photo.src}
@@ -1066,15 +1006,8 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
                   sizes="(max-width: 640px) 50vw, 25vw"
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                 />
-                {/* Top social post handle chip */}
-                <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-ink/70 px-2.5 py-1 text-[10px] font-bold text-parchment backdrop-blur-xs">
-                  @jian_bing_liu
-                </span>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent p-4 pt-12">
-                  <span className="inline-block rounded-full bg-dragonfruit/90 px-2.5 py-0.5 text-[10px] font-bold text-white">
-                    {photo.hashtag}
-                  </span>
-                  <p className="mt-1.5 font-display text-sm font-semibold text-parchment">
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent p-4 pt-12">
+                  <p className="font-display text-sm font-semibold text-parchment">
                     {t(photo.label)}
                   </p>
                 </div>
@@ -1084,25 +1017,23 @@ export function HomeView({ initialReviews }: HomeViewProps = {}) {
         </div>
       </section>
 
-      {/* Visit Us Social Street-Food Poster CTA Banner */}
+      {/* Visit Us Warm Kitchen Invitation Banner */}
       <section className="cv-auto mx-auto max-w-6xl px-4 pt-12 pb-20 sm:px-6 lg:px-8">
         <Reveal variant="scale">
-        <div className="relative overflow-hidden rounded-[34px] border border-parchment/15 bg-ink px-6 py-12 text-parchment shadow-2xl sm:px-12 sm:py-16">
+        <div className="gradient-light-edge relative overflow-hidden rounded-[34px] border border-parchment/15 bg-ink px-6 py-12 text-parchment shadow-2xl sm:px-12 sm:py-16">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_10%_15%,rgba(225,45,102,0.28),transparent_48%),radial-gradient(ellipse_at_90%_85%,rgba(244,178,60,0.22),transparent_48%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(240,194,110,0.2),rgba(184,58,34,0.1)_50%,transparent_76%)]"
           />
           <div className="relative z-10 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-7">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-dragonfruit px-3 py-1 text-[11px] font-bold text-white">
-                  @jian_bing_liu
-                </span>
-                <span className="rounded-full border border-yolk/40 bg-yolk/15 px-3 py-1 text-[11px] font-bold text-yolk">
-                  #JianBingLiu · #CamdenEats
-                </span>
-              </div>
-              <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
+              <p className="text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
+                {pick(
+                  "伦敦卡姆登路 · 现摊外带与无接触配送",
+                  "Camden Road · Warm Takeaway & Delivery"
+                )}
+              </p>
+              <h2 className="mt-2.5 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
                 {pick(
                   "顺路来卡姆登路 124 号带一份，或饭团外卖热乎送到家。",
                   `Swing by ${restaurant.address.street}, or get it delivered hot on Fantuan.`

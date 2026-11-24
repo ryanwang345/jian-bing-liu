@@ -71,7 +71,7 @@ export function DishSocialActions({
 
   return (
     <div className="mt-4 flex items-center justify-between gap-2 border-t border-kraft-deep/55 pt-3">
-      <span className="truncate text-[11px] font-semibold text-dragonfruit/90">
+      <span className="truncate text-[11px] font-medium text-ink-muted">
         {hashtag}
       </span>
       <div className="flex shrink-0 items-center gap-1.5">
@@ -82,8 +82,8 @@ export function DishSocialActions({
           aria-label={pick("点个想吃", "Mark dish as craving")}
           className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
             liked
-              ? "border-dragonfruit/35 bg-dragonfruit/12 text-dragonfruit"
-              : "border-kraft-deep/80 bg-parchment/70 text-ink-muted hover:border-dragonfruit/40 hover:text-dragonfruit"
+              ? "border-cinnabar/35 bg-cinnabar/10 text-cinnabar"
+              : "border-kraft-deep/80 bg-parchment/70 text-ink-muted hover:border-cinnabar/40 hover:text-cinnabar"
           }`}
         >
           <Heart
@@ -92,7 +92,7 @@ export function DishSocialActions({
             }`}
             aria-hidden="true"
           />
-          <span>{liked ? pick("想吃!", "Craving!") : pick("种草", "Like")}</span>
+          <span>{liked ? pick("想吃!", "Craving!") : pick("想吃", "Save")}</span>
         </button>
 
         <button

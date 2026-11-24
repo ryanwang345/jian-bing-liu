@@ -19,7 +19,7 @@ export function Footer() {
   const { isZh, t, zhText, pick } = useLocale();
 
   return (
-    <footer className="border-t border-ink-soft bg-ink pb-28 text-parchment/90 md:pb-0">
+    <footer className="relative z-10 border-t border-ink-soft bg-ink pb-28 text-parchment/90 md:pb-0">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
@@ -40,7 +40,7 @@ export function Footer() {
               )}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
-              <span className="rounded-full bg-dragonfruit/20 px-3 py-1 text-[#ff8fb3]">
+              <span className="rounded-full border border-[#F0C26E]/35 bg-[#F0C26E]/12 px-3 py-1 text-[#F0C26E]">
                 @jian_bing_liu
               </span>
               <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">

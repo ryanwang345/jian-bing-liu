@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileActionBar } from "@/components/MobileActionBar";
 import { RouteTransition } from "@/components/motion/RouteTransition";
+import { ScrollAmbientLights } from "@/components/motion/ScrollAmbientLights";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { restaurant, SITE_URL } from "@/data/restaurant";
 import { getCalligraphyStylesheetHref } from "@/lib/fonts";
@@ -149,10 +150,11 @@ export default async function RootLayout({
                 : "Skip to main content"}
           </a>
 
+          <ScrollAmbientLights />
           <ScrollProgressBar />
           <Header />
 
-          <main id="main-content" className="flex-1">
+          <main id="main-content" className="relative z-10 flex-1">
             <RouteTransition>{children}</RouteTransition>
           </main>
 

@@ -271,7 +271,7 @@ export function AppleCraftShowcase() {
       ref={runwayRef}
       aria-label={pick("铁板匠心亮点", "Crafted on the Griddle")}
       onKeyDown={handleKeyDown}
-      className="relative border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[250vh]"
+      className="gradient-light-edge relative border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[250vh]"
     >
       {/* Natural swipeable flow on iPhone & iPad portrait; sticky single-screen scrub on lg+ (iPad landscape & Desktop) */}
       <div className="relative flex items-center overflow-x-clip motion-reduce:static motion-reduce:min-h-0 lg:sticky lg:top-[72px] lg:min-h-[calc(100svh-72px)]">

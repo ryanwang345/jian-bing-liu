@@ -359,9 +359,33 @@ html[data-locale-switching="true"] #main-content {
   animation: heartPop 0.42s var(--ease-apple) both;
 }
 
-/* Instagram / RedNote style vibrant story highlight ring */
+/* Classic warm studio top-edge gradient light bar (温馨暖光渐变灯带) */
+.gradient-light-edge {
+  position: relative;
+}
+
+.gradient-light-edge::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(84%, 780px);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(240, 194, 110, 0.45) 28%,
+    rgba(224, 134, 58, 0.58) 50%,
+    rgba(240, 194, 110, 0.45) 72%,
+    transparent 100%
+  );
+}
+
+/* Warm appetizing golden-vermilion story highlight ring */
 .story-ring {
-  background: linear-gradient(135deg, #e12d66 0%, #b8251c 48%, #f4b23c 100%);
+  background: linear-gradient(135deg, #b8251c 0%, #d47a27 52%, #f0c26e 100%);
 }
 
 /* Tactile street-food sticker pill shadow */
