@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, ExternalLink, MapPin, Phone, ShoppingBag } from "lucide-react";
+import { Clock, ExternalLink, Lock, MapPin, Phone, ShoppingBag } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { SocialIcon } from "@/components/SocialIcon";
 import { restaurant } from "@/data/restaurant";
@@ -188,6 +188,17 @@ export function Footer() {
             )}
             {" · "}
             {restaurant.address.street}, {restaurant.address.postalCode}
+            <span aria-hidden="true" className="text-parchment/25">
+              {" · "}
+            </span>
+            <Link
+              href="/admin"
+              rel="nofollow"
+              className="inline-flex items-center gap-1 rounded py-1 text-parchment/35 transition-colors hover:text-parchment/80 focus-visible:text-parchment/80"
+            >
+              <Lock className="h-3 w-3" aria-hidden="true" />
+              {pick("店主登录", "Staff Login")}
+            </Link>
           </p>
           <p>
             {pick(
