@@ -169,12 +169,12 @@ export function HomeView({
                 </h1>
               ) : (
                 <h1 className="mt-5 font-display text-4xl leading-[1.06] font-semibold tracking-[-0.03em] text-ink sm:text-5xl lg:text-[3.45rem]">
-                  Hot, crisp{" "}
+                  Proper Chinese Street{" "}
                   <em className="italic font-semibold text-cinnabar">
-                    Jian Bing
+                    Crepes(Jian Bing)
                   </em>
                   ,
-                  <br className="hidden sm:inline" /> spun fresh in Camden.
+                  <br className="hidden sm:inline" /> in Camden.
                 </h1>
               )}
 
