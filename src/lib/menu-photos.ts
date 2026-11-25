@@ -1,5 +1,6 @@
 import { getCfEnv } from "@/lib/cf-bindings";
 import { getRuntimeEnv } from "@/lib/runtime-env";
+import menuPhotoSources from "@/data/menu-photo-sources.json";
 import { SITE_URL } from "@/data/restaurant";
 
 const photoErrors = {
@@ -115,6 +116,17 @@ export async function resolveMenuPhotoUrl(value?: string | null): Promise<string
   const env = await getCfEnv();
   if (!env?.MENU_IMAGES) throw new MenuPhotoError("missingBucket", 503);
   if (/^\/images\/[\w.-]+\.(?:webp|jpe?g|png|avif|heic|heif)$/i.test(url)) {
+    const sources: Record<string, string> = menuPhotoSources;
+    const source = sources[url];
+    if (source) {
+      const key = new URL(source).pathname.slice("/api/media/".length);
+      const object = await env.MENU_IMAGES.get(key);
+      if (object) return (await storeMenuPhoto(new Blob([await object.arrayBuffer()]))).url;
+      // Local development buckets may not have the permanent site assets.
+      const response = await fetch(source);
+      if (!response.ok) throw new MenuPhotoError("assetNotFound");
+      return (await storeMenuPhoto(await response.blob())).url;
+    }
     if (!env.ASSETS) throw new MenuPhotoError("missingAssets", 503);
     const response = await env.ASSETS.fetch(new Request(new URL(url, SITE_URL)));
     if (!response.ok) throw new MenuPhotoError("assetNotFound");

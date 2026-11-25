@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import menuPhotoSources from "./src/data/menu-photo-sources.json";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -9,6 +10,13 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
+  },
+  async redirects() {
+    return Object.entries(menuPhotoSources).map(([source, destination]) => ({
+      source,
+      destination,
+      permanent: false,
+    }));
   },
   async headers() {
     return [

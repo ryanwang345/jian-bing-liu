@@ -8,6 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import menuPhotoSources from "../src/data/menu-photo-sources.json" with { type: "json" };
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const mode = process.argv.includes("--remote") ? "--remote" : process.argv.includes("--local") ? "--local" : null;
@@ -39,6 +40,12 @@ async function migrate(url) {
     wrangler(["r2", "object", "get", bucket + "/" + key, "--file", source, mode]);
   } else if (/^\/images\/[\w.-]+$/.test(url)) {
     source = path.join(root, "public", url.slice(1));
+    if (!fs.existsSync(source) && menuPhotoSources[url]) {
+      const response = await fetch(menuPhotoSources[url]);
+      if (!response.ok) throw new Error(`Failed to read archived menu photo (HTTP ${response.status}).`);
+      source = path.join(tmp, "source");
+      fs.writeFileSync(source, Buffer.from(await response.arrayBuffer()));
+    }
   } else {
     throw new Error("Unrecognized photo location. Check R2_PUBLIC_BASE_URL or upload the original in admin.");
   }
