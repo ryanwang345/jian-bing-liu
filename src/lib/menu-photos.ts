@@ -3,6 +3,10 @@ import { getRuntimeEnv } from "@/lib/runtime-env";
 import { SITE_URL } from "@/data/restaurant";
 
 const photoErrors = {
+  cleanupFailed: {
+    en: "The menu change was saved, but R2 photo cleanup is pending.",
+    zh: "菜单已更新，旧照片仍待清理。请重试刚才的操作。",
+  },
   invalidSize: {
     en: "Menu photo must be non-empty and at most 8 MB.",
     zh: "请选择非空且不超过 8 MB 的照片。",
@@ -95,9 +99,8 @@ export async function storeMenuPhoto(photo: Blob) {
   const bytes = await response.arrayBuffer();
   if (!isWebp(bytes)) throw new MenuPhotoError("invalidWebp", 502);
 
-  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
-  const hash = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
-  const key = `dishes/${hash}.webp`;
+  // A new upload gets its own key, even if another editor is clearing identical bytes.
+  const key = `dishes/${crypto.randomUUID()}.webp`;
   await env.MENU_IMAGES.put(key, bytes, {
     httpMetadata: { contentType: webpType, cacheControl: "public, max-age=31536000, immutable" },
   });

@@ -2,7 +2,7 @@
 // Normalize every referenced menu photo. --check decodes the sources without writing.
 // For custom R2 URLs set R2_PUBLIC_BASE_URL to the same base used by the Worker.
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -56,7 +56,9 @@ async function migrate(url) {
     .autoOrient().resize({ width: 1280, height: 1280, fit: "inside", withoutEnlargement: true })
     .webp({ quality: 84 }).toBuffer();
   const hash = createHash("sha256").update(bytes).digest("hex");
-  const target = `dishes/${hash}.webp`;
+  const hashKey = `dishes/${hash}.webp`;
+  const retired = d1(`SELECT 1 FROM menu_photo_removals WHERE object_key = ${quote(hashKey)}`);
+  const target = retired.length ? `dishes/${randomUUID()}.webp` : hashKey;
   const output = path.join(tmp, "photo.webp");
   fs.writeFileSync(output, bytes);
   wrangler(["r2", "object", "put", bucket + "/" + target, "--file", output, "--content-type", "image/webp",

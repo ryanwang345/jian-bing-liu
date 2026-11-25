@@ -75,7 +75,10 @@ export async function POST(request: Request) {
       chineseName: typeof body.chineseName === "string" ? body.chineseName : undefined,
       descEn: String(body.descEn ?? ""),
       descZh: String(body.descZh ?? ""),
-      imageUrl: typeof body.imageUrl === "string" ? body.imageUrl : null,
+      uploadedPhotoUrls: Array.isArray(body.uploadedPhotoUrls)
+        ? body.uploadedPhotoUrls.filter((url): url is string => typeof url === "string")
+        : [],
+      imageUrl: typeof body.imageUrl === "string" || body.imageUrl === null ? body.imageUrl : undefined,
       imageAltEn: typeof body.imageAltEn === "string" ? body.imageAltEn : null,
       imageAltZh: typeof body.imageAltZh === "string" ? body.imageAltZh : null,
       dietary,
@@ -144,6 +147,9 @@ export async function DELETE(request: Request) {
     const snapshot = await getAdminMenuSnapshot();
     return NextResponse.json({ ok: true, snapshot });
   } catch (error) {
+    if (error instanceof MenuPhotoError) {
+      return NextResponse.json({ error: error.userMessage }, { status: error.status });
+    }
     const message =
       error instanceof Error ? error.message : "Failed to delete dish";
     return NextResponse.json({ error: message }, { status: 500 });

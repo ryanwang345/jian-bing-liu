@@ -48,6 +48,8 @@ interface EditableVariant {
 
 interface DishFormState {
   id?: string;
+  draftId?: string;
+  uploadedPhotoUrls: string[];
   categoryId: string;
   nameZh: string;
   nameEn: string;
@@ -106,6 +108,8 @@ async function downsizeLargeUpload(file: File): Promise<File> {
 function itemToFormState(categoryId: string, item?: MenuItem): DishFormState {
   if (!item) {
     return {
+      draftId: crypto.randomUUID(),
+      uploadedPhotoUrls: [],
       categoryId,
       nameZh: "",
       nameEn: "",
@@ -148,6 +152,7 @@ function itemToFormState(categoryId: string, item?: MenuItem): DishFormState {
 
   return {
     id: item.id,
+    uploadedPhotoUrls: [],
     categoryId,
     nameZh: item.name.zh,
     nameEn: item.name.en,
@@ -349,7 +354,12 @@ export function MenuAdminClient({
         return;
       }
 
-      setEditorForm((prev) => (prev ? { ...prev, imageUrl: data.url! } : prev));
+      const url = data.url;
+      setEditorForm((prev) => prev ? {
+        ...prev,
+        imageUrl: url,
+        uploadedPhotoUrls: [...prev.uploadedPhotoUrls, url],
+      } : prev);
       showToast("success", "照片已上传至 Cloudflare R2");
     } catch {
       showToast("error", "图片上传出错");
@@ -379,7 +389,8 @@ export function MenuAdminClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: editorForm.id,
+          id: editorForm.id ?? editorForm.draftId,
+          uploadedPhotoUrls: editorForm.uploadedPhotoUrls,
           categoryId: editorForm.categoryId,
           nameZh: editorForm.nameZh,
           nameEn: editorForm.nameEn,
@@ -1112,7 +1123,7 @@ export function MenuAdminClient({
                             }
                             className="text-xs font-semibold text-ink-muted hover:text-cinnabar"
                           >
-                            清除图片
+                            清除图片（保存后生效）
                           </button>
                         )}
                       </div>

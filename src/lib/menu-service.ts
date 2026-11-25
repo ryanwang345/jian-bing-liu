@@ -7,6 +7,7 @@ import {
   type MenuItem,
   type MenuVariant,
 } from "@/data/menu";
+import { queueRemovedMenuPhotos, deleteRetiredMenuPhotos } from "@/lib/menu-photo-cleanup";
 import { resolveMenuPhotoUrl } from "@/lib/menu-photos";
 import { getMenuDb, getMenuImagesBucket, type D1Database } from "@/lib/cf-bindings";
 
@@ -65,6 +66,7 @@ export interface MenuItemUpsertInput {
   descEn: string;
   descZh: string;
   imageUrl?: string | null;
+  uploadedPhotoUrls?: string[];
   imageAltEn?: string | null;
   imageAltZh?: string | null;
   dietary: DietaryTagKey[];
@@ -431,6 +433,7 @@ export async function upsertMenuItem(input: MenuItemUpsertInput): Promise<string
     normalizedVariants[0].isDefault = true;
   }
 
+  const imageUrl = await resolveMenuPhotoUrl(input.imageUrl);
   const statements = [
     db
       .prepare(
@@ -446,7 +449,7 @@ export async function upsertMenuItem(input: MenuItemUpsertInput): Promise<string
            chinese_name = excluded.chinese_name,
            desc_en = excluded.desc_en,
            desc_zh = excluded.desc_zh,
-           image_url = excluded.image_url,
+           image_url = CASE WHEN ? THEN excluded.image_url ELSE menu_items.image_url END,
            image_alt_en = excluded.image_alt_en,
            image_alt_zh = excluded.image_alt_zh,
            dietary_tags = excluded.dietary_tags,
@@ -465,7 +468,7 @@ export async function upsertMenuItem(input: MenuItemUpsertInput): Promise<string
         (input.chineseName?.trim() || input.nameZh.trim()),
         input.descEn.trim(),
         input.descZh.trim(),
-        await resolveMenuPhotoUrl(input.imageUrl),
+        imageUrl,
         input.imageAltEn?.trim() || null,
         input.imageAltZh?.trim() || null,
         JSON.stringify(cleanDietary),
@@ -473,7 +476,8 @@ export async function upsertMenuItem(input: MenuItemUpsertInput): Promise<string
         input.noteZh?.trim() || null,
         input.featured ? 1 : 0,
         input.isAvailable ? 1 : 0,
-        sortOrder
+        sortOrder,
+        input.imageUrl === undefined ? 0 : 1
       ),
     db.prepare("DELETE FROM menu_variants WHERE item_id = ?").bind(itemId),
     ...normalizedVariants.map((v) =>
@@ -495,7 +499,11 @@ export async function upsertMenuItem(input: MenuItemUpsertInput): Promise<string
     ),
   ];
 
+  if (input.imageUrl !== undefined) {
+    statements.unshift(await queueRemovedMenuPhotos(db, itemId, imageUrl, input.uploadedPhotoUrls));
+  }
   await db.batch(statements);
+  await deleteRetiredMenuPhotos(db, itemId);
   return itemId;
 }
 
@@ -537,7 +545,9 @@ export async function deleteMenuItem(id: string): Promise<void> {
   }
 
   await db.batch([
+    await queueRemovedMenuPhotos(db, id, null),
     db.prepare("DELETE FROM menu_variants WHERE item_id = ?").bind(id),
     db.prepare("DELETE FROM menu_items WHERE id = ?").bind(id),
   ]);
+  await deleteRetiredMenuPhotos(db, id);
 }
