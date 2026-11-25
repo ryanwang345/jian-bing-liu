@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 import menuPhotoSources from "./src/data/menu-photo-sources.json";
 
 const nextConfig: NextConfig = {
@@ -51,4 +52,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default async function config(phase: string): Promise<NextConfig> {
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    const { initOpenNextCloudflareForDev } = await import("@opennextjs/cloudflare");
+    await initOpenNextCloudflareForDev();
+  }
+  return nextConfig;
+}
