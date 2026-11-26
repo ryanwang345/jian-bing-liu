@@ -10,6 +10,7 @@ import {
   upsertMenuItem,
   type MenuItemUpsertInput,
 } from "@/lib/menu-service";
+import { setMenuItemsNew } from "@/lib/new-arrivals-service";
 
 async function requireAdmin() {
   const session = await getAdminSessionStatus();
@@ -21,8 +22,7 @@ async function requireAdmin() {
 
 function revalidateMenuPages() {
   try {
-    revalidatePath("/menu");
-    revalidatePath("/");
+    revalidatePath("/", "layout");
   } catch {
     // Ignore revalidation errors in non-ISR contexts
   }
@@ -43,7 +43,9 @@ export async function POST(request: Request) {
   if (unauthorized) return unauthorized;
 
   try {
-    const body = (await request.json()) as Partial<MenuItemUpsertInput>;
+    const body = (await request.json()) as Partial<MenuItemUpsertInput> & {
+      isNew?: boolean;
+    };
     if (!body.categoryId || !body.nameEn?.trim() || !body.nameZh?.trim()) {
       return NextResponse.json(
         { error: "分类、中文名和英文名为必填项 / Category, Chinese name, and English name are required." },
@@ -90,6 +92,10 @@ export async function POST(request: Request) {
       variants,
     });
 
+    if (typeof body.isNew === "boolean") {
+      await setMenuItemsNew([id], body.isNew);
+    }
+
     revalidateMenuPages();
     const snapshot = await getAdminMenuSnapshot();
     return NextResponse.json({ ok: true, id, snapshot });
@@ -112,6 +118,7 @@ export async function PATCH(request: Request) {
       id?: string;
       isAvailable?: boolean;
       featured?: boolean;
+      isNew?: boolean;
     };
     if (!body.id) {
       return NextResponse.json({ error: "Missing dish id" }, { status: 400 });
@@ -121,6 +128,9 @@ export async function PATCH(request: Request) {
       isAvailable: body.isAvailable,
       featured: body.featured,
     });
+    if (typeof body.isNew === "boolean") {
+      await setMenuItemsNew([body.id], body.isNew);
+    }
     revalidateMenuPages();
     const snapshot = await getAdminMenuSnapshot();
     return NextResponse.json({ ok: true, snapshot });

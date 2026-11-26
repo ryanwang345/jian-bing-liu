@@ -26,7 +26,7 @@ import {
 } from "@/data/menu";
 import type { BulkMenuAction } from "@/lib/menu-service";
 
-type StatusTab = "all" | "active" | "sold_out" | "featured" | "festive";
+type StatusTab = "all" | "active" | "sold_out" | "featured" | "new" | "festive";
 
 interface AdminProductsViewProps {
   categories: MenuCategory[];
@@ -91,6 +91,7 @@ export function AdminProductsView({
       active: allEntries.filter(({ item }) => item.isAvailable !== false).length,
       sold_out: allEntries.filter(({ item }) => item.isAvailable === false).length,
       featured: allEntries.filter(({ item }) => item.featured).length,
+      new: allEntries.filter(({ item }) => item.isNew).length,
       festive: allEntries.filter(
         ({ category, item }) =>
           category.id === "festive-specials" || Boolean(item.note?.zh)
@@ -104,6 +105,7 @@ export function AdminProductsView({
       if (statusTab === "active" && item.isAvailable === false) return false;
       if (statusTab === "sold_out" && item.isAvailable !== false) return false;
       if (statusTab === "featured" && !item.featured) return false;
+      if (statusTab === "new" && !item.isNew) return false;
       if (
         statusTab === "festive" &&
         category.id !== "festive-specials" &&
@@ -298,6 +300,7 @@ export function AdminProductsView({
               { key: "active", label: `在售中 (${tabCounts.active})` },
               { key: "sold_out", label: `已售罄 (${tabCounts.sold_out})` },
               { key: "featured", label: `招牌推荐 (${tabCounts.featured})` },
+              { key: "new", label: `🆕 新品上市 (${tabCounts.new})` },
               { key: "festive", label: `✨ 节日限定 (${tabCounts.festive})` },
             ] as const
           ).map((tab) => {
@@ -508,6 +511,14 @@ export function AdminProductsView({
                           >
                             {item.name.zh}
                           </button>
+                          {item.isNew && (
+                            <span
+                              title="新品上市（全站顶部横幅展示）"
+                              className="inline-flex items-center gap-0.5 rounded bg-[#fef0c7] px-1.5 py-0.5 text-[10px] font-bold text-[#93370d]"
+                            >
+                              🆕 新品
+                            </span>
+                          )}
                           {item.featured && (
                             <span
                               title="首页招牌推荐"
@@ -791,6 +802,36 @@ export function AdminProductsView({
               className="rounded-lg bg-[#303030] px-2.5 py-1.5 font-semibold text-white hover:bg-[#444] disabled:opacity-45"
             >
               标记售罄
+            </button>
+
+            <button
+              type="button"
+              disabled={!hasDb || isBusy}
+              onClick={async () => {
+                await onRunBulkAction(
+                  { type: "set-new", ids: selectedArray, isNew: true },
+                  `已将 ${selectedArray.length} 道菜品标为新品上市（全站顶部横幅已生效）`
+                );
+                setSelectedIds(new Set());
+              }}
+              className="rounded-lg bg-[#b8251c] px-2.5 py-1.5 font-semibold text-white hover:bg-[#991b14] disabled:opacity-45"
+            >
+              标为新品
+            </button>
+
+            <button
+              type="button"
+              disabled={!hasDb || isBusy}
+              onClick={async () => {
+                await onRunBulkAction(
+                  { type: "set-new", ids: selectedArray, isNew: false },
+                  `已取消 ${selectedArray.length} 道菜品的新品标记`
+                );
+                setSelectedIds(new Set());
+              }}
+              className="rounded-lg bg-[#303030] px-2.5 py-1.5 font-semibold text-white hover:bg-[#444] disabled:opacity-45"
+            >
+              取消新品
             </button>
 
             <button

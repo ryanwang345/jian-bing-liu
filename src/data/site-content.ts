@@ -63,7 +63,18 @@ export interface EditablePhotoCard {
   label: LocalizedText;
 }
 
+export interface NewArrivalsConfig {
+  /** Master switch for the site-wide "new dishes" banner */
+  bannerEnabled: boolean;
+  /** Automatically drop the "new" flag N days after launch (0 = never expire) */
+  autoExpireDays: number;
+  title: LocalizedText;
+  message: LocalizedText;
+  ctaLabel: LocalizedText;
+}
+
 export interface SiteContentConfig {
+  newArrivals: NewArrivalsConfig;
   store: {
     nameEn: string;
     nameZh: string;
@@ -245,6 +256,16 @@ export const HOME_SECTION_LABELS: Record<
 };
 
 export const defaultSiteContent: SiteContentConfig = {
+  newArrivals: {
+    bannerEnabled: true,
+    autoExpireDays: 30,
+    title: { zh: "新品上市", en: "New on the menu" },
+    message: {
+      zh: "刘阿姨新研发的味道已经上桌，快来尝鲜！",
+      en: "Fresh from Mrs Liu's griddle — come and try them first!",
+    },
+    ctaLabel: { zh: "立即尝鲜", en: "Try it now" },
+  },
   store: {
     nameEn: restaurant.name,
     nameZh: restaurant.chineseName,
@@ -939,6 +960,10 @@ export function mergeSiteContent(raw: unknown): SiteContentConfig {
     }
   }
   merged.home.sections = normalizedSections;
+
+  const days = Number(merged.newArrivals.autoExpireDays);
+  merged.newArrivals.autoExpireDays =
+    Number.isFinite(days) && days > 0 ? Math.min(Math.round(days), 365) : 0;
 
   // Validate gallery categories defensively
   const validGalleryCats = new Set<GalleryCategoryKey>([

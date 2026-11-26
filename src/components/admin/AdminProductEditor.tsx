@@ -51,6 +51,7 @@ export interface DishFormState {
   dietary: DietaryTagKey[];
   featured: boolean;
   isAvailable: boolean;
+  isNew: boolean;
   variants: EditableVariant[];
 }
 
@@ -78,6 +79,7 @@ export function itemToFormState(
       dietary: [],
       featured: false,
       isAvailable: true,
+      isNew: true,
       variants: [
         {
           sizeZh: "标准",
@@ -126,6 +128,7 @@ export function itemToFormState(
     dietary: item.dietary ? [...item.dietary] : [],
     featured: Boolean(item.featured),
     isAvailable: item.isAvailable !== false,
+    isNew: Boolean(item.isNew),
     variants,
   };
 }
@@ -752,6 +755,23 @@ export function AdminProductEditor({
           {/* Dietary & Homepage Featured Card */}
           <div className="space-y-4 rounded-xl border border-[#e3e3e3] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
             <h2 className="text-sm font-bold text-[#1a1a1a]">饮食筛选与推荐</h2>
+
+            <label className="flex cursor-pointer items-start justify-between gap-2 rounded-lg border border-[#ffd6a4] bg-[#fff8eb] px-3 py-2.5 text-xs font-semibold text-[#5e4200]">
+              <div>
+                <span>🆕 标为「新品上市」</span>
+                <p className="mt-0.5 text-[11px] font-normal text-[#8a5000]">
+                  开启后网站顶部将自动显示新品横幅，菜单顶部也会出现「新品上市」专区。
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={form.isNew}
+                onChange={(e) =>
+                  onChange({ ...form, isNew: e.target.checked })
+                }
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#b8251c]"
+              />
+            </label>
 
             <label className="flex cursor-pointer items-center justify-between rounded-lg border border-[#ebebeb] bg-[#fafafa] px-3 py-2.5 text-xs font-semibold text-[#1a1a1a]">
               <span>⭐ 设为首页「招牌美味」推荐</span>

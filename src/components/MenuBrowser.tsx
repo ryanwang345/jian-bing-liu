@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ShieldCheck, X, ZoomIn } from "lucide-react";
+import { NewBadge } from "@/components/NewBadge";
+import { useSiteContent } from "@/components/SiteContentProvider";
 import { SoldOutBadge } from "@/components/SoldOutBadge";
 import { DietaryBadge } from "@/components/DietaryBadge";
 import {
@@ -22,6 +24,8 @@ interface MenuBrowserProps {
   initialDietary?: MenuDietaryFilter;
 }
 
+const NEW_ARRIVALS_SECTION_ID = "new-arrivals";
+
 const dietaryFilters: MenuDietaryFilter[] = [
   "all",
   "halal",
@@ -34,6 +38,7 @@ export function MenuBrowser({
   initialDietary = "all",
 }: MenuBrowserProps) {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
+  const { newArrivals } = useSiteContent();
   const [activeDietary, setActiveDietary] =
     useState<MenuDietaryFilter>(initialDietary);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
@@ -66,9 +71,26 @@ export function MenuBrowser({
     }
   };
 
-  const filteredCategories = useMemo(
-    () =>
-      categories
+  const filteredCategories = useMemo(() => {
+    const newItems = categories
+      .flatMap((category) => category.items)
+      .filter((item) => item.isNew)
+      .sort((a, b) => (b.newSince ?? "").localeCompare(a.newSince ?? ""));
+    const withNewSection: MenuCategory[] =
+      newItems.length > 0
+        ? [
+            {
+              id: NEW_ARRIVALS_SECTION_ID,
+              title: newArrivals.title,
+              chineseTitle: newArrivals.title.zh || "新品上市",
+              subtitle: newArrivals.message,
+              items: newItems,
+            },
+            ...categories,
+          ]
+        : categories;
+
+    return withNewSection
         .map((category) => ({
           ...category,
           items:
@@ -78,9 +100,8 @@ export function MenuBrowser({
                   item.dietary?.includes(activeDietary)
                 ),
         }))
-        .filter((category) => category.items.length > 0),
-    [categories, activeDietary]
-  );
+        .filter((category) => category.items.length > 0);
+  }, [categories, activeDietary, newArrivals]);
 
   const picturedItems = useMemo(() => {
     const list: Array<{
@@ -88,6 +109,7 @@ export function MenuBrowser({
       categoryTitle: LocalizedText;
     }> = [];
     for (const cat of filteredCategories) {
+      if (cat.id === NEW_ARRIVALS_SECTION_ID) continue;
       for (const item of cat.items) {
         if (item.image) {
           list.push({
@@ -204,17 +226,20 @@ export function MenuBrowser({
           >
             {filteredCategories.map((cat) => {
               const isFestive = cat.id === "festive-specials";
+              const isNewSection = cat.id === NEW_ARRIVALS_SECTION_ID;
               return (
                 <a
                   key={cat.id}
                   href={`#${cat.id}`}
                   className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
-                    isFestive
-                      ? "border-cinnabar/45 bg-cinnabar/10 text-cinnabar-dark hover:bg-cinnabar hover:text-parchment"
-                      : "border-kraft-deep bg-kraft/50 text-ink-soft hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
+                    isNewSection
+                      ? "border-turmeric bg-turmeric/25 text-ink hover:bg-turmeric"
+                      : isFestive
+                        ? "border-cinnabar/45 bg-cinnabar/10 text-cinnabar-dark hover:bg-cinnabar hover:text-parchment"
+                        : "border-kraft-deep bg-kraft/50 text-ink-soft hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
                   }`}
                 >
-                  {isFestive ? "✨ " : ""}
+                  {isNewSection ? "🆕 " : isFestive ? "✨ " : ""}
                   {t(cat.title)}
                 </a>
               );
@@ -243,6 +268,9 @@ export function MenuBrowser({
           <section
             key={category.id}
             id={category.id}
+            data-new-arrivals={
+              category.id === NEW_ARRIVALS_SECTION_ID ? "true" : undefined
+            }
             aria-labelledby={`${category.id}-heading`}
             className="scroll-mt-40"
           >
@@ -307,7 +335,10 @@ export function MenuBrowser({
                           <h3 className="font-display text-lg font-bold text-ink">
                             {t(item.name)}
                           </h3>
-                          {item.isAvailable === false && <SoldOutBadge />}
+                          <div className="mt-1 flex flex-wrap gap-1.5 empty:hidden">
+                            {item.isNew && <NewBadge />}
+                            {item.isAvailable === false && <SoldOutBadge />}
+                          </div>
                           {!isZh && item.chineseName && (
                             <p
                               lang="zh-Hans"
@@ -481,7 +512,10 @@ export function MenuBrowser({
                     <h3 className="font-display text-lg font-bold text-parchment sm:text-xl">
                       {t(activeEntry.item.name)}
                     </h3>
-                    {activeEntry.item.isAvailable === false && <SoldOutBadge />}
+                    <div className="mt-1 flex flex-wrap gap-1.5 empty:hidden">
+                      {activeEntry.item.isNew && <NewBadge />}
+                      {activeEntry.item.isAvailable === false && <SoldOutBadge />}
+                    </div>
                     {!isZh && activeEntry.item.chineseName && (
                       <p
                         lang="zh-Hans"

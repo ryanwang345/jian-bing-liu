@@ -24,8 +24,7 @@ export async function POST(request: Request) {
 
     await bulkMenuItemsAction(body);
     try {
-      revalidatePath("/menu");
-      revalidatePath("/");
+      revalidatePath("/", "layout");
     } catch {
       // Ignore revalidation errors outside ISR
     }

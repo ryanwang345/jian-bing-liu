@@ -20,12 +20,15 @@ export function AdminSettingsView({
   const [store, setStore] = useState<SiteContentConfig["store"]>(() =>
     structuredClone(content.store)
   );
+  const [newArrivals, setNewArrivals] = useState<
+    SiteContentConfig["newArrivals"]
+  >(() => structuredClone(content.newArrivals));
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     void onSaveContent(
-      { ...content, store },
-      "店铺信息、营业时间与全站公告已保存生效"
+      { ...content, store, newArrivals },
+      "店铺信息、营业时间与新品横幅设置已保存生效"
     );
   };
 
@@ -171,6 +174,157 @@ export function AdminSettingsView({
               />
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Card 1.5: New Arrivals Banner Settings */}
+      <div className="space-y-4 rounded-xl border border-[#e3e3e3] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 className="text-sm font-bold text-[#1a1a1a]">
+              🆕 新品上市横幅设置
+            </h2>
+            <p className="mt-0.5 text-xs text-[#616161]">
+              每当您在「全部菜品」新增菜品或勾选「标为新品上市」时，网站顶部会自动展示新品横幅与跳转按钮。
+            </p>
+          </div>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#ebebeb] bg-[#fafafa] px-3 py-1.5 text-xs font-semibold text-[#1a1a1a]">
+            <input
+              type="checkbox"
+              checked={newArrivals.bannerEnabled}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  bannerEnabled: e.target.checked,
+                })
+              }
+              className="h-4 w-4 accent-[#1a1a1a]"
+            />
+            启用新品横幅
+          </label>
+        </div>
+
+        <div className="grid gap-3.5 sm:grid-cols-3">
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              新品标签自动保留天数
+            </label>
+            <select
+              value={String(newArrivals.autoExpireDays)}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  autoExpireDays: Number(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-xs font-semibold text-[#1a1a1a]"
+            >
+              <option value="7">7 天后自动撤下</option>
+              <option value="14">14 天后自动撤下</option>
+              <option value="30">30 天后自动撤下（推荐）</option>
+              <option value="60">60 天后自动撤下</option>
+              <option value="0">手动取消前一直显示</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              横幅徽章标题（中文）
+            </label>
+            <input
+              type="text"
+              value={newArrivals.title.zh}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  title: { ...newArrivals.title, zh: e.target.value },
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-xs text-[#1a1a1a]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              Banner Badge Title (EN)
+            </label>
+            <input
+              type="text"
+              value={newArrivals.title.en}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  title: { ...newArrivals.title, en: e.target.value },
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-xs text-[#1a1a1a]"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              横幅副文案（中文，显示在新品菜名后）
+            </label>
+            <input
+              type="text"
+              value={newArrivals.message.zh}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  message: { ...newArrivals.message, zh: e.target.value },
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-xs text-[#1a1a1a]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              Banner Subtext (EN)
+            </label>
+            <input
+              type="text"
+              value={newArrivals.message.en}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  message: { ...newArrivals.message, en: e.target.value },
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-xs text-[#1a1a1a]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              右侧按钮文字（中文）
+            </label>
+            <input
+              type="text"
+              value={newArrivals.ctaLabel.zh}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  ctaLabel: { ...newArrivals.ctaLabel, zh: e.target.value },
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-xs text-[#1a1a1a]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#303030]">
+              CTA Button Label (EN)
+            </label>
+            <input
+              type="text"
+              value={newArrivals.ctaLabel.en}
+              onChange={(e) =>
+                setNewArrivals({
+                  ...newArrivals,
+                  ctaLabel: { ...newArrivals.ctaLabel, en: e.target.value },
+                })
+              }
+              className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-xs text-[#1a1a1a]"
+            />
+          </div>
         </div>
       </div>
 

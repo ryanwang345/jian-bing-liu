@@ -6,23 +6,27 @@ import { FestivalBanner } from "@/components/FestivalBanner";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MobileActionBar } from "@/components/MobileActionBar";
+import { NewArrivalBanner } from "@/components/NewArrivalBanner";
 import { RouteTransition } from "@/components/motion/RouteTransition";
 import { ScrollAmbientLights } from "@/components/motion/ScrollAmbientLights";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { useSiteContent } from "@/components/SiteContentProvider";
 import type { FestivalPreset } from "@/data/festivals";
 import { useLocale } from "@/lib/i18n";
+import type { NewArrivalSummary } from "@/lib/new-arrivals";
 
 interface StorefrontChromeProps {
   children: ReactNode;
   activeFestival: FestivalPreset | null;
   hasFestiveDishes: boolean;
+  newArrivals?: NewArrivalSummary[];
 }
 
 export function StorefrontChrome({
   children,
   activeFestival,
   hasFestiveDishes,
+  newArrivals = [],
 }: StorefrontChromeProps) {
   const pathname = usePathname();
   const { t } = useLocale();
@@ -56,6 +60,7 @@ export function StorefrontChrome({
           {customBannerText}
         </div>
       )}
+      {!store.temporarilyClosed && <NewArrivalBanner items={newArrivals} />}
       {activeFestival && (
         <FestivalBanner
           festival={activeFestival}

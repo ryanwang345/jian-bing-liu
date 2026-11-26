@@ -30,6 +30,10 @@ export interface MenuItem {
   dietary?: DietaryTagKey[];
   featured?: boolean;
   isAvailable?: boolean;
+  /** True while the dish is flagged as a new launch (and not yet auto-expired) */
+  isNew?: boolean;
+  /** ISO timestamp of when the dish was flagged as a new launch */
+  newSince?: string;
   sortOrder?: number;
   image?: string;
   imageAlt?: LocalizedText;

@@ -10,6 +10,9 @@ import {
 import { queueRemovedMenuPhotos, deleteRetiredMenuPhotos } from "@/lib/menu-photo-cleanup";
 import { resolveMenuPhotoUrl } from "@/lib/menu-photos";
 import { getMenuDb, getMenuImagesBucket, type D1Database } from "@/lib/cf-bindings";
+import { isNewArrivalActive, type NewArrivalSummary } from "@/lib/new-arrivals";
+import { readNewArrivalMap, setMenuItemsNew } from "@/lib/new-arrivals-service";
+import { getSiteContent } from "@/lib/site-content-service";
 
 interface CategoryRow {
   id: string;
@@ -215,10 +218,62 @@ async function queryMenuFromDb(
 
     const itemRows = (itemRes?.results ?? []) as unknown as ItemRow[];
     const variantRows = (varRes?.results ?? []) as unknown as VariantRow[];
-    return rowsToMenuCategories(catRows, itemRows, variantRows);
+    const categories = rowsToMenuCategories(catRows, itemRows, variantRows);
+    await annotateNewArrivals(db, categories);
+    return categories;
   } catch {
     return null;
   }
+}
+
+/** Marks dishes flagged as new launches (respecting the auto-expiry window). */
+async function annotateNewArrivals(
+  db: D1Database,
+  categories: MenuCategory[]
+): Promise<void> {
+  try {
+    const [map, content] = await Promise.all([
+      readNewArrivalMap(db),
+      getSiteContent(),
+    ]);
+    if (Object.keys(map).length === 0) return;
+    const days = content.newArrivals.autoExpireDays;
+    const now = Date.now();
+    for (const cat of categories) {
+      for (const item of cat.items) {
+        const since = map[item.id];
+        if (since && isNewArrivalActive(since, days, now)) {
+          item.isNew = true;
+          item.newSince = since;
+        }
+      }
+    }
+  } catch {
+    // New-arrival flags are decorative; never break the menu over them
+  }
+}
+
+/** All dishes currently flagged as new launches, newest first. */
+export async function getActiveNewArrivals(): Promise<NewArrivalSummary[]> {
+  const db = await getMenuDb();
+  if (!db) return [];
+  const live = await queryMenuFromDb(db);
+  if (!live) return [];
+  return live
+    .flatMap((cat) =>
+      cat.items
+        .filter((item) => item.isNew && item.newSince)
+        .map((item) => ({
+          id: item.id,
+          categoryId: cat.id,
+          name: { en: item.name.en, zh: item.name.zh },
+          image: item.image,
+          price: item.price,
+          isAvailable: item.isAvailable !== false,
+          newSince: item.newSince as string,
+        }))
+    )
+    .sort((a, b) => b.newSince.localeCompare(a.newSince));
 }
 
 export async function getPublicMenuCategories(): Promise<MenuCategory[]> {
@@ -552,11 +607,17 @@ export async function deleteMenuItem(id: string): Promise<void> {
     db.prepare("DELETE FROM menu_items WHERE id = ?").bind(id),
   ]);
   await deleteRetiredMenuPhotos(db, id);
+  try {
+    await setMenuItemsNew([id], false);
+  } catch {
+    // Ignore — stale new-arrival entries are harmless and filtered out
+  }
 }
 
 export type BulkMenuAction =
   | { type: "set-available"; ids: string[]; isAvailable: boolean }
   | { type: "set-featured"; ids: string[]; featured: boolean }
+  | { type: "set-new"; ids: string[]; isNew: boolean }
   | { type: "move-category"; ids: string[]; categoryId: string }
   | { type: "delete"; ids: string[] }
   | { type: "reorder-items"; categoryId: string; orderedIds: string[] }
@@ -605,6 +666,11 @@ export async function bulkMenuItemsAction(action: BulkMenuAction): Promise<void>
         .bind(val, id)
     );
     await db.batch(stmts);
+    return;
+  }
+
+  if (action.type === "set-new") {
+    await setMenuItemsNew(action.ids, action.isNew);
     return;
   }
 

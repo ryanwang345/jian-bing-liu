@@ -7,6 +7,7 @@ import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SocialLinksProvider } from "@/components/SocialLinksProvider";
 import { StorefrontChrome } from "@/components/StorefrontChrome";
 import { getActiveFestivalThemeState } from "@/lib/festival-theme-service";
+import { getActiveNewArrivals } from "@/lib/menu-service";
 import { getSiteContent } from "@/lib/site-content-service";
 import { getSocialProfiles } from "@/lib/social-profiles";
 import { restaurant, SITE_URL } from "@/data/restaurant";
@@ -96,12 +97,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [cookieStore, { profiles }, festivalState, siteContent] =
+  const [cookieStore, { profiles }, festivalState, siteContent, newArrivals] =
     await Promise.all([
       cookies(),
       getSocialProfiles(),
       getActiveFestivalThemeState(),
       getSiteContent(),
+      getActiveNewArrivals().catch(() => []),
     ]);
   const visibleLinks = profiles.filter((profile) => profile.visible);
   const jsonLd = buildRestaurantJsonLd(visibleLinks);
@@ -183,6 +185,7 @@ export default async function RootLayout({
               <StorefrontChrome
                 activeFestival={activeFestival}
                 hasFestiveDishes={festivalState.hasFestiveDishes}
+                newArrivals={newArrivals}
               >
                 {children}
               </StorefrontChrome>

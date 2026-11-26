@@ -26,6 +26,7 @@ import { phoneToTelHref, useSiteContent } from "@/components/SiteContentProvider
 import { SocialIcon } from "@/components/SocialIcon";
 import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { SocialStoryStrip } from "@/components/SocialStoryStrip";
+import { NewBadge } from "@/components/NewBadge";
 import { SoldOutBadge } from "@/components/SoldOutBadge";
 import { featuredMenuItems } from "@/data/menu";
 import type { SocialPost } from "@/data/reviews";
@@ -541,6 +542,7 @@ export function HomeView({
                             <h3 className="font-display text-xl font-bold text-ink transition-colors group-hover:text-cinnabar">
                               {t(item.name)}
                             </h3>
+                            {item.isNew && <NewBadge />}
                             {item.isAvailable === false && <SoldOutBadge />}
                             {!isZh && item.chineseName && (
                               <span

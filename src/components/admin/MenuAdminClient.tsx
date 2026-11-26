@@ -313,6 +313,7 @@ export function MenuAdminClient({
           dietary: editorForm.dietary,
           featured: editorForm.featured,
           isAvailable: editorForm.isAvailable,
+          isNew: editorForm.isNew,
           variants: parsedVariants,
         }),
       });
