@@ -503,6 +503,70 @@ export function getFestivalPresetById(
   return festivalPresets.find((p) => p.id === id) ?? null;
 }
 
+const CALLIGRAPHY_BY_ID: Record<string, string> = {
+  "lunar-new-year": "新春限定",
+  "lantern-festival": "元宵限定",
+  qingming: "清明限定",
+  "dragon-boat": "端午限定",
+  qixi: "七夕限定",
+  "mid-autumn": "中秋限定",
+  "double-ninth": "重阳限定",
+  "national-day": "国庆限定",
+  "winter-solstice": "冬至限定",
+  laba: "腊八限定",
+  "new-year": "新年限定",
+  valentines: "情人限定",
+  "pancake-day": "煎饼节",
+  "mothers-day-uk": "母亲节",
+  easter: "复活限定",
+  "bank-holiday": "假日限定",
+  "fathers-day": "父亲节",
+  halloween: "万圣限定",
+  "bonfire-night": "篝火限定",
+  christmas: "圣诞限定",
+  "boxing-day": "节礼限定",
+  ramadan: "斋月特供",
+  "eid-al-fitr": "开斋限定",
+  "eid-al-adha": "古尔邦节",
+  "islamic-new-year": "回历新年",
+  mawlid: "圣纪限定",
+};
+
+/** Short button label for Mom (e.g. "🧧 春节" instead of "🧧 春节限定 / 开斋夜特供") */
+export function getFestivalShortNameZh(preset: FestivalPreset): string {
+  return preset.zh
+    .replace(/\s*\/\s*开斋夜特供/, "")
+    .replace(/限定$/, "")
+    .trim();
+}
+
+export function getFestivalShortNameEn(preset: FestivalPreset): string {
+  return preset.en
+    .replace(/^[^\w]+/, "")
+    .replace(/\s+Special$/i, "")
+    .trim();
+}
+
+export function matchFestivalPresetIds(
+  textZh?: string | null,
+  textEn?: string | null
+): string[] {
+  const zh = (textZh ?? "").trim();
+  const en = (textEn ?? "").trim();
+  if (!zh && !en) return [];
+
+  return festivalPresets
+    .filter((p) => {
+      const shortZh = getFestivalShortNameZh(p).replace(/^[^\u4e00-\u9fff]+/, "").trim();
+      const shortEn = getFestivalShortNameEn(p);
+      return (
+        (zh && (zh.includes(p.zh) || (shortZh && zh.includes(shortZh)))) ||
+        (en && (en.includes(p.en) || (shortEn && en.toLowerCase().includes(shortEn.toLowerCase()))))
+      );
+    })
+    .map((p) => p.id);
+}
+
 export function matchFestivalPresetId(
   noteZh?: string | null,
   noteEn?: string | null
@@ -510,6 +574,83 @@ export function matchFestivalPresetId(
   const zh = (noteZh ?? "").trim();
   const en = (noteEn ?? "").trim();
   if (!zh && !en) return "";
-  const hit = festivalPresets.find((p) => p.zh === zh || p.en === en);
-  return hit ? hit.id : "custom";
+  const exact = festivalPresets.find((p) => p.zh === zh || p.en === en);
+  if (exact) return exact.id;
+  const multi = matchFestivalPresetIds(zh, en);
+  return multi.length > 0 ? multi[0] : "custom";
+}
+
+export function composeDishNoteFromFestivals(ids: string[]): {
+  noteZh: string;
+  noteEn: string;
+} {
+  const selected = ids
+    .map((id) => getFestivalPresetById(id))
+    .filter((p): p is FestivalPreset => Boolean(p));
+
+  if (selected.length === 0) {
+    return { noteZh: "", noteEn: "" };
+  }
+  if (selected.length === 1) {
+    return { noteZh: selected[0].zh, noteEn: selected[0].en };
+  }
+  return {
+    noteZh: `${selected.map((p) => getFestivalShortNameZh(p)).join(" · ")}限定`,
+    noteEn: `${selected.map((p) => getFestivalShortNameEn(p)).join(" · ")} Specials`,
+  };
+}
+
+export function composeCategoryFromFestivals(ids: string[]): {
+  titleZh: string;
+  titleEn: string;
+  chineseTitle: string;
+  subtitleZh: string;
+  subtitleEn: string;
+} {
+  const selected = ids
+    .map((id) => getFestivalPresetById(id))
+    .filter((p): p is FestivalPreset => Boolean(p));
+
+  if (selected.length === 0) {
+    return {
+      titleZh: "节日限定菜单",
+      titleEn: "Festive Specials",
+      chineseTitle: "节日限定",
+      subtitleZh: "逢年过节特别推出的限定风味煎饼、点心与特调，限时供应、售完即止。",
+      subtitleEn:
+        "Limited-time seasonal crepes, snacks and drinks crafted for holidays and celebrations — available while ingredients last.",
+    };
+  }
+
+  if (selected.length === 1) {
+    const p = selected[0];
+    const shortZh = getFestivalShortNameZh(p);
+    const shortEn = getFestivalShortNameEn(p);
+    return {
+      titleZh: `${shortZh}限定菜单`,
+      titleEn: `${shortEn} Specials`,
+      chineseTitle: CALLIGRAPHY_BY_ID[p.id] || "节日限定",
+      subtitleZh: `${p.bannerZh}，限时供应、售完即止。`,
+      subtitleEn: `${p.bannerEn} — freshly made to order while ingredients last.`,
+    };
+  }
+
+  const zhNames = selected.map((p) => getFestivalShortNameZh(p));
+  const enNames = selected.map((p) => getFestivalShortNameEn(p));
+  const titleZh =
+    zhNames.length <= 3
+      ? `${zhNames.join(" · ")}限定菜单`
+      : `${zhNames.slice(0, 3).join(" · ")}等 ${zhNames.length} 大节日限定`;
+  const titleEn =
+    enNames.length <= 3
+      ? `${enNames.join(" & ")} Specials`
+      : `Festive Specials (${enNames.slice(0, 2).join(", ")} & More)`;
+
+  return {
+    titleZh,
+    titleEn,
+    chineseTitle: "节日限定",
+    subtitleZh: `精选 ${zhNames.join("、")} 特别推出的限定风味煎饼、点心与特调，现点现做、售完即止。`,
+    subtitleEn: `Special limited-time crepes, snacks and drinks celebrating ${enNames.join(", ")} — freshly made to order.`,
+  };
 }

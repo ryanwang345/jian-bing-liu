@@ -566,6 +566,7 @@ export function MenuAdminClient({
             setProductsCategoryJump(catId);
             selectTab("products");
           }}
+          onSyncTheme={handleChangeFestivalTheme}
           showToast={showToast}
         />
       ) : activeTab === "themes" ? (

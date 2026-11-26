@@ -4,15 +4,19 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import {
   ArrowLeft,
+  Check,
   ImagePlus,
   Loader2,
   Trash2,
   Upload,
 } from "lucide-react";
 import {
+  composeDishNoteFromFestivals,
   festivalGroupLabels,
   festivalPresets,
+  getFestivalShortNameZh,
   matchFestivalPresetId,
+  matchFestivalPresetIds,
   type FestivalGroupKey,
 } from "@/data/festivals";
 import {
@@ -35,7 +39,8 @@ export interface DishFormState {
   draftId?: string;
   uploadedPhotoUrls: string[];
   categoryId: string;
-  festivalPresetId: string;
+  selectedFestivalIds: string[];
+  isCustomFestival: boolean;
   noteZh: string;
   noteEn: string;
   nameZh: string;
@@ -61,7 +66,8 @@ export function itemToFormState(
       draftId: crypto.randomUUID(),
       uploadedPhotoUrls: [],
       categoryId,
-      festivalPresetId: "",
+      selectedFestivalIds: [],
+      isCustomFestival: false,
       noteZh: "",
       noteEn: "",
       nameZh: "",
@@ -101,11 +107,15 @@ export function itemToFormState(
           },
         ];
 
+  const matchedIds = matchFestivalPresetIds(item.note?.zh, item.note?.en);
+  const singleMatch = matchFestivalPresetId(item.note?.zh, item.note?.en);
+
   return {
     id: item.id,
     uploadedPhotoUrls: [],
     categoryId,
-    festivalPresetId: matchFestivalPresetId(item.note?.zh, item.note?.en),
+    selectedFestivalIds: matchedIds,
+    isCustomFestival: singleMatch === "custom" && matchedIds.length === 0,
     noteZh: item.note?.zh ?? "",
     noteEn: item.note?.en ?? "",
     nameZh: item.name.zh,
@@ -613,55 +623,108 @@ export function AdminProductEditor({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#303030]">
-                节日限定标签（中 / 英 / 伊斯兰节假日）
-              </label>
-              <select
-                value={form.festivalPresetId}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (!val) {
-                    onChange({
-                      ...form,
-                      festivalPresetId: "",
-                      noteZh: "",
-                      noteEn: "",
-                    });
-                  } else if (val === "custom") {
-                    onChange({ ...form, festivalPresetId: "custom" });
-                  } else {
-                    const preset = festivalPresets.find((p) => p.id === val);
-                    onChange({
-                      ...form,
-                      festivalPresetId: val,
-                      noteZh: preset?.zh ?? "",
-                      noteEn: preset?.en ?? "",
-                    });
-                  }
-                }}
-                className="mt-1 w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-xs text-[#1a1a1a] outline-none focus:border-[#005bd3]"
-              >
-                <option value="">不指定节日（常规菜品）</option>
-                {FESTIVAL_GROUPS.map((groupKey) => (
-                  <optgroup
-                    key={groupKey}
-                    label={`── ${festivalGroupLabels[groupKey].zh} (${festivalGroupLabels[groupKey].en}) ──`}
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-[#303030]">
+                  适用节日限定（可点选任意多个节日）
+                </label>
+                {(form.selectedFestivalIds.length > 0 ||
+                  form.isCustomFestival) && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        ...form,
+                        selectedFestivalIds: [],
+                        isCustomFestival: false,
+                        noteZh: "",
+                        noteEn: "",
+                      })
+                    }
+                    className="text-[11px] font-semibold text-[#d82c0d] hover:underline"
                   >
-                    {festivalPresets
-                      .filter((p) => p.group === groupKey)
-                      .map((preset) => (
-                        <option key={preset.id} value={preset.id}>
-                          {preset.zh} — {preset.en}
-                        </option>
-                      ))}
-                  </optgroup>
-                ))}
-                <optgroup label="── 其他 ──">
-                  <option value="custom">✍️ 自定义节日标签...</option>
-                </optgroup>
-              </select>
+                    清空节日
+                  </button>
+                )}
+              </div>
 
-              {form.festivalPresetId === "custom" && (
+              <div className="mt-2 max-h-72 space-y-3 overflow-y-auto rounded-xl border border-[#e3e3e3] bg-[#fafafa] p-3">
+                {FESTIVAL_GROUPS.map((groupKey) => (
+                  <div key={groupKey} className="space-y-1.5">
+                    <p className="text-[11px] font-bold text-[#616161]">
+                      {festivalGroupLabels[groupKey].zh}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {festivalPresets
+                        .filter((p) => p.group === groupKey)
+                        .map((preset) => {
+                          const selected = form.selectedFestivalIds.includes(
+                            preset.id
+                          );
+                          return (
+                            <button
+                              key={preset.id}
+                              type="button"
+                              onClick={() => {
+                                const nextIds = selected
+                                  ? form.selectedFestivalIds.filter(
+                                      (id) => id !== preset.id
+                                    )
+                                  : [...form.selectedFestivalIds, preset.id];
+                                const composed =
+                                  composeDishNoteFromFestivals(nextIds);
+                                onChange({
+                                  ...form,
+                                  isCustomFestival: false,
+                                  selectedFestivalIds: nextIds,
+                                  noteZh: composed.noteZh,
+                                  noteEn: composed.noteEn,
+                                });
+                              }}
+                              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                                selected
+                                  ? "border-[#1a1a1a] bg-[#1a1a1a] text-white"
+                                  : "border-[#d4d4d4] bg-white text-[#303030] hover:bg-[#f1f1f1]"
+                              }`}
+                            >
+                              {selected && (
+                                <Check className="h-3 w-3 text-[#36fba1]" />
+                              )}
+                              <span>{getFestivalShortNameZh(preset)}</span>
+                            </button>
+                          );
+                        })}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="border-t border-[#e3e3e3] pt-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        ...form,
+                        isCustomFestival: !form.isCustomFestival,
+                        selectedFestivalIds: [],
+                      })
+                    }
+                    className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
+                      form.isCustomFestival
+                        ? "border-[#1a1a1a] bg-[#1a1a1a] text-white"
+                        : "border-[#d4d4d4] bg-white text-[#303030] hover:bg-[#f1f1f1]"
+                    }`}
+                  >
+                    ✍️ 自定义节日文字...
+                  </button>
+                </div>
+              </div>
+
+              {form.noteZh && !form.isCustomFestival && (
+                <p className="mt-2 rounded-lg bg-[#fff5ea] px-2.5 py-1.5 text-[11px] font-medium text-[#5e4200]">
+                  当前标签预览：{form.noteZh}
+                </p>
+              )}
+
+              {form.isCustomFestival && (
                 <div className="mt-2 space-y-2">
                   <input
                     type="text"

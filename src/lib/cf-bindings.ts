@@ -57,7 +57,10 @@ interface CloudflareMenuEnv {
 
 export async function getCfEnv(): Promise<CloudflareMenuEnv | undefined> {
   try {
-    const { env } = await getCloudflareContext({ async: true });
+    // Use sync mode so `next build` (including inside Alpine Docker) and standalone
+    // Node containers never try to spawn Miniflare/workerd, while Cloudflare Workers
+    // and `next dev` (`initOpenNextCloudflareForDev`) still resolve `env` immediately.
+    const { env } = getCloudflareContext();
     return env as unknown as CloudflareMenuEnv | undefined;
   } catch {
     return undefined;

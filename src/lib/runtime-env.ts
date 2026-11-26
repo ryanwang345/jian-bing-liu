@@ -6,13 +6,15 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
  */
 export async function getRuntimeEnv(name: string): Promise<string | undefined> {
   try {
-    const { env } = await getCloudflareContext({ async: true });
+    // Sync mode reads an existing Cloudflare Worker / `next dev` context without
+    // spawning Miniflare/workerd during `next build` or inside Alpine Docker.
+    const { env } = getCloudflareContext();
     const cfVal = (env as unknown as Record<string, unknown> | undefined)?.[name];
     if (typeof cfVal === "string" && cfVal.trim()) {
       return cfVal.trim();
     }
   } catch {
-    // Not running inside a Cloudflare Worker request context (e.g. next dev / build)
+    // Not running inside a Cloudflare Worker request context (e.g. next build / Node container)
   }
 
   const nodeVal = process.env[name];

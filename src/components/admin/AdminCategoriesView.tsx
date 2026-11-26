@@ -5,13 +5,23 @@ import { createPortal } from "react-dom";
 import {
   ArrowDown,
   ArrowUp,
+  Check,
   GripVertical,
   Loader2,
   Pencil,
   Plus,
+  Sparkles,
   Trash2,
   X,
 } from "lucide-react";
+import {
+  composeCategoryFromFestivals,
+  festivalGroupLabels,
+  festivalPresets,
+  getFestivalShortNameZh,
+  matchFestivalPresetIds,
+  type FestivalGroupKey,
+} from "@/data/festivals";
 import type { MenuCategory } from "@/data/menu";
 import type { AdminMenuSnapshot } from "@/lib/menu-service";
 
@@ -20,11 +30,14 @@ interface AdminCategoriesViewProps {
   hasDb: boolean;
   onSnapshotChange: (snapshot: AdminMenuSnapshot) => void;
   onJumpToCategoryProducts: (categoryId: string) => void;
+  onSyncTheme?: (themeValue: string) => Promise<void>;
   showToast: (type: "success" | "error", text: string) => void;
 }
 
 interface CategoryFormState {
   id?: string;
+  selectedFestivalIds: string[];
+  syncSiteTheme: boolean;
   titleZh: string;
   titleEn: string;
   chineseTitle: string;
@@ -32,20 +45,27 @@ interface CategoryFormState {
   subtitleEn: string;
 }
 
+const FESTIVAL_GROUPS: FestivalGroupKey[] = ["chinese", "uk", "islamic"];
+
 export function AdminCategoriesView({
   categories,
   hasDb,
   onSnapshotChange,
   onJumpToCategoryProducts,
+  onSyncTheme,
   showToast,
 }: AdminCategoriesViewProps) {
   const [form, setForm] = useState<CategoryFormState | null>(null);
+  const [showFestivalPicker, setShowFestivalPicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   const openCreate = () => {
+    setShowFestivalPicker(true);
     setForm({
+      selectedFestivalIds: [],
+      syncSiteTheme: false,
       titleZh: "",
       titleEn: "",
       chineseTitle: "",
@@ -55,14 +75,53 @@ export function AdminCategoriesView({
   };
 
   const openEdit = (cat: MenuCategory) => {
+    const matchedIds = matchFestivalPresetIds(cat.title.zh, cat.title.en);
+    const isFestiveCategory =
+      cat.id === "festive-specials" || matchedIds.length > 0;
+    setShowFestivalPicker(isFestiveCategory);
     setForm({
       id: cat.id,
+      selectedFestivalIds: matchedIds,
+      syncSiteTheme: cat.id === "festive-specials",
       titleZh: cat.title.zh,
       titleEn: cat.title.en,
       chineseTitle: cat.chineseTitle,
       subtitleZh: cat.subtitle.zh,
       subtitleEn: cat.subtitle.en,
     });
+  };
+
+  const applyFestivalSelection = (nextIds: string[]) => {
+    if (!form) return;
+    const generated = composeCategoryFromFestivals(nextIds);
+    setForm({
+      ...form,
+      selectedFestivalIds: nextIds,
+      ...generated,
+    });
+  };
+
+  const toggleFestivalId = (presetId: string) => {
+    if (!form) return;
+    const exists = form.selectedFestivalIds.includes(presetId);
+    const nextIds = exists
+      ? form.selectedFestivalIds.filter((id) => id !== presetId)
+      : [...form.selectedFestivalIds, presetId];
+    applyFestivalSelection(nextIds);
+  };
+
+  const selectGroupFestivals = (groupKey: FestivalGroupKey) => {
+    if (!form) return;
+    const groupIds = festivalPresets
+      .filter((p) => p.group === groupKey)
+      .map((p) => p.id);
+    const allSelected = groupIds.every((id) =>
+      form.selectedFestivalIds.includes(id)
+    );
+    const nextIds = allSelected
+      ? form.selectedFestivalIds.filter((id) => !groupIds.includes(id))
+      : Array.from(new Set([...form.selectedFestivalIds, ...groupIds]));
+    applyFestivalSelection(nextIds);
   };
 
   const persistOrder = async (nextCategories: MenuCategory[]) => {
@@ -125,7 +184,12 @@ export function AdminCategoriesView({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "upsert",
-          ...form,
+          id: form.id,
+          titleZh: form.titleZh,
+          titleEn: form.titleEn,
+          chineseTitle: form.chineseTitle,
+          subtitleZh: form.subtitleZh,
+          subtitleEn: form.subtitleEn,
         }),
       });
       const data = (await res.json()) as {
@@ -137,9 +201,20 @@ export function AdminCategoriesView({
         showToast("error", data.error || "保存分类失败");
         return;
       }
+
       onSnapshotChange(data.snapshot);
+
+      if (form.syncSiteTheme && onSyncTheme) {
+        const nextTheme =
+          form.selectedFestivalIds.length > 0
+            ? form.selectedFestivalIds[0]
+            : "auto";
+        await onSyncTheme(nextTheme);
+      } else {
+        showToast("success", `已保存分类「${form.titleZh}」`);
+      }
+
       setForm(null);
-      showToast("success", `已保存分类「${form.titleZh}」`);
     } catch {
       showToast("error", "保存分类失败");
     } finally {
@@ -189,7 +264,7 @@ export function AdminCategoriesView({
             菜单分类管理
           </h1>
           <p className="mt-0.5 text-xs text-[#616161] sm:text-sm">
-            管理菜单分区名称与中英文介绍；拖拽行或点击 ↑↓ 即可调整前台菜单展示顺序（空分类在前台会自动隐藏）。
+            点「编辑」可直接勾选全部中/英/伊节假日自动生成中英文标题与简介；拖拽或点击 ↑↓ 可调整前台分类展示顺序。
           </p>
         </div>
 
@@ -330,35 +405,162 @@ export function AdminCategoriesView({
         </div>
       </div>
 
-      {/* Category Create / Edit Modal */}
+      {/* Category Create / Edit Modal with Full 26-Holiday Picker */}
       {form &&
         typeof document !== "undefined" &&
         createPortal(
           <div
             role="dialog"
             aria-modal="true"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
             onClick={() => setForm(null)}
           >
             <form
               onSubmit={handleSave}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg overflow-hidden rounded-2xl border border-[#e3e3e3] bg-white shadow-2xl"
+              className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-[#e3e3e3] bg-white shadow-2xl sm:rounded-2xl"
             >
               <div className="flex items-center justify-between border-b border-[#ebebeb] px-5 py-4">
-                <h2 className="text-base font-bold text-[#1a1a1a]">
-                  {form.id ? "编辑菜单分类" : "新增菜单分类"}
-                </h2>
+                <div>
+                  <h2 className="text-base font-bold text-[#1a1a1a]">
+                    {form.id ? "编辑菜单分类" : "新增菜单分类"}
+                  </h2>
+                  <p className="text-xs text-[#616161]">
+                    可直接点选下方任意节日（支持单选或多选），系统会自动填好全部中英文无需打字。
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={() => setForm(null)}
-                  className="rounded-lg p-1 text-[#616161] hover:bg-[#f1f1f1]"
+                  className="rounded-lg p-1.5 text-[#616161] hover:bg-[#f1f1f1]"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="space-y-4 p-5">
+              <div className="flex-1 space-y-4 overflow-y-auto p-5">
+                {/* Toggleable / Prominent 26-Festival Picker */}
+                <div className="rounded-xl border border-[#e3e3e3] bg-[#fafafa] p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowFestivalPicker((v) => !v)}
+                      className="inline-flex items-center gap-1.5 text-left text-xs font-bold text-[#1a1a1a] sm:text-sm"
+                    >
+                      <Sparkles className="h-4 w-4 text-[#b8251c]" />
+                      <span>
+                        选择适用节日（共 26 个中国 / 英国 / 伊斯兰节假日）
+                      </span>
+                      {form.selectedFestivalIds.length > 0 && (
+                        <span className="rounded-full bg-[#1a1a1a] px-2 py-0.5 text-[11px] font-semibold text-white">
+                          已选 {form.selectedFestivalIds.length} 个
+                        </span>
+                      )}
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      {showFestivalPicker && (
+                        <button
+                          type="button"
+                          onClick={() => applyFestivalSelection([])}
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                            form.selectedFestivalIds.length === 0 &&
+                            form.titleZh === "节日限定菜单"
+                              ? "bg-[#1a1a1a] text-white"
+                              : "border border-[#d4d4d4] bg-white text-[#303030] hover:bg-[#f1f1f1]"
+                          }`}
+                        >
+                          ✨ 设为通用节日限定
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setShowFestivalPicker((v) => !v)}
+                        className="text-xs font-semibold text-[#005bd3] hover:underline"
+                      >
+                        {showFestivalPicker ? "收起节日列表" : "展开选择节日"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {showFestivalPicker && (
+                    <div className="mt-3.5 space-y-3.5 border-t border-[#e3e3e3] pt-3.5">
+                      {FESTIVAL_GROUPS.map((groupKey) => {
+                        const groupPresets = festivalPresets.filter(
+                          (p) => p.group === groupKey
+                        );
+                        const allInGroupSelected = groupPresets.every((p) =>
+                          form.selectedFestivalIds.includes(p.id)
+                        );
+
+                        return (
+                          <div key={groupKey} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-[#303030]">
+                                {festivalGroupLabels[groupKey].zh}{" "}
+                                <span className="font-normal text-[#616161]">
+                                  ({groupPresets.length})
+                                </span>
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => selectGroupFestivals(groupKey)}
+                                className="text-[11px] font-semibold text-[#005bd3] hover:underline"
+                              >
+                                {allInGroupSelected ? "取消本组" : "全选本组"}
+                              </button>
+                            </div>
+
+                            <div className="flex flex-wrap gap-1.5">
+                              {groupPresets.map((preset) => {
+                                const selected =
+                                  form.selectedFestivalIds.includes(preset.id);
+                                return (
+                                  <button
+                                    key={preset.id}
+                                    type="button"
+                                    onClick={() => toggleFestivalId(preset.id)}
+                                    className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+                                      selected
+                                        ? "border-[#1a1a1a] bg-[#1a1a1a] text-white shadow-2xs"
+                                        : "border-[#d4d4d4] bg-white text-[#303030] hover:border-[#8c8c8c] hover:bg-[#f7f7f7]"
+                                    }`}
+                                  >
+                                    {selected && (
+                                      <Check
+                                        className="h-3 w-3 text-[#36fba1]"
+                                        aria-hidden="true"
+                                      />
+                                    )}
+                                    <span>{getFestivalShortNameZh(preset)}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      <label className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-xs font-semibold text-[#1a1a1a]">
+                        <input
+                          type="checkbox"
+                          checked={form.syncSiteTheme}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              syncSiteTheme: e.target.checked,
+                            })
+                          }
+                          className="h-4 w-4 accent-[#1a1a1a]"
+                        />
+                        <span>
+                          保存时同步将全站主题切换为所选节日风格（多选时采用第一个所选节日配色）
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid gap-3.5 sm:grid-cols-2">
                   <div>
                     <label className="block text-xs font-semibold text-[#303030]">
@@ -371,7 +573,7 @@ export function AdminCategoriesView({
                       onChange={(e) =>
                         setForm({ ...form, titleZh: e.target.value })
                       }
-                      placeholder="如：招牌咸味煎饼"
+                      placeholder="如：🧧 春节限定菜单"
                       className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#005bd3]"
                     />
                   </div>
@@ -386,7 +588,7 @@ export function AdminCategoriesView({
                       onChange={(e) =>
                         setForm({ ...form, titleEn: e.target.value })
                       }
-                      placeholder="e.g. Savoury Jian Bing"
+                      placeholder="e.g. Lunar New Year Specials"
                       className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#005bd3]"
                     />
                   </div>
@@ -402,7 +604,7 @@ export function AdminCategoriesView({
                     onChange={(e) =>
                       setForm({ ...form, chineseTitle: e.target.value })
                     }
-                    placeholder="如：咸味煎饼"
+                    placeholder="如：新春限定"
                     className="mt-1 w-full rounded-lg border border-[#c9cccf] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#005bd3]"
                   />
                 </div>
