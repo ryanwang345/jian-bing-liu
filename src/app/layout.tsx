@@ -140,6 +140,18 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://www.tiktok.com" />
         <link rel="dns-prefetch" href="https://www.threads.com" />
         <link
+          rel="alternate"
+          type="text/markdown"
+          href="/menu.md"
+          title="Jian Bing Liu — Machine-Readable Menu"
+        />
+        <link
+          rel="alternate"
+          type="text/plain"
+          href="/llms.txt"
+          title="Jian Bing Liu — LLMs Directory"
+        />
+        <link
           rel="preload"
           as="style"
           href={calligraphyHref}
