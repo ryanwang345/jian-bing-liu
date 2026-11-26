@@ -51,7 +51,6 @@ export function StorefrontChrome({
   return (
     <>
       <ScrollAmbientLights isFestive={Boolean(activeFestival)} />
-      {activeFestival && <FestivalAtmosphere festival={activeFestival} />}
       <ScrollProgressBar />
       {customBannerText.trim() && (
         <div
@@ -72,6 +71,7 @@ export function StorefrontChrome({
       <Header />
 
       <main id="main-content" className="relative z-10 flex-1">
+        {activeFestival && <FestivalAtmosphere festival={activeFestival} />}
         <RouteTransition>{children}</RouteTransition>
       </main>
 

@@ -7,505 +7,384 @@ interface FestivalAtmosphereProps {
 }
 
 function LanternPair({
-  side,
   primary,
   accent,
   deep,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   deep: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 180 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className={`h-44 w-32 sm:h-60 sm:w-44 lg:h-72 lg:w-52 ${
-        isLeft ? "opacity-85" : "opacity-80"
-      }`}
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Main hanging lantern */}
-      <g className="festival-sway" style={{ animationDelay: isLeft ? "0s" : "1.4s" }}>
-        <line x1="68" y1="0" x2="68" y2="44" stroke={accent} strokeWidth="2.5" />
-        <rect x="52" y="42" width="32" height="9" rx="3" fill={accent} />
-        <ellipse cx="68" cy="88" rx="36" ry="42" fill={primary} />
-        <ellipse cx="68" cy="88" rx="22" ry="41" stroke={accent} strokeOpacity="0.65" strokeWidth="1.5" />
-        <ellipse cx="68" cy="88" rx="9" ry="42" stroke={accent} strokeOpacity="0.55" strokeWidth="1.2" />
-        <ellipse cx="56" cy="76" rx="8" ry="18" fill={accent} fillOpacity="0.22" />
-        <rect x="54" y="126" width="28" height="8" rx="3" fill={accent} />
-        <line x1="68" y1="134" x2="68" y2="174" stroke={accent} strokeWidth="2.5" />
-        <line x1="63" y1="142" x2="60" y2="170" stroke={primary} strokeWidth="1.8" />
-        <line x1="73" y1="142" x2="76" y2="170" stroke={primary} strokeWidth="1.8" />
-        <circle cx="68" cy="140" r="4" fill={accent} />
-      </g>
+      <line x1="56" y1="0" x2="56" y2="42" stroke={accent} strokeWidth="2.5" />
+      <rect x="40" y="40" width="32" height="9" rx="3" fill={accent} />
+      <ellipse cx="56" cy="86" rx="34" ry="40" fill={primary} />
+      <ellipse cx="56" cy="86" rx="20" ry="39" stroke={accent} strokeOpacity="0.65" strokeWidth="1.5" />
+      <ellipse cx="56" cy="86" rx="8" ry="40" stroke={accent} strokeOpacity="0.55" strokeWidth="1.2" />
+      <ellipse cx="44" cy="74" rx="7" ry="16" fill={accent} fillOpacity="0.22" />
+      <rect x="42" y="122" width="28" height="8" rx="3" fill={accent} />
+      <line x1="56" y1="130" x2="56" y2="168" stroke={accent} strokeWidth="2.5" />
+      <line x1="51" y1="138" x2="48" y2="164" stroke={primary} strokeWidth="1.8" />
+      <line x1="61" y1="138" x2="64" y2="164" stroke={primary} strokeWidth="1.8" />
+      <circle cx="56" cy="136" r="4" fill={accent} />
 
-      {/* Secondary smaller lantern */}
-      <g
-        className="festival-sway"
-        style={{ animationDelay: isLeft ? "2.1s" : "0.7s", transformOrigin: "132px 0px" }}
-      >
-        <line x1="132" y1="0" x2="132" y2="74" stroke={accent} strokeWidth="2" />
-        <rect x="121" y="72" width="22" height="6" rx="2" fill={accent} />
-        <ellipse cx="132" cy="102" rx="22" ry="26" fill={deep} />
-        <ellipse cx="132" cy="102" rx="12" ry="25" stroke={accent} strokeOpacity="0.65" strokeWidth="1.2" />
-        <rect x="122" y="125" width="20" height="6" rx="2" fill={accent} />
-        <line x1="132" y1="131" x2="132" y2="156" stroke={accent} strokeWidth="2" />
-      </g>
+      <line x1="112" y1="0" x2="112" y2="70" stroke={accent} strokeWidth="2" />
+      <rect x="101" y="68" width="22" height="6" rx="2" fill={accent} />
+      <ellipse cx="112" cy="98" rx="21" ry="25" fill={deep} />
+      <ellipse cx="112" cy="98" rx="11" ry="24" stroke={accent} strokeOpacity="0.65" strokeWidth="1.2" />
+      <rect x="102" y="120" width="20" height="6" rx="2" fill={accent} />
+      <line x1="112" y1="126" x2="112" y2="150" stroke={accent} strokeWidth="2" />
 
-      {/* Festive golden sparkles */}
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.4s" : "1.8s" }}>
-        <path d="M24 118 L27 125 L34 128 L27 131 L24 138 L21 131 L14 128 L21 125 Z" fill={accent} />
-        <path d="M156 172 L158 177 L163 179 L158 181 L156 186 L154 181 L149 179 L154 177 Z" fill={primary} fillOpacity="0.8" />
-        <circle cx="105" cy="54" r="3" fill={accent} />
-      </g>
+      <path d="M18 118 L21 125 L28 128 L21 131 L18 138 L15 131 L8 128 L15 125 Z" fill={accent} />
+      <circle cx="90" cy="52" r="3" fill={accent} />
     </svg>
   );
 }
 
 function WinterOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Hanging Christmas ornament bauble */}
-      <g className="festival-sway" style={{ animationDelay: isLeft ? "0s" : "1.6s" }}>
-        <line x1="64" y1="0" x2="64" y2="54" stroke={accent} strokeWidth="2" />
-        <rect x="57" y="52" width="14" height="7" rx="2" fill={accent} />
-        <circle cx="64" cy="84" r="26" fill={primary} />
-        <path d="M40 84 Q64 70 88 84" stroke={accent} strokeWidth="2" strokeOpacity="0.85" />
-        <path d="M42 94 Q64 82 86 94" stroke={accent} strokeWidth="1.5" strokeOpacity="0.65" />
-        <circle cx="55" cy="74" r="6" fill="#FFFFFF" fillOpacity="0.25" />
-      </g>
+      <line x1="52" y1="0" x2="52" y2="52" stroke={accent} strokeWidth="2" />
+      <rect x="45" y="50" width="14" height="7" rx="2" fill={accent} />
+      <circle cx="52" cy="82" r="24" fill={primary} />
+      <path d="M30 82 Q52 68 74 82" stroke={accent} strokeWidth="2" strokeOpacity="0.85" />
+      <path d="M32 92 Q52 80 72 92" stroke={accent} strokeWidth="1.5" strokeOpacity="0.65" />
+      <circle cx="44" cy="72" r="5.5" fill="#FFFFFF" fillOpacity="0.25" />
 
-      {/* Evergreen bauble */}
-      <g className="festival-sway" style={{ animationDelay: isLeft ? "1.9s" : "0.6s", transformOrigin: "136px 0px" }}>
-        <line x1="136" y1="0" x2="136" y2="86" stroke={accent} strokeWidth="1.8" />
-        <rect x="131" y="84" width="10" height="5" rx="1.5" fill={accent} />
-        <circle cx="136" cy="108" r="19" fill={jade} />
-        <path d="M136 96 L139 105 L148 108 L139 111 L136 120 L133 111 L124 108 L133 105 Z" fill={accent} />
-      </g>
+      <line x1="112" y1="0" x2="112" y2="82" stroke={accent} strokeWidth="1.8" />
+      <rect x="107" y="80" width="10" height="5" rx="1.5" fill={accent} />
+      <circle cx="112" cy="104" r="18" fill={jade} />
+      <path d="M112 92 L115 101 L124 104 L115 107 L112 116 L109 107 L100 104 L109 101 Z" fill={accent} />
 
-      {/* Crystalline snowflakes & twinkling stars */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0.5s" : "2.1s" }}>
-        <g stroke={jade} strokeOpacity="0.55" strokeWidth="1.8" strokeLinecap="round" transform="translate(106 168)">
-          <line x1="0" y1="-16" x2="0" y2="16" />
-          <line x1="-14" y1="-8" x2="14" y2="8" />
-          <line x1="-14" y1="8" x2="14" y2="-8" />
-          <circle cx="0" cy="0" r="3" fill={accent} stroke="none" />
-        </g>
-        <g stroke={primary} strokeOpacity="0.45" strokeWidth="1.5" strokeLinecap="round" transform="translate(36 156)">
-          <line x1="0" y1="-11" x2="0" y2="11" />
-          <line x1="-10" y1="-5" x2="10" y2="5" />
-          <line x1="-10" y1="5" x2="10" y2="-5" />
-        </g>
+      <g stroke={jade} strokeOpacity="0.55" strokeWidth="1.8" strokeLinecap="round" transform="translate(80 162)">
+        <line x1="0" y1="-15" x2="0" y2="15" />
+        <line x1="-13" y1="-7" x2="13" y2="7" />
+        <line x1="-13" y1="7" x2="13" y2="-7" />
+        <circle cx="0" cy="0" r="3" fill={accent} stroke="none" />
       </g>
-
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.8s" : "2.3s" }}>
-        <path d="M168 58 L171 66 L179 69 L171 72 L168 80 L165 72 L157 69 L165 66 Z" fill={accent} />
-        <circle cx="98" cy="42" r="3" fill={primary} fillOpacity="0.7" />
-        <circle cx="160" cy="160" r="2.5" fill={accent} />
-      </g>
+      <path d="M26 146 L29 153 L36 156 L29 159 L26 166 L23 159 L16 156 L23 153 Z" fill={accent} />
     </svg>
   );
 }
 
 function CrescentOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Hanging Fanoos lantern */}
-      <g className="festival-sway" style={{ animationDelay: isLeft ? "0s" : "1.5s" }}>
-        <line x1="68" y1="0" x2="68" y2="48" stroke={accent} strokeWidth="2" />
-        <path d="M56 54 L68 42 L80 54 Z" fill={accent} />
-        <path d="M50 56 H86 L80 112 H56 Z" fill={primary} stroke={accent} strokeWidth="1.6" />
-        <path d="M68 62 Q76 80 68 104 Q60 80 68 62 Z" fill={accent} fillOpacity="0.75" />
-        <path d="M56 112 H80 L68 124 Z" fill={accent} />
-      </g>
+      <line x1="54" y1="0" x2="54" y2="46" stroke={accent} strokeWidth="2" />
+      <path d="M42 52 L54 40 L66 52 Z" fill={accent} />
+      <path d="M36 54 H72 L66 108 H42 Z" fill={primary} stroke={accent} strokeWidth="1.6" />
+      <path d="M54 60 Q62 78 54 100 Q46 78 54 60 Z" fill={accent} fillOpacity="0.75" />
+      <path d="M42 108 H66 L54 120 Z" fill={accent} />
 
-      {/* Crescent Moon */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0.8s" : "2s" }}>
-        <path
-          d="M148 48 A26 26 0 1 0 166 94 A21 21 0 1 1 148 48 Z"
-          fill={accent}
-        />
-      </g>
+      <path d="M118 46 A23 23 0 1 0 134 88 A18 18 0 1 1 118 46 Z" fill={accent} />
 
-      {/* 8-pointed geometric stars */}
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.3s" : "1.9s" }}>
-        <g transform="translate(132 146)">
-          <rect x="-10" y="-10" width="20" height="20" fill={jade} fillOpacity="0.55" />
-          <rect x="-10" y="-10" width="20" height="20" transform="rotate(45)" fill={accent} fillOpacity="0.85" />
-          <circle cx="0" cy="0" r="4" fill={primary} />
-        </g>
-        <path d="M36 142 L39 149 L46 152 L39 155 L36 162 L33 155 L26 152 L33 149 Z" fill={accent} />
-        <circle cx="110" cy="46" r="3" fill={primary} fillOpacity="0.7" />
+      <g transform="translate(104 142)">
+        <rect x="-9" y="-9" width="18" height="18" fill={jade} fillOpacity="0.55" />
+        <rect x="-9" y="-9" width="18" height="18" transform="rotate(45)" fill={accent} fillOpacity="0.85" />
+        <circle cx="0" cy="0" r="3.5" fill={primary} />
       </g>
+      <path d="M26 142 L29 149 L36 152 L29 155 L26 162 L23 155 L16 152 L23 149 Z" fill={accent} />
     </svg>
   );
 }
 
 function SpookyOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Delicate corner web filigree */}
-      <g stroke={jade} strokeOpacity="0.32" strokeWidth="1.3">
-        <line x1="0" y1="0" x2="120" y2="18" />
-        <line x1="0" y1="0" x2="96" y2="68" />
-        <line x1="0" y1="0" x2="54" y2="110" />
-        <line x1="0" y1="0" x2="14" y2="128" />
-        <path d="M8 52 Q36 42 54 12" />
-        <path d="M12 88 Q56 72 86 16" />
-        <path d="M14 118 Q74 96 112 18" />
+      <g stroke={jade} strokeOpacity="0.34" strokeWidth="1.3">
+        <line x1="0" y1="0" x2="108" y2="16" />
+        <line x1="0" y1="0" x2="86" y2="62" />
+        <line x1="0" y1="0" x2="48" y2="102" />
+        <line x1="0" y1="0" x2="12" y2="118" />
+        <path d="M6 48 Q32 38 48 10" />
+        <path d="M10 82 Q50 66 78 14" />
+        <path d="M12 110 Q66 88 102 16" />
       </g>
 
-      {/* Playful bats & glowing moon */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0.2s" : "1.8s" }}>
-        <circle cx="144" cy="64" r="24" fill={accent} fillOpacity="0.82" />
-        <path
-          d="M118 112 Q128 102 136 110 Q140 105 144 110 Q152 102 162 112 Q153 114 148 120 Q144 116 140 116 Q136 116 132 120 Q127 114 118 112 Z"
-          fill={jade}
-        />
-        <path
-          d="M52 142 Q59 135 65 141 Q68 137 71 141 Q77 135 84 142 Q78 143 74 148 Q71 145 68 145 Q65 145 62 148 Q58 143 52 142 Z"
-          fill={primary}
-          fillOpacity="0.85"
-        />
-      </g>
-
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.9s" : "2.4s" }}>
-        <path d="M104 42 L107 49 L114 52 L107 55 L104 62 L101 55 L94 52 L101 49 Z" fill={primary} />
-        <circle cx="172" cy="148" r="3.5" fill={accent} />
-        <circle cx="42" cy="182" r="2.5" fill={jade} fillOpacity="0.7" />
-      </g>
+      <circle cx="110" cy="64" r="22" fill={accent} fillOpacity="0.85" />
+      <path
+        d="M86 112 Q95 102 103 110 Q107 105 111 110 Q119 102 128 112 Q120 114 115 120 Q111 116 107 116 Q103 116 99 120 Q94 114 86 112 Z"
+        fill={jade}
+      />
+      <path
+        d="M36 142 Q43 135 49 141 Q52 137 55 141 Q61 135 68 142 Q62 143 58 148 Q55 145 52 145 Q49 145 46 148 Q42 143 36 142 Z"
+        fill={primary}
+        fillOpacity="0.85"
+      />
+      <path d="M78 40 L81 47 L88 50 L81 53 L78 60 L75 53 L68 50 L75 47 Z" fill={primary} />
     </svg>
   );
 }
 
 function PetalOrnaments({
-  side,
   primary,
   accent,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Floating blossom petals */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0s" : "1.7s" }}>
-        <path d="M54 38 C72 28 84 48 66 64 C52 74 36 52 54 38 Z" fill={primary} fillOpacity="0.72" />
-        <path d="M126 68 C142 56 156 74 138 92 C122 104 110 82 126 68 Z" fill={accent} fillOpacity="0.9" />
-        <path d="M84 128 C98 118 110 132 96 146 C84 156 72 138 84 128 Z" fill={primary} fillOpacity="0.58" />
-        <path d="M36 112 C48 104 58 116 46 128 C36 136 26 122 36 112 Z" fill={accent} fillOpacity="0.8" />
-      </g>
-
-      {/* Delicate floating heart & sparkles */}
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.6s" : "2.1s" }}>
-        <path
-          d="M150 132 C150 124 162 122 162 132 C162 140 150 148 150 148 C150 148 138 140 138 132 C138 122 150 124 150 132 Z"
-          fill={primary}
-          fillOpacity="0.78"
-        />
-        <path d="M106 34 L109 41 L116 44 L109 47 L106 54 L103 47 L96 44 L103 41 Z" fill={primary} fillOpacity="0.8" />
-        <circle cx="164" cy="48" r="3" fill={primary} fillOpacity="0.6" />
-        <circle cx="52" cy="176" r="3" fill={accent} />
-      </g>
+      <path d="M40 36 C58 26 70 46 52 62 C38 72 22 50 40 36 Z" fill={primary} fillOpacity="0.72" />
+      <path d="M98 66 C114 54 128 72 110 90 C94 102 82 80 98 66 Z" fill={accent} fillOpacity="0.9" />
+      <path d="M64 124 C78 114 90 128 76 142 C64 152 52 134 64 124 Z" fill={primary} fillOpacity="0.58" />
+      <path d="M24 108 C36 100 46 112 34 124 C24 132 14 118 24 108 Z" fill={accent} fillOpacity="0.8" />
+      <path
+        d="M114 132 C114 124 126 122 126 132 C126 140 114 148 114 148 C114 148 102 140 102 132 C102 122 114 124 114 132 Z"
+        fill={primary}
+        fillOpacity="0.78"
+      />
+      <path d="M84 32 L87 39 L94 42 L87 45 L84 52 L81 45 L74 42 L81 39 Z" fill={primary} fillOpacity="0.8" />
     </svg>
   );
 }
 
 function FireworksOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Primary starburst firework */}
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0s" : "1.4s" }}>
-        <g transform="translate(76 74)" stroke={accent} strokeWidth="2.2" strokeLinecap="round">
-          <line x1="0" y1="-34" x2="0" y2="-14" />
-          <line x1="0" y1="14" x2="0" y2="34" />
-          <line x1="-34" y1="0" x2="-14" y2="0" />
-          <line x1="14" y1="0" x2="34" y2="0" />
-          <line x1="-24" y1="-24" x2="-10" y2="-10" stroke={primary} />
-          <line x1="10" y1="10" x2="24" y2="24" stroke={primary} />
-          <line x1="-24" y1="24" x2="-10" y2="10" stroke={jade} />
-          <line x1="10" y1="-10" x2="24" y2="-24" stroke={jade} />
-          <circle cx="0" cy="0" r="5" fill={accent} stroke="none" />
-        </g>
+      <g transform="translate(62 72)" stroke={accent} strokeWidth="2.2" strokeLinecap="round">
+        <line x1="0" y1="-30" x2="0" y2="-12" />
+        <line x1="0" y1="12" x2="0" y2="30" />
+        <line x1="-30" y1="0" x2="-12" y2="0" />
+        <line x1="12" y1="0" x2="30" y2="0" />
+        <line x1="-21" y1="-21" x2="-8" y2="-8" stroke={primary} />
+        <line x1="8" y1="8" x2="21" y2="21" stroke={primary} />
+        <line x1="-21" y1="21" x2="-8" y2="8" stroke={jade} />
+        <line x1="8" y1="-8" x2="21" y2="-21" stroke={jade} />
+        <circle cx="0" cy="0" r="4.5" fill={accent} stroke="none" />
       </g>
 
-      {/* Secondary burst */}
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "1.6s" : "0.4s" }}>
-        <g transform="translate(148 134)" stroke={primary} strokeWidth="1.8" strokeLinecap="round">
-          <line x1="0" y1="-22" x2="0" y2="-9" />
-          <line x1="0" y1="9" x2="0" y2="22" />
-          <line x1="-22" y1="0" x2="-9" y2="0" />
-          <line x1="9" y1="0" x2="22" y2="0" />
-          <line x1="-15" y1="-15" x2="-6" y2="-6" stroke={accent} />
-          <line x1="6" y1="6" x2="15" y2="15" stroke={accent} />
-          <line x1="-15" y1="15" x2="-6" y2="6" stroke={jade} />
-          <line x1="6" y1="-6" x2="15" y2="-15" stroke={jade} />
-          <circle cx="0" cy="0" r="3.5" fill={primary} stroke="none" />
-        </g>
+      <g transform="translate(114 138)" stroke={primary} strokeWidth="1.8" strokeLinecap="round">
+        <line x1="0" y1="-20" x2="0" y2="-8" />
+        <line x1="0" y1="8" x2="0" y2="20" />
+        <line x1="-20" y1="0" x2="-8" y2="0" />
+        <line x1="8" y1="0" x2="20" y2="0" />
+        <line x1="-14" y1="-14" x2="-5" y2="-5" stroke={accent} />
+        <line x1="5" y1="5" x2="14" y2="14" stroke={accent} />
+        <circle cx="0" cy="0" r="3" fill={primary} stroke="none" />
       </g>
 
-      {/* Confetti dots */}
-      <g className="festival-float-slow">
-        <circle cx="44" cy="148" r="4" fill={jade} fillOpacity="0.65" />
-        <circle cx="132" cy="48" r="3.5" fill={accent} />
-        <rect x="92" y="156" width="8" height="4" rx="2" transform="rotate(28 92 156)" fill={primary} fillOpacity="0.7" />
-        <rect x="34" y="34" width="7" height="3.5" rx="1.5" transform="rotate(-24 34 34)" fill={accent} />
-      </g>
+      <circle cx="34" cy="146" r="3.5" fill={jade} fillOpacity="0.65" />
+      <circle cx="110" cy="46" r="3.5" fill={accent} />
     </svg>
   );
 }
 
 function MoonOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Luminous Full Moon Halo */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0s" : "1.8s" }}>
-        <circle cx="88" cy="76" r="40" fill={accent} fillOpacity="0.22" />
-        <circle cx="88" cy="76" r="26" fill={accent} fillOpacity="0.88" />
-        {/* Cloud wisp across moon */}
-        <path
-          d="M42 96 Q58 84 74 94 Q92 84 112 94 Q124 94 128 102 H36 Q38 97 42 96 Z"
-          fill={jade}
-          fillOpacity="0.45"
-        />
-      </g>
-
-      {/* Osmanthus stars & golden sparkles */}
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.5s" : "2.1s" }}>
-        <path d="M148 54 L151 62 L159 65 L151 68 L148 76 L145 68 L137 65 L145 62 Z" fill={primary} fillOpacity="0.82" />
-        <path d="M134 142 L136 148 L142 150 L136 152 L134 158 L132 152 L126 150 L132 148 Z" fill={accent} />
-        <circle cx="52" cy="146" r="3.5" fill={primary} fillOpacity="0.7" />
-        <circle cx="160" cy="112" r="2.5" fill={accent} />
-      </g>
+      <circle cx="68" cy="74" r="36" fill={accent} fillOpacity="0.22" />
+      <circle cx="68" cy="74" r="24" fill={accent} fillOpacity="0.88" />
+      <path
+        d="M26 94 Q42 82 58 92 Q76 82 94 92 Q104 92 108 100 H22 Q24 95 26 94 Z"
+        fill={jade}
+        fillOpacity="0.45"
+      />
+      <path d="M120 52 L123 60 L131 63 L123 66 L120 74 L117 66 L109 63 L117 60 Z" fill={primary} fillOpacity="0.82" />
+      <path d="M104 140 L106 146 L112 148 L106 150 L104 156 L102 150 L96 148 L102 146 Z" fill={accent} />
+      <circle cx="38" cy="144" r="3.5" fill={primary} fillOpacity="0.7" />
     </svg>
   );
 }
 
 function BambooOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-80"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-80"
     >
-      <g className="festival-sway" style={{ animationDelay: isLeft ? "0s" : "1.8s" }}>
-        {/* Graceful bamboo culm & leaves */}
-        <path d="M36 0 Q54 78 44 176" stroke={jade} strokeWidth="4" strokeLinecap="round" strokeOpacity="0.6" />
-        <line x1="39" y1="54" x2="51" y2="54" stroke={accent} strokeWidth="2.5" />
-        <line x1="42" y1="112" x2="54" y2="112" stroke={accent} strokeWidth="2.5" />
-        <path d="M46 52 C74 36 104 42 120 56 C94 64 68 62 46 52 Z" fill={primary} fillOpacity="0.75" />
-        <path d="M48 56 C70 68 92 86 100 104 C76 92 58 76 48 56 Z" fill={jade} fillOpacity="0.65" />
-        <path d="M48 110 C78 96 108 104 126 120 C98 126 70 122 48 110 Z" fill={primary} fillOpacity="0.65" />
-      </g>
-
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.7s" : "2.2s" }}>
-        <path d="M148 64 L151 71 L158 74 L151 77 L148 84 L145 77 L138 74 L145 71 Z" fill={accent} />
-        <circle cx="132" cy="146" r="3.5" fill={primary} fillOpacity="0.6" />
-      </g>
+      <path d="M28 0 Q44 76 34 172" stroke={jade} strokeWidth="4" strokeLinecap="round" strokeOpacity="0.6" />
+      <line x1="30" y1="52" x2="42" y2="52" stroke={accent} strokeWidth="2.5" />
+      <line x1="33" y1="108" x2="45" y2="108" stroke={accent} strokeWidth="2.5" />
+      <path d="M38 50 C64 34 92 40 108 54 C84 62 58 60 38 50 Z" fill={primary} fillOpacity="0.75" />
+      <path d="M40 54 C60 66 80 84 88 100 C66 88 50 74 40 54 Z" fill={jade} fillOpacity="0.65" />
+      <path d="M40 106 C68 92 96 100 112 116 C86 122 60 118 40 106 Z" fill={primary} fillOpacity="0.65" />
+      <path d="M118 62 L121 69 L128 72 L121 75 L118 82 L115 75 L108 72 L115 69 Z" fill={accent} />
     </svg>
   );
 }
 
 function SpringOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Spring flower & pastel confetti */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0s" : "1.5s" }}>
-        <g transform="translate(76 74)">
-          <circle cx="0" cy="-14" r="10" fill={accent} fillOpacity="0.9" />
-          <circle cx="13" cy="-4" r="10" fill={accent} fillOpacity="0.85" />
-          <circle cx="8" cy="12" r="10" fill={accent} fillOpacity="0.9" />
-          <circle cx="-8" cy="12" r="10" fill={accent} fillOpacity="0.85" />
-          <circle cx="-13" cy="-4" r="10" fill={accent} fillOpacity="0.9" />
-          <circle cx="0" cy="0" r="8" fill={jade} />
-        </g>
-
-        <g transform="translate(144 132)">
-          <circle cx="0" cy="-10" r="7" fill={jade} fillOpacity="0.72" />
-          <circle cx="9" cy="-3" r="7" fill={jade} fillOpacity="0.68" />
-          <circle cx="6" cy="8" r="7" fill={jade} fillOpacity="0.72" />
-          <circle cx="-6" cy="8" r="7" fill={jade} fillOpacity="0.68" />
-          <circle cx="-9" cy="-3" r="7" fill={jade} fillOpacity="0.72" />
-          <circle cx="0" cy="0" r="5" fill={accent} />
-        </g>
+      <g transform="translate(58 72)">
+        <circle cx="0" cy="-13" r="9.5" fill={accent} fillOpacity="0.9" />
+        <circle cx="12" cy="-4" r="9.5" fill={accent} fillOpacity="0.85" />
+        <circle cx="7" cy="11" r="9.5" fill={accent} fillOpacity="0.9" />
+        <circle cx="-7" cy="11" r="9.5" fill={accent} fillOpacity="0.85" />
+        <circle cx="-12" cy="-4" r="9.5" fill={accent} fillOpacity="0.9" />
+        <circle cx="0" cy="0" r="7.5" fill={jade} />
       </g>
 
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.6s" : "2s" }}>
-        <circle cx="144" cy="52" r="5" fill={primary} fillOpacity="0.7" />
-        <circle cx="48" cy="144" r="4" fill={primary} fillOpacity="0.65" />
-        <path d="M112 40 L115 47 L122 50 L115 53 L112 60 L109 53 L102 50 L109 47 Z" fill={primary} fillOpacity="0.8" />
+      <g transform="translate(110 132)">
+        <circle cx="0" cy="-9" r="6.5" fill={jade} fillOpacity="0.72" />
+        <circle cx="8" cy="-3" r="6.5" fill={jade} fillOpacity="0.68" />
+        <circle cx="5" cy="7" r="6.5" fill={jade} fillOpacity="0.72" />
+        <circle cx="-5" cy="7" r="6.5" fill={jade} fillOpacity="0.68" />
+        <circle cx="-8" cy="-3" r="6.5" fill={jade} fillOpacity="0.72" />
+        <circle cx="0" cy="0" r="4.5" fill={accent} />
       </g>
+      <circle cx="114" cy="48" r="4.5" fill={primary} fillOpacity="0.7" />
+      <path d="M88 38 L91 45 L98 48 L91 51 L88 58 L85 51 L78 48 L85 45 Z" fill={primary} fillOpacity="0.8" />
     </svg>
   );
 }
 
 function GriddleOrnaments({
-  side,
   primary,
   accent,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-85"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-85"
     >
-      {/* Sunny golden starburst & warm steam curls */}
-      <g className="festival-float-slow" style={{ animationDelay: isLeft ? "0s" : "1.6s" }}>
-        <circle cx="82" cy="74" r="24" fill={accent} fillOpacity="0.82" />
-        <circle cx="82" cy="74" r="34" stroke={primary} strokeOpacity="0.35" strokeWidth="2" strokeDasharray="6 6" />
-        <path d="M132 146 Q124 128 134 112 Q144 96 134 78" stroke={primary} strokeOpacity="0.55" strokeWidth="3" strokeLinecap="round" />
-        <path d="M150 156 Q142 138 152 122 Q162 106 152 88" stroke={accent} strokeWidth="2.5" strokeLinecap="round" />
-      </g>
-
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0.4s" : "2s" }}>
-        <path d="M46 134 L49 142 L57 145 L49 148 L46 156 L43 148 L35 145 L43 142 Z" fill={primary} />
-        <path d="M148 44 L150 50 L156 52 L150 54 L148 60 L146 54 L140 52 L146 50 Z" fill={accent} />
-      </g>
+      <circle cx="62" cy="72" r="22" fill={accent} fillOpacity="0.84" />
+      <circle cx="62" cy="72" r="32" stroke={primary} strokeOpacity="0.35" strokeWidth="2" strokeDasharray="6 6" />
+      <path d="M106 142 Q98 124 108 108 Q118 92 108 74" stroke={primary} strokeOpacity="0.55" strokeWidth="3" strokeLinecap="round" />
+      <path d="M122 152 Q114 134 124 118 Q134 102 124 84" stroke={accent} strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M36 132 L39 140 L47 143 L39 146 L36 154 L33 146 L25 143 L33 140 Z" fill={primary} />
     </svg>
   );
 }
 
 function HeritageOrnaments({
-  side,
   primary,
   accent,
   jade,
 }: {
-  side: "left" | "right";
   primary: string;
   accent: string;
   jade: string;
 }) {
-  const isLeft = side === "left";
   return (
     <svg
-      viewBox="0 0 200 260"
+      viewBox="0 0 150 240"
       fill="none"
-      className="h-44 w-36 sm:h-60 sm:w-48 lg:h-72 lg:w-56 opacity-80"
+      aria-hidden="true"
+      focusable="false"
+      className="h-56 w-36 opacity-80"
     >
-      <g className="festival-twinkle" style={{ animationDelay: isLeft ? "0s" : "1.5s" }}>
-        <path d="M74 44 L80 62 L98 68 L80 74 L74 92 L68 74 L50 68 L68 62 Z" fill={accent} />
-        <path d="M142 114 L146 126 L158 130 L146 134 L142 146 L138 134 L126 130 L138 126 Z" fill={primary} fillOpacity="0.8" />
-        <rect x="44" y="132" width="14" height="14" transform="rotate(45 51 139)" stroke={jade} strokeWidth="2" />
-      </g>
+      <path d="M60 44 L66 60 L82 66 L66 72 L60 88 L54 72 L38 66 L54 60 Z" fill={accent} />
+      <path d="M112 114 L116 124 L126 128 L116 132 L112 142 L108 132 L98 128 L108 124 Z" fill={primary} fillOpacity="0.8" />
+      <rect x="34" y="128" width="13" height="13" transform="rotate(45 40 134)" stroke={jade} strokeWidth="2" />
       <g stroke={accent} strokeOpacity="0.35" strokeWidth="1.5">
-        <line x1="16" y1="24" x2="118" y2="24" />
-        <line x1="16" y1="30" x2="88" y2="30" stroke={primary} strokeOpacity="0.45" />
+        <line x1="12" y1="24" x2="104" y2="24" />
+        <line x1="12" y1="30" x2="78" y2="30" stroke={primary} strokeOpacity="0.45" />
       </g>
     </svg>
   );
@@ -513,74 +392,68 @@ function HeritageOrnaments({
 
 function MotifArtwork({
   motif,
-  side,
   festival,
 }: {
   motif: FestivalMotif;
-  side: "left" | "right";
   festival: FestivalPreset;
 }) {
   const { cinnabar, bannerAccent, jade, bannerBg } = festival.theme;
   switch (motif) {
     case "lanterns":
-      return <LanternPair side={side} primary={cinnabar} accent={bannerAccent} deep={bannerBg} />;
+      return <LanternPair primary={cinnabar} accent={bannerAccent} deep={bannerBg} />;
     case "winter":
-      return <WinterOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <WinterOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "crescent":
-      return <CrescentOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <CrescentOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "spooky":
-      return <SpookyOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <SpookyOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "petals":
-      return <PetalOrnaments side={side} primary={cinnabar} accent={bannerAccent} />;
+      return <PetalOrnaments primary={cinnabar} accent={bannerAccent} />;
     case "fireworks":
-      return <FireworksOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <FireworksOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "moon":
-      return <MoonOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <MoonOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "bamboo":
-      return <BambooOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <BambooOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "spring":
-      return <SpringOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <SpringOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
     case "griddle":
-      return <GriddleOrnaments side={side} primary={cinnabar} accent={bannerAccent} />;
+      return <GriddleOrnaments primary={cinnabar} accent={bannerAccent} />;
     case "heritage":
-      return <HeritageOrnaments side={side} primary={cinnabar} accent={bannerAccent} jade={jade} />;
+      return <HeritageOrnaments primary={cinnabar} accent={bannerAccent} jade={jade} />;
   }
 }
 
 /**
- * Lightweight, non-blocking festive atmosphere layer rendered only when a holiday theme is active.
- * Adds vivid corner colour halos + bespoke SVG holiday motifs framing the storefront without obstructing content.
+ * Accessible festive margin framing rendered only when a holiday theme is active.
+ * - Strictly confined to wide-screen outer side gutters outside the max-w-7xl content container
+ *   so decorative motifs NEVER overlap images or description text at any screen size.
+ * - Uses a calm finite entrance (no continuous >5s motion, compliant with WCAG 2.2.2)
+ *   and is automatically hidden under prefers-contrast: more and forced-colors: active.
  */
 export function FestivalAtmosphere({ festival }: FestivalAtmosphereProps) {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-x-0 top-0 z-[2] h-[460px] overflow-hidden select-none"
+      data-festival-decorative="true"
+      className="pointer-events-none absolute inset-x-0 top-0 z-0 hidden h-[280px] overflow-hidden select-none 2xl:block"
     >
-      {/* Top vivid holiday colour crown wash */}
+      {/* Left outer gutter motif (clipped strictly outside max-w-7xl content area) */}
       <div
-        className="absolute inset-x-0 top-0 h-56 opacity-90"
-        style={{
-          background: `linear-gradient(180deg, ${festival.theme.glowA} 0%, ${festival.theme.glowB} 45%, transparent 100%)`,
-        }}
-      />
-
-      {/* Left hanging / floating festive motif */}
-      <div className="absolute top-14 -left-6 sm:top-16 sm:left-0 lg:left-2">
-        <MotifArtwork
-          motif={festival.theme.motif}
-          side="left"
-          festival={festival}
-        />
+        className="festival-ornament-enter absolute top-0 left-0 overflow-hidden"
+        style={{ maxWidth: "max(0px, calc((100vw - 82rem) / 2))" }}
+      >
+        <MotifArtwork motif={festival.theme.motif} festival={festival} />
       </div>
 
-      {/* Right mirrored hanging / floating festive motif */}
-      <div className="absolute top-14 -right-6 -scale-x-100 sm:top-16 sm:right-0 lg:right-2">
-        <MotifArtwork
-          motif={festival.theme.motif}
-          side="right"
-          festival={festival}
-        />
+      {/* Right mirrored outer gutter motif (clipped strictly outside max-w-7xl content area) */}
+      <div
+        className="festival-ornament-enter absolute top-0 right-0 overflow-hidden"
+        style={{ maxWidth: "max(0px, calc((100vw - 82rem) / 2))" }}
+      >
+        <div className="-scale-x-100">
+          <MotifArtwork motif={festival.theme.motif} festival={festival} />
+        </div>
       </div>
     </div>
   );

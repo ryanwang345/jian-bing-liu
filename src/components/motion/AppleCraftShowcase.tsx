@@ -397,8 +397,8 @@ export function AppleCraftShowcase() {
                   {current.number} / 0{total}
                 </span>
 
-                {/* Compact Mobile Stat Pill over bottom-right of image so mobile card stays crisp and fits 100% in viewport */}
-                <span className="absolute right-3 bottom-3 z-10 rounded-full border border-accent-bright/35 bg-surface-dark/80 px-3 py-1 font-display text-xs font-semibold tabular-nums text-accent-bright backdrop-blur-md sm:hidden">
+                {/* Compact Mobile Stat Pill over bottom-right of image — kept neutral so theme does not tint food photo */}
+                <span className="absolute right-3 bottom-3 z-10 rounded-full border border-[#F0C26E]/35 bg-[#1a1614]/82 px-3 py-1 font-display text-xs font-semibold tabular-nums text-[#F0C26E] backdrop-blur-md sm:hidden">
                   {t(current.metricValue)}
                 </span>
               </div>
@@ -410,20 +410,20 @@ export function AppleCraftShowcase() {
                     {t(current.eyebrow)}
                   </p>
 
-                  <h3 className="mt-1.5 font-display text-lg leading-snug font-medium text-parchment sm:mt-3 sm:text-[1.85rem]">
+                  <h3 className="mt-1.5 font-display text-lg leading-snug font-medium text-white sm:mt-3 sm:text-[1.85rem]">
                     {t(current.title)}
                   </h3>
 
-                  <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-parchment/80 sm:mt-4 sm:line-clamp-none sm:text-[15px]">
+                  <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-[#E8E4DE] sm:mt-4 sm:line-clamp-none sm:text-[15px]">
                     {t(current.description)}
                   </p>
 
                   {/* Full Key Stat Callout on sm+ (compact pill shown on photo for mobile) */}
-                  <div className="mt-4 hidden rounded-2xl border border-parchment/12 bg-white/[0.05] px-4 py-3 sm:mt-6 sm:block sm:py-3.5">
+                  <div className="mt-4 hidden rounded-2xl border border-white/12 bg-white/[0.05] px-4 py-3 sm:mt-6 sm:block sm:py-3.5">
                     <p className="font-display text-lg font-semibold tabular-nums text-accent-bright sm:text-xl">
                       {t(current.metricValue)}
                     </p>
-                    <p className="mt-0.5 text-xs text-parchment/70">
+                    <p className="mt-0.5 text-xs text-[#DFDAD3]">
                       {t(current.metricLabel)}
                     </p>
                   </div>

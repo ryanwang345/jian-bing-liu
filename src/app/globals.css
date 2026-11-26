@@ -437,73 +437,54 @@ html:not([data-festival-theme="default"]) .gradient-light-edge::after {
   );
 }
 
-/* Festive animated banner sheen & motif animations */
-@keyframes festivalShimmer {
+/* Festive finite entrance sheen & ornament settle (WCAG 2.2.2 compliant: no continuous >5s motion) */
+@keyframes festivalShimmerOnce {
   0% {
+    opacity: 0;
     transform: translate3d(-130%, 0, 0) skewX(-22deg);
   }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
   100% {
+    opacity: 0;
     transform: translate3d(260%, 0, 0) skewX(-22deg);
   }
 }
 
-@keyframes festivalSway {
-  0%,
-  100% {
-    transform: rotate(-3.5deg);
+@keyframes festivalOrnamentEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
   }
-  50% {
-    transform: rotate(3.5deg);
-  }
-}
-
-@keyframes festivalFloatSlow {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(0, -10px, 0) rotate(4deg);
-  }
-}
-
-@keyframes festivalTwinkle {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: scale(0.88);
-  }
-  50% {
+  to {
     opacity: 1;
-    transform: scale(1.12);
+    transform: none;
   }
 }
 
 .festival-banner-shimmer {
-  animation: festivalShimmer 5.6s var(--ease-apple) infinite;
-  will-change: transform;
-}
-
-.festival-sway {
-  transform-origin: top center;
-  animation: festivalSway 5.5s ease-in-out infinite;
-  will-change: transform;
-}
-
-.festival-float-slow {
-  animation: festivalFloatSlow 7s ease-in-out infinite;
-  will-change: transform;
-}
-
-.festival-twinkle {
-  animation: festivalTwinkle 3.6s ease-in-out infinite;
+  animation: festivalShimmerOnce 2.2s var(--ease-apple) 0.35s 1 both;
   will-change: transform, opacity;
+}
+
+.festival-ornament-enter {
+  animation: festivalOrnamentEnter 0.85s var(--ease-apple) backwards;
 }
 
 /* Vivid holiday mode header highlight & festive specials section frame */
 html:not([data-festival-theme="default"]) header.sticky {
   border-bottom-color: color-mix(in srgb, var(--theme-cinnabar) 28%, var(--theme-kraft-deep));
   box-shadow: 0 4px 22px color-mix(in srgb, var(--theme-cinnabar) 10%, transparent);
+}
+
+/* Ensure keyboard focus indicators stay high-contrast on dark themed surfaces (WCAG 2.4.7) */
+.bg-surface-dark a:focus-visible,
+.bg-surface-dark button:focus-visible {
+  outline-color: var(--theme-accent-bright);
 }
 
 html:not([data-festival-theme="default"]) .festive-specials-panel {
@@ -558,11 +539,12 @@ html:not([data-festival-theme="default"]) .festive-specials-panel {
   .animate-route-enter,
   .animate-drawer-down,
   .festival-banner-shimmer,
-  .festival-sway,
-  .festival-float-slow,
-  .festival-twinkle,
+  .festival-ornament-enter,
   html[data-locale-switching="true"] #main-content {
     animation: none !important;
+  }
+  .festival-banner-shimmer {
+    display: none !important;
   }
   .apple-reveal {
     opacity: 1 !important;
@@ -571,5 +553,21 @@ html:not([data-festival-theme="default"]) .festive-specials-panel {
   }
   .apple-card:hover {
     transform: none !important;
+  }
+}
+
+/* WAI / WCAG adaptability: remove decorative overlays when users request higher contrast or forced colors */
+@media (prefers-contrast: more) {
+  [data-festival-decorative="true"] {
+    display: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  [data-festival-decorative="true"] {
+    display: none !important;
+  }
+  [data-festival-banner="true"] {
+    border-bottom: 1px solid CanvasText;
   }
 }

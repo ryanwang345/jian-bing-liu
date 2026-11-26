@@ -38,7 +38,7 @@ export function Footer() {
             >
               <BrandMark variant="light" size="md" />
             </Link>
-            <p className="text-sm leading-relaxed text-parchment/75">
+            <p className="text-sm leading-relaxed text-[#E8E4DE]">
               {t(store.footerIntro)}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
@@ -47,13 +47,13 @@ export function Footer() {
                   {instagram.handle}
                 </span>
               )}
-              <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
+              <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[#F5F3F0]">
                 {pick("支持到店自取", "Takeaway")}
               </span>
-              <span className="rounded-full border border-parchment/20 bg-parchment/10 px-3 py-1 text-parchment/90">
+              <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[#F5F3F0]">
                 {pick("无接触配送", "No-contact delivery")}
               </span>
-              <span className="rounded-full border border-parchment/15 bg-transparent px-3 py-1 text-parchment/60">
+              <span className="rounded-full border border-white/20 bg-transparent px-3 py-1 text-[#D8D3CB]">
                 {pick("不提供堂食", "No dine-in")}
               </span>
             </div>
@@ -169,11 +169,11 @@ export function Footer() {
                       className="h-4 w-4 shrink-0 text-accent-bright"
                     />
                     <span>{t(social.label)}</span>
-                    <span className="text-xs text-parchment/55 group-hover:text-accent-bright/80">
+                    <span className="text-xs text-[#CFCAC2] group-hover:text-accent-bright">
                       {social.handle}
                     </span>
                     <ExternalLink
-                      className="h-3 w-3 opacity-60"
+                      className="h-3 w-3 opacity-75"
                       aria-hidden="true"
                     />
                   </a>
@@ -183,7 +183,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-parchment/15 pt-6 text-xs text-parchment/60 sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-white/15 pt-6 text-xs text-[#D5D0C8] sm:flex-row sm:items-center">
           <p>
             &copy; {new Date().getFullYear()}{" "}
             {pick(
@@ -192,13 +192,13 @@ export function Footer() {
             )}
             {" · "}
             {store.street}, {store.postalCode}
-            <span aria-hidden="true" className="text-parchment/25">
+            <span aria-hidden="true" className="text-white/35">
               {" · "}
             </span>
             <Link
               href="/admin"
               rel="nofollow"
-              className="inline-flex items-center gap-1 rounded py-1 text-parchment/35 transition-colors hover:text-parchment/80 focus-visible:text-parchment/80"
+              className="inline-flex items-center gap-1 rounded py-1 text-[#C5BFB6] transition-colors hover:text-white focus-visible:text-white"
             >
               <Lock className="h-3 w-3" aria-hidden="true" />
               {pick("店主登录", "Staff Login")}
