@@ -34,7 +34,9 @@
   ],
   "keep_vars": true,
   "vars": {
-    "NEXT_PUBLIC_SITE_URL": "https://jianbingliu.uk"
+    "NEXT_PUBLIC_SITE_URL": "https://jianbingliu.uk",
+    "CF_ACCESS_TEAM_DOMAIN": "https://damp-term-ad92.cloudflareaccess.com",
+    "CF_ACCESS_AUD": "59c8e79a7ee85433b4dbac768acd6aa9c3403e6fedd55811b3d9519c27170dff"
   },
   "observability": {
     "enabled": true

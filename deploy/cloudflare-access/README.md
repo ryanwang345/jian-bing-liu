@@ -24,17 +24,17 @@
 
 ## 5 分钟上线步骤（全程网页端完成，零运维）
 
-### 第 1 步：配置登录方式与品牌外观
-1. 登录 [Cloudflare Zero Trust 控制台](https://one.dash.cloudflare.com/)（首次进入会提示起一个 Team Name，即 `<你的-team-名称>.cloudflareaccess.com`，选择 **Free Plan**，无需扣费）。
-2. 进入 **Settings → Authentication → Login methods**：
-   - 默认已开启 **One-time PIN（邮箱验证码）**，开箱即用。
-   - 如需一键登录，点击 **Add new** 可直接添加 **Google**、**GitHub**（或 **OpenID Connect** 对接 **Auth0 / ZITADEL Cloud** 免费云托管身份库，替代笨重的自建 Keycloak）。
-3. *(可选)* 进入 **Settings → Custom Pages / Login Page**，上传煎饼刘的 `logo.svg`，将背景色设为宣纸暖白 `#fbf6ec`、主色设为朱砂红 `#b8251c`，打造专属品牌登录页。
+### 第 1 步：配置登录方式与 Team 域名
+1. 打开 Cloudflare 控制台左侧 **Zero Trust → Settings**（查看 `Team domain`，可点 `Edit` 将随机名改为如 `jianbingliu.cloudflareaccess.com`）。
+2. 进入左侧 **Zero Trust → Integrations → Identity providers**：
+   - 默认已内置 **One-time PIN（邮箱一次性验证码）**（如未添加可点 **Add new identity provider** 选择 **One-time PIN**），开箱即用。
+   - 如需一键社交登录，点击 **Add new identity provider** 可添加 **Google**、**GitHub**（或 **OpenID Connect** 对接 **Auth0 / ZITADEL Cloud**）。
+3. *(可选)* 在 **Reusable components / Custom Pages** 中上传煎饼刘 `logo.svg`，将背景色设为 `#fbf6ec`、主色设为 `#b8251c`。
 
 ---
 
 ### 第 2 步：创建 Access Application 保护 `/admin`
-1. 进入 **Access → Applications → Add an application → Self-hosted**。
+1. 进入左侧 **Zero Trust → Access controls → Applications** → 点击 **Add an application** → 选择 **Self-hosted**。
 2. **Application name** 填写 `Jian Bing Liu Admin`，**Session Duration** 建议选 `1 week` 或 `1 month`（方便门店手机/iPad 日常免重复登录）。
 3. 在 **Public Hostnames** 添加 **两条** 受保护路径：
    - Domain: `jianbingliu.uk` · Path: `admin*`
