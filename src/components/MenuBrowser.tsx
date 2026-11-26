@@ -202,15 +202,23 @@ export function MenuBrowser({
             aria-label={pick("菜单分类导航", "Menu categories")}
             className="no-scrollbar flex flex-nowrap gap-1.5 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-visible sm:pb-0"
           >
-            {filteredCategories.map((cat) => (
-              <a
-                key={cat.id}
-                href={`#${cat.id}`}
-                className="shrink-0 rounded-full border border-kraft-deep bg-kraft/50 px-3 py-1 text-xs font-semibold text-ink-soft transition-colors hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
-              >
-                {t(cat.title)}
-              </a>
-            ))}
+            {filteredCategories.map((cat) => {
+              const isFestive = cat.id === "festive-specials";
+              return (
+                <a
+                  key={cat.id}
+                  href={`#${cat.id}`}
+                  className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                    isFestive
+                      ? "border-cinnabar/45 bg-cinnabar/10 text-cinnabar-dark hover:bg-cinnabar hover:text-parchment"
+                      : "border-kraft-deep bg-kraft/50 text-ink-soft hover:border-cinnabar/40 hover:bg-kraft hover:text-cinnabar"
+                  }`}
+                >
+                  {isFestive ? "✨ " : ""}
+                  {t(cat.title)}
+                </a>
+              );
+            })}
           </nav>
         </div>
       </div>

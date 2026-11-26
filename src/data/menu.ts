@@ -121,6 +121,16 @@ export interface MenuCategory {
 
 export const menuCategories: MenuCategory[] = [
   {
+    id: "festive-specials",
+    title: { en: "Festive Specials", zh: "节日限定菜单" },
+    chineseTitle: "节日限定",
+    subtitle: {
+      en: "Limited-time seasonal crepes, snacks and drinks crafted for holidays and celebrations — available while ingredients last.",
+      zh: "逢年过节特别推出的限定风味煎饼、点心与特调，限时供应、售完即止。",
+    },
+    items: [],
+  },
+  {
     id: "savoury-crepes",
     title: { en: "Savoury Jian Bing", zh: "招牌咸味煎饼" },
     chineseTitle: "咸味煎饼",

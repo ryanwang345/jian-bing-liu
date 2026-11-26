@@ -229,7 +229,9 @@ export async function getPublicMenuCategories(): Promise<MenuCategory[]> {
       return live.filter((category) => category.items.length > 0);
     }
   }
-  return hydrateStaticCategories();
+  return hydrateStaticCategories().filter(
+    (category) => category.items.length > 0
+  );
 }
 
 export async function getFeaturedMenuItems(): Promise<MenuItem[]> {

@@ -676,20 +676,26 @@ export function MenuAdminClient({
           >
             全部分类 ({totalItems})
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setActiveCategoryId(cat.id)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-                activeCategoryId === cat.id
-                  ? "bg-cinnabar text-parchment"
-                  : "border border-kraft-deep bg-white text-ink-soft hover:bg-kraft"
-              }`}
-            >
-              {cat.title.zh} ({cat.items.length})
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isFestive = cat.id === "festive-specials";
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategoryId(cat.id)}
+                className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                  activeCategoryId === cat.id
+                    ? "bg-cinnabar text-parchment"
+                    : isFestive
+                      ? "border border-cinnabar/40 bg-cinnabar/[0.06] text-cinnabar-dark hover:bg-cinnabar/15"
+                      : "border border-kraft-deep bg-white text-ink-soft hover:bg-kraft"
+                }`}
+              >
+                {isFestive ? "✨ " : ""}
+                {cat.title.zh} ({cat.items.length})
+              </button>
+            );
+          })}
         </div>
 
         <div className="relative w-full shrink-0 sm:w-64">
@@ -708,6 +714,42 @@ export function MenuAdminClient({
       </div>
 
       {/* Dish Cards Grid */}
+      {visibleEntries.length === 0 ? (
+        <div className="mt-6 rounded-2xl border border-dashed border-kraft-deep bg-white/80 px-6 py-12 text-center">
+          <p className="font-display text-base font-bold text-ink">
+            {searchQuery.trim()
+              ? "没有找到匹配的菜品"
+              : activeCategoryId === "festive-specials"
+                ? "当前还没有节日限定菜品"
+                : "当前分类下还没有菜品"}
+          </p>
+          <p className="mt-1.5 text-xs text-ink-muted">
+            {activeCategoryId === "festive-specials"
+              ? "平时为空时前台菜单会自动隐藏该分类；添加节日菜品后，会自动置顶显示在菜单最上方。"
+              : "点击下方按钮即可快速添加新菜品、设置规格价格并上传图片。"}
+          </p>
+          {!searchQuery.trim() && snapshot?.hasDb && (
+            <button
+              type="button"
+              onClick={() =>
+                setEditorForm(
+                  itemToFormState(
+                    activeCategoryId !== "all"
+                      ? activeCategoryId
+                      : categories[0]?.id || "festive-specials"
+                  )
+                )
+              }
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-cinnabar px-5 py-2.5 text-xs font-bold text-parchment shadow-xs hover:bg-cinnabar-dark"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {activeCategoryId === "festive-specials"
+                ? "新增节日限定菜品"
+                : "新增菜品"}
+            </button>
+          )}
+        </div>
+      ) : (
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {visibleEntries.map(({ category, item }) => {
           const soldOut = item.isAvailable === false;
@@ -824,6 +866,7 @@ export function MenuAdminClient({
           );
         })}
       </div>
+      )}
 
       {/* Add / Edit Modal */}
       {editorForm &&
