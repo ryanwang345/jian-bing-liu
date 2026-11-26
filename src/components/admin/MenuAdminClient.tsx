@@ -24,6 +24,12 @@ import {
   X,
 } from "lucide-react";
 import {
+  festivalGroupLabels,
+  festivalPresets,
+  matchFestivalPresetId,
+  type FestivalGroupKey,
+} from "@/data/festivals";
+import {
   dietaryLabels,
   formatPricePence,
   type DietaryTagKey,
@@ -51,6 +57,9 @@ interface DishFormState {
   draftId?: string;
   uploadedPhotoUrls: string[];
   categoryId: string;
+  festivalPresetId: string;
+  noteZh: string;
+  noteEn: string;
   nameZh: string;
   nameEn: string;
   descZh: string;
@@ -63,6 +72,7 @@ interface DishFormState {
 }
 
 const ALL_DIETARY: DietaryTagKey[] = ["halal", "vegetarian", "vegan"];
+const FESTIVAL_GROUPS: FestivalGroupKey[] = ["chinese", "uk", "islamic"];
 
 /**
  * Downscales large phone photos in the browser to <=1280px WebP before upload
@@ -111,6 +121,9 @@ function itemToFormState(categoryId: string, item?: MenuItem): DishFormState {
       draftId: crypto.randomUUID(),
       uploadedPhotoUrls: [],
       categoryId,
+      festivalPresetId: "",
+      noteZh: "",
+      noteEn: "",
       nameZh: "",
       nameEn: "",
       descZh: "",
@@ -154,6 +167,9 @@ function itemToFormState(categoryId: string, item?: MenuItem): DishFormState {
     id: item.id,
     uploadedPhotoUrls: [],
     categoryId,
+    festivalPresetId: matchFestivalPresetId(item.note?.zh, item.note?.en),
+    noteZh: item.note?.zh ?? "",
+    noteEn: item.note?.en ?? "",
     nameZh: item.name.zh,
     nameEn: item.name.en,
     descZh: item.description.zh,
@@ -397,6 +413,8 @@ export function MenuAdminClient({
           chineseName: editorForm.nameZh,
           descZh: editorForm.descZh,
           descEn: editorForm.descEn,
+          noteZh: editorForm.noteZh.trim() || null,
+          noteEn: editorForm.noteEn.trim() || null,
           imageUrl: editorForm.imageUrl || null,
           dietary: editorForm.dietary,
           featured: editorForm.featured,
@@ -791,6 +809,11 @@ export function MenuAdminClient({
                         推荐
                       </span>
                     )}
+                    {item.note?.zh && (
+                      <span className="inline-flex items-center rounded-full border border-cinnabar/30 bg-cinnabar/[0.08] px-2 py-0.5 text-[10px] font-bold text-cinnabar-dark">
+                        {item.note.zh}
+                      </span>
+                    )}
                   </div>
                   <p className="truncate text-xs text-ink-muted">
                     {item.name.en} · {category.title.zh}
@@ -916,6 +939,101 @@ export function MenuAdminClient({
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  {/* Holiday / Festival Preset Selector (Chinese · UK · Islamic · Custom) */}
+                  <div
+                    className={`sm:col-span-2 rounded-2xl border p-3.5 transition-colors ${
+                      editorForm.categoryId === "festive-specials" ||
+                      editorForm.festivalPresetId
+                        ? "border-cinnabar/35 bg-cinnabar/[0.04]"
+                        : "border-kraft-deep/70 bg-white"
+                    }`}
+                  >
+                    <label className="block text-xs font-bold text-ink">
+                      所属节日限定（中国 / 英国 / 伊斯兰节假日，选填）
+                    </label>
+                    <p className="mt-0.5 text-[11px] text-ink-muted">
+                      选好节日会自动生成中英文限定标签并显示在菜单卡片上；普通菜品留「不指定节日」即可。
+                    </p>
+                    <select
+                      value={editorForm.festivalPresetId}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (!val) {
+                          setEditorForm({
+                            ...editorForm,
+                            festivalPresetId: "",
+                            noteZh: "",
+                            noteEn: "",
+                          });
+                        } else if (val === "custom") {
+                          setEditorForm({
+                            ...editorForm,
+                            festivalPresetId: "custom",
+                          });
+                        } else {
+                          const preset = festivalPresets.find(
+                            (p) => p.id === val
+                          );
+                          setEditorForm({
+                            ...editorForm,
+                            festivalPresetId: val,
+                            noteZh: preset?.zh ?? "",
+                            noteEn: preset?.en ?? "",
+                          });
+                        }
+                      }}
+                      className="mt-2 w-full rounded-xl border border-kraft-deep bg-white px-3.5 py-2.5 text-sm text-ink outline-none focus:border-cinnabar"
+                    >
+                      <option value="">不指定节日（普通菜品）</option>
+                      {FESTIVAL_GROUPS.map((groupKey) => (
+                        <optgroup
+                          key={groupKey}
+                          label={`── ${festivalGroupLabels[groupKey].zh} (${festivalGroupLabels[groupKey].en}) ──`}
+                        >
+                          {festivalPresets
+                            .filter((p) => p.group === groupKey)
+                            .map((preset) => (
+                              <option key={preset.id} value={preset.id}>
+                                {preset.zh} — {preset.en}
+                              </option>
+                            ))}
+                        </optgroup>
+                      ))}
+                      <optgroup label="── 其他 ──">
+                        <option value="custom">✍️ 自定义节日标签...</option>
+                      </optgroup>
+                    </select>
+
+                    {editorForm.festivalPresetId === "custom" && (
+                      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
+                        <input
+                          type="text"
+                          value={editorForm.noteZh}
+                          onChange={(e) =>
+                            setEditorForm({
+                              ...editorForm,
+                              noteZh: e.target.value,
+                            })
+                          }
+                          placeholder="中文标签（如：🌸 春季限定）"
+                          className="w-full rounded-xl border border-kraft-deep bg-white px-3 py-2 text-xs text-ink outline-none focus:border-cinnabar"
+                        />
+                        <input
+                          type="text"
+                          value={editorForm.noteEn}
+                          onChange={(e) =>
+                            setEditorForm({
+                              ...editorForm,
+                              noteEn: e.target.value,
+                            })
+                          }
+                          placeholder="English label (e.g. 🌸 Spring Special)"
+                          className="w-full rounded-xl border border-kraft-deep bg-white px-3 py-2 text-xs text-ink outline-none focus:border-cinnabar"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div>

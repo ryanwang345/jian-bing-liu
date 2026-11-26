@@ -358,14 +358,14 @@ export function MenuBrowser({
 
                     {(item.dietary?.length || item.note) && (
                       <div className="mt-4 flex flex-wrap items-center gap-2">
-                        {item.dietary?.map((tag) => (
-                          <DietaryBadge key={tag} tag={tag} />
-                        ))}
                         {item.note && (
-                          <span className="text-xs italic text-ink-muted">
+                          <span className="inline-flex items-center rounded-full border border-cinnabar/30 bg-cinnabar/[0.08] px-2.5 py-0.5 text-xs font-semibold text-cinnabar-dark">
                             {t(item.note)}
                           </span>
                         )}
+                        {item.dietary?.map((tag) => (
+                          <DietaryBadge key={tag} tag={tag} />
+                        ))}
                       </div>
                     )}
                   </div>
@@ -526,9 +526,16 @@ export function MenuBrowser({
                   {t(activeEntry.item.description)}
                 </p>
 
-                {activeEntry.item.dietary && activeEntry.item.dietary.length > 0 && (
+                {(activeEntry.item.note ||
+                  (activeEntry.item.dietary &&
+                    activeEntry.item.dietary.length > 0)) && (
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    {activeEntry.item.dietary.map((tag) => (
+                    {activeEntry.item.note && (
+                      <span className="inline-flex items-center rounded-full border border-[#F0C26E]/50 bg-[#F0C26E]/15 px-2.5 py-0.5 text-xs font-semibold text-[#F0C26E]">
+                        {t(activeEntry.item.note)}
+                      </span>
+                    )}
+                    {activeEntry.item.dietary?.map((tag) => (
                       <DietaryBadge key={tag} tag={tag} />
                     ))}
                   </div>
