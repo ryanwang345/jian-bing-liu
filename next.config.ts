@@ -4,7 +4,10 @@ import menuPhotoSources from "./src/data/menu-photo-sources.json";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  compress: true,
+  // Let Cloudflare's edge negotiate gzip/brotli per client Accept-Encoding.
+  // Keeping Next.js compression enabled inside Workers causes forced `Content-Encoding: br`
+  // even when clients (plain curl, Googlebot sitemap fetcher, AI bots) do not ask for Brotli.
+  compress: false,
   poweredByHeader: false,
   experimental: {
     optimizePackageImports: ["lucide-react"],
