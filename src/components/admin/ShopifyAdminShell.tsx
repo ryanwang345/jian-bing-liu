@@ -40,6 +40,8 @@ interface ShopifyAdminShellProps {
   totalCategories?: number;
   hasDb?: boolean;
   hasR2?: boolean;
+  identity?: string;
+  logoutHref?: string;
   canLogout?: boolean;
   onLogout?: () => void;
   children: ReactNode;
@@ -53,6 +55,8 @@ export function ShopifyAdminShell({
   totalCategories,
   hasDb = true,
   hasR2 = true,
+  identity,
+  logoutHref,
   canLogout = false,
   onLogout,
   children,
@@ -291,15 +295,35 @@ export function ShopifyAdminShell({
             <ExternalLink className="h-3 w-3 opacity-70" aria-hidden="true" />
           </Link>
 
-          {canLogout && onLogout && (
-            <button
-              type="button"
-              onClick={onLogout}
+          {identity && (
+            <span
+              title={`已通过 SSO 认证：${identity}`}
+              className="hidden max-w-[180px] truncate rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-medium text-[#d4d4d4] md:inline-block"
+            >
+              {identity}
+            </span>
+          )}
+
+          {logoutHref ? (
+            <a
+              href={logoutHref}
               className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#cccccc] transition-colors hover:bg-white/10 hover:text-white"
             >
               <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">退出</span>
-            </button>
+            </a>
+          ) : (
+            canLogout &&
+            onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#cccccc] transition-colors hover:bg-white/10 hover:text-white"
+              >
+                <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+                <span className="hidden sm:inline">退出</span>
+              </button>
+            )
           )}
         </div>
       </header>

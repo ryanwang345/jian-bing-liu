@@ -1,18 +1,49 @@
 import { cookies, headers } from "next/headers";
 import { getRuntimeEnv } from "@/lib/runtime-env";
 
-export const ADMIN_COOKIE_NAME = "jbl_admin_session";
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-const LOCAL_DEV_FALLBACK_PASSWORD = "jianbingliu-local";
+export const LEGACY_ADMIN_COOKIE_NAME = "jbl_admin_session";
+const CF_ACCESS_COOKIE_NAME = "CF_Authorization";
+
+const JWKS_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const JWKS_REFRESH_COOLDOWN_MS = 30 * 1000; // 30 seconds anti-stampede cooldown
+const CLOCK_SKEW_SEC = 60;
 
 const encoder = new TextEncoder();
 
-function toBase64Url(bytes: Uint8Array): string {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+interface CachedJwksEntry {
+  keys: Map<string, { alg: "RS256" | "ES256"; cryptoKey: CryptoKey }>;
+  fetchedAt: number;
+  lastRefreshAttemptAt: number;
+}
+
+const jwksCache = new Map<string, CachedJwksEntry>();
+
+interface CfJwk {
+  kid?: string;
+  kty?: string;
+  alg?: string;
+  n?: string;
+  e?: string;
+  crv?: string;
+  x?: string;
+  y?: string;
+}
+
+interface JwtHeader {
+  alg?: string;
+  kid?: string;
+  typ?: string;
+}
+
+interface CfAccessJwtPayload {
+  iss?: string;
+  aud?: string | string[];
+  exp?: number;
+  nbf?: number;
+  iat?: number;
+  email?: string;
+  sub?: string;
+  common_name?: string;
 }
 
 function fromBase64Url(input: string): Uint8Array | null {
@@ -30,141 +61,281 @@ function fromBase64Url(input: string): Uint8Array | null {
   }
 }
 
-async function importHmacKey(secret: string): Promise<CryptoKey> {
-  return crypto.subtle.importKey(
-    "raw",
-    encoder.encode(`jian-bing-liu-admin-v1:${secret}`),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign", "verify"]
-  );
-}
-
-async function getAdminSecretInfo(): Promise<{
-  secret: string | null;
-  isLocalFallback: boolean;
-}> {
-  const configured = await getRuntimeEnv("ADMIN_PASSWORD");
-  if (configured) {
-    return { secret: configured, isLocalFallback: false };
+function decodeJwtJson<T>(segment: string): T | null {
+  const bytes = fromBase64Url(segment);
+  if (!bytes) return null;
+  try {
+    return JSON.parse(new TextDecoder().decode(bytes)) as T;
+  } catch {
+    return null;
   }
-  if (process.env.NODE_ENV !== "production") {
-    return { secret: LOCAL_DEV_FALLBACK_PASSWORD, isLocalFallback: true };
-  }
-  return { secret: null, isLocalFallback: false };
 }
 
-export async function createAdminSessionToken(): Promise<string | null> {
-  const { secret } = await getAdminSecretInfo();
-  if (!secret) return null;
+/**
+ * Normalizes `CF_ACCESS_TEAM_DOMAIN` into `https://<team>.cloudflareaccess.com`.
+ * Accepts `"myteam"`, `"myteam.cloudflareaccess.com"`, or `"https://myteam.cloudflareaccess.com/"`.
+ */
+function normalizeTeamOrigin(raw: string | undefined): string | null {
+  const trimmed = raw?.trim().replace(/\/+$/, "");
+  if (!trimmed) return null;
 
-  const payload = JSON.stringify({
-    v: 1,
-    exp: Date.now() + SESSION_TTL_MS,
-  });
-  const payloadB64 = toBase64Url(encoder.encode(payload));
-  const key = await importHmacKey(secret);
-  const signature = new Uint8Array(
-    await crypto.subtle.sign("HMAC", key, encoder.encode(payloadB64))
-  );
-  return `${payloadB64}.${toBase64Url(signature)}`;
-}
-
-async function verifyAdminSessionToken(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
-  const parts = token.split(".");
-  if (parts.length !== 2) return false;
-
-  const [payloadB64, sigB64] = parts;
-  const { secret } = await getAdminSecretInfo();
-  if (!secret) return false;
-
-  const sigBytes = fromBase64Url(sigB64);
-  if (!sigBytes) return false;
-
-  const key = await importHmacKey(secret);
-  const valid = await crypto.subtle.verify(
-    "HMAC",
-    key,
-    sigBytes as BufferSource,
-    encoder.encode(payloadB64)
-  );
-  if (!valid) return false;
-
-  const payloadBytes = fromBase64Url(payloadB64);
-  if (!payloadBytes) return false;
+  const candidate = trimmed.includes("://")
+    ? trimmed
+    : trimmed.includes(".")
+      ? `https://${trimmed}`
+      : `https://${trimmed}.cloudflareaccess.com`;
 
   try {
-    const parsed = JSON.parse(new TextDecoder().decode(payloadBytes)) as {
-      exp?: number;
-    };
-    return typeof parsed.exp === "number" && parsed.exp > Date.now();
+    const parsed = new URL(candidate);
+    if (parsed.protocol !== "https:") return null;
+    return parsed.origin;
   } catch {
-    return false;
+    return null;
   }
 }
 
-export async function verifyAdminPassword(candidate: string): Promise<{
-  ok: boolean;
-  configured: boolean;
-}> {
-  const { secret } = await getAdminSecretInfo();
-  if (!secret) return { ok: false, configured: false };
+function parseAudienceList(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
 
-  // Constant-time comparison via HMAC digest equality
-  const key = await importHmacKey("password-check");
-  const expectedSig = new Uint8Array(
-    await crypto.subtle.sign("HMAC", key, encoder.encode(secret))
+async function importCfPublicKey(
+  jwk: CfJwk
+): Promise<{ alg: "RS256" | "ES256"; cryptoKey: CryptoKey } | null> {
+  try {
+    if (jwk.kty === "RSA" && jwk.n && jwk.e) {
+      const cryptoKey = await crypto.subtle.importKey(
+        "jwk",
+        { kty: "RSA", n: jwk.n, e: jwk.e, alg: "RS256", ext: true },
+        { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+        false,
+        ["verify"]
+      );
+      return { alg: "RS256", cryptoKey };
+    }
+
+    if (jwk.kty === "EC" && jwk.crv === "P-256" && jwk.x && jwk.y) {
+      const cryptoKey = await crypto.subtle.importKey(
+        "jwk",
+        { kty: "EC", crv: "P-256", x: jwk.x, y: jwk.y, ext: true },
+        { name: "ECDSA", namedCurve: "P-256" },
+        false,
+        ["verify"]
+      );
+      return { alg: "ES256", cryptoKey };
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+async function getVerificationKey(
+  teamOrigin: string,
+  kid: string
+): Promise<{ alg: "RS256" | "ES256"; cryptoKey: CryptoKey } | null> {
+  const now = Date.now();
+  const cached = jwksCache.get(teamOrigin);
+
+  if (cached && now - cached.fetchedAt < JWKS_CACHE_TTL_MS) {
+    const hit = cached.keys.get(kid);
+    if (hit) return hit;
+    if (now - cached.lastRefreshAttemptAt < JWKS_REFRESH_COOLDOWN_MS) {
+      return null;
+    }
+  }
+
+  if (cached) {
+    cached.lastRefreshAttemptAt = now;
+  }
+
+  const res = await fetch(`${teamOrigin}/cdn-cgi/access/certs`, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    return cached?.keys.get(kid) ?? null;
+  }
+
+  const body = (await res.json()) as { keys?: CfJwk[] };
+  if (!Array.isArray(body.keys)) {
+    return null;
+  }
+
+  const nextMap = new Map<string, { alg: "RS256" | "ES256"; cryptoKey: CryptoKey }>();
+  for (const jwk of body.keys) {
+    if (!jwk.kid) continue;
+    const imported = await importCfPublicKey(jwk);
+    if (imported) {
+      nextMap.set(jwk.kid, imported);
+    }
+  }
+
+  jwksCache.set(teamOrigin, {
+    keys: nextMap,
+    fetchedAt: now,
+    lastRefreshAttemptAt: now,
+  });
+
+  return nextMap.get(kid) ?? null;
+}
+
+async function verifyCfAccessJwt(
+  token: string,
+  teamOrigin: string,
+  allowedAuds: string[]
+): Promise<{ identity: string } | null> {
+  const parts = token.split(".");
+  if (parts.length !== 3) return null;
+
+  const [headerB64, payloadB64, sigB64] = parts;
+  if (!headerB64 || !payloadB64 || !sigB64) return null;
+
+  const header = decodeJwtJson<JwtHeader>(headerB64);
+  if (
+    !header ||
+    !header.kid ||
+    (header.alg !== "RS256" && header.alg !== "ES256")
+  ) {
+    return null;
+  }
+
+  const payload = decodeJwtJson<CfAccessJwtPayload>(payloadB64);
+  if (!payload) return null;
+
+  // Validate issuer & audience before network JWKS lookup
+  if (payload.iss?.replace(/\/+$/, "") !== teamOrigin) {
+    return null;
+  }
+
+  const tokenAuds = Array.isArray(payload.aud)
+    ? payload.aud
+    : typeof payload.aud === "string"
+      ? [payload.aud]
+      : [];
+  const audMatched = tokenAuds.some((aud) => allowedAuds.includes(aud));
+  if (!audMatched) {
+    return null;
+  }
+
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (typeof payload.exp !== "number" || payload.exp <= nowSec) {
+    return null;
+  }
+  if (typeof payload.nbf === "number" && payload.nbf > nowSec + CLOCK_SKEW_SEC) {
+    return null;
+  }
+  if (typeof payload.iat === "number" && payload.iat > nowSec + CLOCK_SKEW_SEC) {
+    return null;
+  }
+
+  const sigBytes = fromBase64Url(sigB64);
+  if (!sigBytes) return null;
+
+  let keyEntry: { alg: "RS256" | "ES256"; cryptoKey: CryptoKey } | null = null;
+  try {
+    keyEntry = await getVerificationKey(teamOrigin, header.kid);
+  } catch {
+    return null;
+  }
+  if (!keyEntry || keyEntry.alg !== header.alg) {
+    return null;
+  }
+
+  const verifyAlgorithm =
+    keyEntry.alg === "RS256"
+      ? { name: "RSASSA-PKCS1-v1_5" }
+      : { name: "ECDSA", hash: "SHA-256" };
+
+  const signatureValid = await crypto.subtle.verify(
+    verifyAlgorithm,
+    keyEntry.cryptoKey,
+    sigBytes as BufferSource,
+    encoder.encode(`${headerB64}.${payloadB64}`)
   );
-  const valid = await crypto.subtle.verify(
-    "HMAC",
-    key,
-    expectedSig as BufferSource,
-    encoder.encode(candidate)
-  );
-  return { ok: valid, configured: true };
+  if (!signatureValid) {
+    return null;
+  }
+
+  const identity =
+    payload.email?.trim() ||
+    payload.common_name?.trim() ||
+    payload.sub?.trim() ||
+    "authenticated-admin";
+
+  return { identity };
 }
 
 export interface AdminSessionStatus {
   authenticated: boolean;
   configured: boolean;
-  isLocalFallback: boolean;
-  method: "cloudflare-access" | "session-cookie" | null;
+  isLocalDevBypass: boolean;
+  method: "cloudflare-access" | "local-dev-bypass" | null;
   identity?: string;
+  logoutUrl?: string;
 }
 
 export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
-  const headerStore = await headers();
-  const cfAccessEmail = headerStore.get("cf-access-authenticated-user-email")?.trim();
-  if (cfAccessEmail) {
+  const [rawTeamDomain, rawAud, rawDevBypass] = await Promise.all([
+    getRuntimeEnv("CF_ACCESS_TEAM_DOMAIN"),
+    getRuntimeEnv("CF_ACCESS_AUD"),
+    getRuntimeEnv("ADMIN_DEV_BYPASS"),
+  ]);
+
+  const teamOrigin = normalizeTeamOrigin(rawTeamDomain);
+  const allowedAuds = parseAudienceList(rawAud);
+  const configured = Boolean(teamOrigin && allowedAuds.length > 0);
+
+  if (configured && teamOrigin) {
+    const [headerStore, cookieStore] = await Promise.all([headers(), cookies()]);
+    const jwtAssertion =
+      headerStore.get("cf-access-jwt-assertion")?.trim() ||
+      cookieStore.get(CF_ACCESS_COOKIE_NAME)?.value?.trim();
+
+    if (jwtAssertion) {
+      const verified = await verifyCfAccessJwt(
+        jwtAssertion,
+        teamOrigin,
+        allowedAuds
+      );
+      if (verified) {
+        return {
+          authenticated: true,
+          configured: true,
+          isLocalDevBypass: false,
+          method: "cloudflare-access",
+          identity: verified.identity,
+          logoutUrl: "/cdn-cgi/access/logout",
+        };
+      }
+    }
+
     return {
-      authenticated: true,
+      authenticated: false,
       configured: true,
-      isLocalFallback: false,
-      method: "cloudflare-access",
-      identity: cfAccessEmail,
+      isLocalDevBypass: false,
+      method: null,
     };
   }
 
-  const { secret, isLocalFallback } = await getAdminSecretInfo();
-  const cookieStore = await cookies();
-  const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  const authenticated = await verifyAdminSessionToken(token);
+  // Strictly non-production local UI development bypass (never active in production builds)
+  if (process.env.NODE_ENV === "development" && rawDevBypass === "true") {
+    return {
+      authenticated: true,
+      configured: true,
+      isLocalDevBypass: true,
+      method: "local-dev-bypass",
+      identity: "local-dev@localhost",
+    };
+  }
 
   return {
-    authenticated,
-    configured: Boolean(secret),
-    isLocalFallback,
-    method: authenticated ? "session-cookie" : null,
-  };
-}
-
-export function getAdminCookieOptions() {
-  return {
-    httpOnly: true,
-    sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: Math.floor(SESSION_TTL_MS / 1000),
+    authenticated: false,
+    configured: false,
+    isLocalDevBypass: false,
+    method: null,
   };
 }

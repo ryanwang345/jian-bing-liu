@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Loader2, Lock } from "lucide-react";
+import { CheckCircle2, RefreshCw, ShieldAlert, ShieldCheck } from "lucide-react";
 import { AdminCategoriesView } from "@/components/admin/AdminCategoriesView";
 import { AdminCustomizerView } from "@/components/admin/AdminCustomizerView";
 import { AdminGalleryView } from "@/components/admin/AdminGalleryView";
@@ -45,7 +45,7 @@ export function MenuAdminClient({
   initialSiteContent = null,
   initialTab = "products",
 }: MenuAdminClientProps) {
-  const [session, setSession] = useState<AdminSessionStatus>(initialSession);
+  const [session] = useState<AdminSessionStatus>(initialSession);
   const [snapshot, setSnapshot] = useState<AdminMenuSnapshot | null>(
     initialSnapshot
   );
@@ -62,10 +62,7 @@ export function MenuAdminClient({
     useState<string>("all");
   const [editorForm, setEditorForm] = useState<DishFormState | null>(null);
 
-  // Auth & Loading state
-  const [password, setPassword] = useState("");
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  // Loading state
   const [isBusy, setIsBusy] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUpdatingTheme, setIsUpdatingTheme] = useState(false);
@@ -99,27 +96,6 @@ export function MenuAdminClient({
     }
   };
 
-  const refreshAll = async () => {
-    const [menuRes, themeRes, contentRes] = await Promise.all([
-      fetch("/api/admin/menu", { cache: "no-store" }),
-      fetch("/api/admin/theme", { cache: "no-store" }),
-      fetch("/api/admin/site-content", { cache: "no-store" }),
-    ]);
-    if (menuRes.ok) {
-      setSnapshot((await menuRes.json()) as AdminMenuSnapshot);
-    }
-    if (themeRes.ok) {
-      setFestivalTheme((await themeRes.json()) as ActiveFestivalThemeState);
-    }
-    if (contentRes.ok) {
-      const data = (await contentRes.json()) as { content?: SiteContentConfig };
-      if (data.content) {
-        setSiteContent(data.content);
-        setContentRevision((r) => r + 1);
-      }
-    }
-  };
-
   const applyThemeToDocument = (state: ActiveFestivalThemeState) => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
@@ -137,39 +113,9 @@ export function MenuAdminClient({
     }
   };
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setAuthError(null);
-    setIsLoggingIn(true);
-    try {
-      const res = await fetch("/api/admin/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-      const data = (await res.json()) as { ok?: boolean; error?: string };
-      if (!res.ok) {
-        setAuthError(data.error || "登录失败");
-        return;
-      }
-      setSession((prev) => ({
-        ...prev,
-        authenticated: true,
-        method: "session-cookie",
-      }));
-      setPassword("");
-      await refreshAll();
-    } catch {
-      setAuthError("网络错误，请稍后重试");
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
   const handleLogout = async () => {
-    await fetch("/api/admin/auth", { method: "DELETE" });
-    setSession((prev) => ({ ...prev, authenticated: false, method: null }));
-    setSnapshot(null);
+    await fetch("/api/admin/auth", { method: "DELETE" }).catch(() => null);
+    window.location.assign(session.logoutUrl || "/cdn-cgi/access/logout");
   };
 
   const handleSeedDatabase = async () => {
@@ -495,7 +441,7 @@ export function MenuAdminClient({
     return { totalProducts: total, soldOutProducts: soldOut };
   }, [categories]);
 
-  // ── Shopify-Style Clean Login Screen ──
+  // ── Zero-Trust SSO Gate (100% Cloud-Native Cloudflare Access) ──
   if (!session.authenticated) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-[#f1f1f1] px-4 py-12">
@@ -509,67 +455,56 @@ export function MenuAdminClient({
                 煎饼刘 · 门店管理系统
               </h1>
               <p className="text-xs text-[#616161]">
-                Jian Bing Liu Store Admin · Camden NW1
+                Cloudflare Zero Trust · 云原生单点登录
               </p>
             </div>
           </div>
 
-          {!session.configured && (
-            <div className="mt-5 rounded-xl border border-[#fed3d1] bg-[#fff4f4] p-4 text-xs leading-relaxed text-[#8e1f0b]">
-              尚未设置管理密码 <code>ADMIN_PASSWORD</code>：
-              <span className="mt-2 block">线上环境请运行：</span>
-              <code className="mt-1 block rounded-lg bg-[#1a1a1a] px-3 py-2 font-mono text-[11px] text-white">
-                pnpm exec wrangler secret put ADMIN_PASSWORD
+          {!session.configured ? (
+            <div className="mt-5 space-y-2.5 rounded-xl border border-[#ffd6a4] bg-[#fff5ea] p-4 text-xs leading-relaxed text-[#5e4200]">
+              <p className="flex items-center gap-1.5 font-bold text-[#1a1a1a]">
+                <ShieldAlert className="h-4 w-4 shrink-0 text-[#b98900]" />
+                尚未配置 Cloudflare Access 云原生验签参数
+              </p>
+              <p>
+                旧密码登录已停用。请按{" "}
+                <code>deploy/cloudflare-access/README.md</code>{" "}
+                在云端完成配置后填入以下变量：
+              </p>
+              <code className="block rounded-lg bg-[#1a1a1a] px-3 py-2 font-mono text-[11px] leading-5 text-white">
+                CF_ACCESS_TEAM_DOMAIN=https://&lt;team&gt;.cloudflareaccess.com
+                <br />
+                CF_ACCESS_AUD=&lt;Application-AUD-Tag&gt;
               </code>
-              <span className="mt-2 block">
-                本地预览请在根目录 <code>.dev.vars</code> 中写入{" "}
-                <code>ADMIN_PASSWORD=你的密码</code> 后重启预览。
-              </span>
+              {process.env.NODE_ENV === "development" && (
+                <p className="pt-1 text-[#8a5000]">
+                  本地开发调试可在 <code>.env.local</code> 或{" "}
+                  <code>.dev.vars</code> 中写入{" "}
+                  <code>ADMIN_DEV_BYPASS=true</code> 后刷新页面。
+                </p>
+              )}
             </div>
-          )}
-
-          {session.isLocalFallback && (
-            <div className="mt-5 rounded-xl border border-[#ffd6a4] bg-[#fff5ea] p-3.5 text-xs leading-relaxed text-[#5e4200]">
-              本地开发默认测试密码：{" "}
-              <code className="rounded bg-white px-1.5 py-0.5 font-mono font-bold text-[#1a1a1a]">
-                jianbingliu-local
-              </code>
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="mt-6 space-y-4">
-            <div>
-              <label
-                htmlFor="admin-password"
-                className="flex items-center gap-1.5 text-xs font-semibold text-[#303030]"
+          ) : (
+            <div className="mt-5 space-y-3 rounded-xl border border-[#e3e3e3] bg-[#fafafa] p-4 text-xs leading-relaxed text-[#4a4a4a]">
+              <p className="flex items-center gap-1.5 font-bold text-[#1a1a1a]">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-[#047b5d]" />
+                需通过 Cloudflare Zero Trust 身份验证
+              </p>
+              <p>
+                当前请求未携带有效的{" "}
+                <code>Cf-Access-Jwt-Assertion</code> 签名凭证。请通过受{" "}
+                <strong>Cloudflare Access</strong> 保护的正式域名访问{" "}
+                <code>/admin</code>。
+              </p>
+              <a
+                href="/admin"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#303030]"
               >
-                <Lock className="h-3.5 w-3.5 text-[#616161]" />
-                管理员密码 / Staff Password
-              </label>
-              <input
-                id="admin-password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="请输入店主管理密码"
-                className="mt-1.5 w-full rounded-lg border border-[#c9cccf] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#005bd3]"
-              />
+                <RefreshCw className="h-4 w-4" />
+                进入单点登录验证
+              </a>
             </div>
-
-            {authError && (
-              <p className="text-xs font-semibold text-[#d82c0d]">{authError}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoggingIn || !session.configured}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#303030] disabled:opacity-50"
-            >
-              {isLoggingIn && <Loader2 className="h-4 w-4 animate-spin" />}
-              进入管理后台
-            </button>
-          </form>
+          )}
 
           <div className="mt-6 border-t border-[#ebebeb] pt-4 text-center">
             <Link
@@ -593,7 +528,8 @@ export function MenuAdminClient({
       totalCategories={categories.length}
       hasDb={snapshot?.hasDb ?? false}
       hasR2={snapshot?.hasR2 ?? false}
-      canLogout={session.method !== "cloudflare-access"}
+      identity={session.identity}
+      canLogout={Boolean(session.logoutUrl)}
       onLogout={handleLogout}
     >
       {/* Polaris Toast */}

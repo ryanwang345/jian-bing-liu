@@ -12,11 +12,17 @@ export const metadata = {
 };
 
 export default async function ShowcasePostsPage() {
-  if (!(await getAdminSessionStatus()).authenticated) redirect("/admin");
+  const session = await getAdminSessionStatus();
+  if (!session.authenticated) redirect("/admin");
   const { posts, writable } = await getShowcasePosts(false);
 
   return (
-    <ShopifyAdminShell activeNav="posts" hasDb={writable}>
+    <ShopifyAdminShell
+      activeNav="posts"
+      hasDb={writable}
+      identity={session.identity}
+      logoutHref={session.logoutUrl}
+    >
       <div className="space-y-5 pb-16">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>

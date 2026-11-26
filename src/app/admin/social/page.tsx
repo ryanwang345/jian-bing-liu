@@ -10,11 +10,17 @@ export const metadata = {
 };
 
 export default async function SocialAdminPage() {
-  if (!(await getAdminSessionStatus()).authenticated) redirect("/admin");
+  const session = await getAdminSessionStatus();
+  if (!session.authenticated) redirect("/admin");
   const { profiles, writable } = await getSocialProfiles();
 
   return (
-    <ShopifyAdminShell activeNav="social" hasDb={writable}>
+    <ShopifyAdminShell
+      activeNav="social"
+      hasDb={writable}
+      identity={session.identity}
+      logoutHref={session.logoutUrl}
+    >
       <div className="space-y-5 pb-16">
         <div>
           <h1 className="text-xl font-bold text-[#1a1a1a] sm:text-2xl">
