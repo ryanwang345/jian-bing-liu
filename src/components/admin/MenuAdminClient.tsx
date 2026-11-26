@@ -1,8 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2, RefreshCw, ShieldAlert, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  KeyRound,
+  MailCheck,
+  ShieldAlert,
+  ShieldCheck,
+} from "lucide-react";
 import { AdminCategoriesView } from "@/components/admin/AdminCategoriesView";
 import { AdminCustomizerView } from "@/components/admin/AdminCustomizerView";
 import { AdminGalleryView } from "@/components/admin/AdminGalleryView";
@@ -441,103 +449,165 @@ export function MenuAdminClient({
     return { totalProducts: total, soldOutProducts: soldOut };
   }, [categories]);
 
-  // ── Zero-Trust SSO Gate (100% Cloud-Native Cloudflare Access) ──
+  // ── Handcrafted Brand-Aligned Zero-Trust Staff Portal ──
   if (!session.authenticated) {
+    const isAlternateHost =
+      Boolean(session.requestHost) && session.requestHost !== "jianbingliu.uk";
+
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#f1f1f1] px-4 py-12">
-        <div className="w-full max-w-md rounded-2xl border border-[#e3e3e3] bg-white p-7 shadow-lg sm:p-8">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1a1a1a] text-sm font-bold text-white">
-              刘
-            </span>
-            <div>
-              <h1 className="text-lg font-bold text-[#1a1a1a]">
-                煎饼刘 · 门店管理系统
-              </h1>
-              <p className="text-xs text-[#616161]">
-                Cloudflare Zero Trust · 云原生单点登录
-              </p>
+      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#fbf6ec] px-4 py-12 text-[#1a1614]">
+        {/* Top vermilion accent hairline */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8f1414] via-[#b8251c] to-[#c9861f]"
+        />
+
+        {/* Warm ambient radial glows */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[680px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(235,176,78,0.22)_0%,rgba(184,37,28,0.06)_48%,transparent_72%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-28 right-1/4 h-[300px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(201,134,31,0.14)_0%,transparent_70%)] blur-2xl"
+        />
+
+        <div className="relative z-10 w-full max-w-[430px] overflow-hidden rounded-3xl border border-[#e6d7bd] bg-white/95 shadow-[0_24px_60px_-15px_rgba(26,22,20,0.12),0_2px_8px_rgba(26,22,20,0.04)] backdrop-blur-md">
+          {/* Brand Header Band */}
+          <div className="border-b border-[#efe4d0] bg-gradient-to-b from-[#faf2e1] via-[#fdf9f0] to-white px-7 pt-8 pb-6 text-center sm:px-8">
+            <div className="mx-auto flex items-center justify-center gap-3">
+              <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-[#1a1614] shadow-md ring-2 ring-[#e6d7bd]">
+                <Image
+                  src="/images/logo.svg"
+                  alt="煎饼刘 Jian Bing Liu"
+                  width={56}
+                  height={56}
+                  priority
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span
+                aria-hidden="true"
+                className="inline-flex flex-col items-center justify-center rounded-md border border-[#921b14] bg-[#b8251c] px-1.5 py-1 font-calligraphy text-xs leading-tight text-[#fbf6ec] shadow-xs"
+                style={{ writingMode: "vertical-rl" }}
+              >
+                爱民
+              </span>
             </div>
+
+            <p className="mt-4 text-[11px] font-semibold tracking-[0.2em] text-[#b8251c] uppercase">
+              Camden NW1 · Staff Portal
+            </p>
+            <h1 className="mt-1 font-display text-2xl font-bold tracking-tight text-[#1a1614] sm:text-[26px]">
+              煎饼刘 · 门店管理中心
+            </h1>
+            <p className="mt-1.5 text-xs text-[#6e6258]">
+              管理每日菜品售罄状态、新品横幅、营业时间与店铺公告
+            </p>
           </div>
 
-          {!session.configured ? (
-            <div className="mt-5 space-y-2.5 rounded-xl border border-[#ffd6a4] bg-[#fff5ea] p-4 text-xs leading-relaxed text-[#5e4200]">
-              <p className="flex items-center gap-1.5 font-bold text-[#1a1a1a]">
-                <ShieldAlert className="h-4 w-4 shrink-0 text-[#b98900]" />
-                尚未配置 Cloudflare Access 云原生验签参数
-              </p>
-              <p>
-                旧密码登录已停用。请按{" "}
-                <code>deploy/cloudflare-access/README.md</code>{" "}
-                在云端完成配置后填入以下变量：
-              </p>
-              <code className="block rounded-lg bg-[#1a1a1a] px-3 py-2 font-mono text-[11px] leading-5 text-white">
-                CF_ACCESS_TEAM_DOMAIN=https://&lt;team&gt;.cloudflareaccess.com
-                <br />
-                CF_ACCESS_AUD=&lt;Application-AUD-Tag&gt;
-              </code>
-              {process.env.NODE_ENV === "development" && (
-                <p className="pt-1 text-[#8a5000]">
-                  本地开发调试可在 <code>.env.local</code> 或{" "}
-                  <code>.dev.vars</code> 中写入{" "}
-                  <code>ADMIN_DEV_BYPASS=true</code> 后刷新页面。
+          {/* Body */}
+          <div className="space-y-5 px-7 py-6 sm:px-8 sm:py-7">
+            {!session.configured ? (
+              <div className="space-y-2.5 rounded-2xl border border-[#f3d19c] bg-[#fff8eb] p-4 text-xs leading-relaxed text-[#5e4200]">
+                <p className="flex items-center gap-1.5 font-bold text-[#1a1614]">
+                  <ShieldAlert className="h-4 w-4 shrink-0 text-[#c9861f]" />
+                  尚未完成云端安全网关初始化
                 </p>
-              )}
-            </div>
-          ) : (
-            <div className="mt-5 space-y-3 rounded-xl border border-[#e3e3e3] bg-[#fafafa] p-4 text-xs leading-relaxed text-[#4a4a4a]">
-              <p className="flex items-center gap-1.5 font-bold text-[#1a1a1a]">
-                <ShieldCheck className="h-4 w-4 shrink-0 text-[#047b5d]" />
-                需通过 Cloudflare Zero Trust 身份验证
-              </p>
-
-              {session.requestHost &&
-              session.requestHost !== "jianbingliu.uk" ? (
                 <p>
-                  你当前正在通过 <code>{session.requestHost}</code>{" "}
-                  访问，而单点登录网关绑定在主域名{" "}
-                  <code>jianbingliu.uk</code> 上（<code>www.</code>、
-                  <code>*.workers.dev</code> 或 <code>localhost</code>{" "}
-                  不会触发网关登录）。请点击下方按钮前往正式后台地址：
+                  请在部署配置中填入 <code>CF_ACCESS_TEAM_DOMAIN</code> 与{" "}
+                  <code>CF_ACCESS_AUD</code> 后重新发布。
                 </p>
-              ) : (
-                <p>
-                  当前请求未能完成签名验证
-                  {session.diagnostic ? (
-                    <>
-                      （状态码：<code>{session.diagnostic}</code>）
-                    </>
-                  ) : null}
-                  。请通过受 <strong>Cloudflare Access</strong>{" "}
-                  保护的正式域名重新进入：
-                </p>
-              )}
+              </div>
+            ) : (
+              <>
+                {/* Login methods reassurance */}
+                <div className="space-y-2.5 rounded-2xl border border-[#efe4d0] bg-[#fcf9f3] p-4">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[#2b593c]">
+                    <ShieldCheck className="h-4 w-4 shrink-0 text-[#2b593c]" />
+                    <span>云端零信任安全保护已开启（免记密码）</span>
+                  </div>
 
-              {process.env.NODE_ENV === "development" && (
-                <p className="rounded-lg border border-[#ffd6a4] bg-[#fff5ea] p-2.5 text-[#8a5000]">
-                  本地 <code>pnpm dev</code> 免网关调试：在{" "}
-                  <code>.env.local</code> 或 <code>.dev.vars</code> 中添加{" "}
-                  <code>ADMIN_DEV_BYPASS=true</code> 后重启即可。
-                </p>
-              )}
+                  <div className="grid gap-2 pt-1 text-xs text-[#594f47]">
+                    <div className="flex items-start gap-2.5 rounded-xl bg-white/90 px-3 py-2 ring-1 ring-[#ede2ce]">
+                      <MailCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#b8251c]" />
+                      <div>
+                        <span className="font-semibold text-[#1a1614]">
+                          邮箱验证码登录：
+                        </span>
+                        输入授权邮箱，填入收到的 6 位数字即可进入（30 天内免重复验证）
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2.5 rounded-xl bg-white/90 px-3 py-2 ring-1 ring-[#ede2ce]">
+                      <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#c9861f]" />
+                      <div>
+                        <span className="font-semibold text-[#1a1614]">
+                          Google 账号快捷登录：
+                        </span>
+                        支持已授权的店主 Google 账号一键验证
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-              <a
-                href="https://jianbingliu.uk/admin"
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#303030]"
+                {session.diagnostic === "email-not-allowed" ? (
+                  <div className="space-y-3 rounded-2xl border border-[#f5c2c0] bg-[#fff5f5] p-4 text-center text-xs leading-relaxed text-[#8e1f0b]">
+                    <p className="font-semibold">
+                      当前登录的邮箱不在门店管理员白名单中
+                    </p>
+                    <a
+                      href="/cdn-cgi/access/logout"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#b8251c] px-4 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-[#921b14]"
+                    >
+                      退出并切换授权邮箱重新登录
+                    </a>
+                  </div>
+                ) : (
+                  <a
+                    href="https://jianbingliu.uk/admin"
+                    className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#b8251c] px-5 py-3.5 text-sm font-semibold text-[#fbf6ec] shadow-[0_8px_20px_-6px_rgba(184,37,28,0.45)] transition-all hover:-translate-y-0.5 hover:bg-[#921b14] hover:shadow-[0_12px_24px_-6px_rgba(184,37,28,0.55)] active:translate-y-0"
+                  >
+                    <span>前往安全登录进入后台</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                )}
+
+                {isAlternateHost && (
+                  <p className="text-center text-[11px] leading-relaxed text-[#7a6d61]">
+                    当前网址为{" "}
+                    <span className="font-medium text-[#312a26]">
+                      {session.requestHost}
+                    </span>
+                    ，点击上方按钮将自动切换至主域名完成验证
+                  </p>
+                )}
+
+                {!isAlternateHost &&
+                  session.diagnostic &&
+                  session.diagnostic !== "missing-token" &&
+                  session.diagnostic !== "email-not-allowed" && (
+                    <p className="text-center text-[11px] text-[#8a5000]">
+                      登录凭证已过期或需刷新（{session.diagnostic}），请点击上方按钮重新验证
+                    </p>
+                  )}
+              </>
+            )}
+
+            {process.env.NODE_ENV === "development" && (
+              <p className="rounded-xl border border-dashed border-[#dcc9a6] bg-[#faf4e8] px-3 py-2 text-center text-[11px] text-[#6e5225]">
+                本地开发提示：在 <code>.env.local</code> 中设置{" "}
+                <code>ADMIN_DEV_BYPASS=true</code> 可免网关直接预览后台
+              </p>
+            )}
+
+            <div className="border-t border-[#efe4d0] pt-4 text-center">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#6e6258] transition-colors hover:text-[#b8251c]"
               >
-                <RefreshCw className="h-4 w-4" />
-                前往 https://jianbingliu.uk/admin 登录
-              </a>
+                ← 返回煎饼刘网店首页
+              </Link>
             </div>
-          )}
-
-          <div className="mt-6 border-t border-[#ebebeb] pt-4 text-center">
-            <Link
-              href="/"
-              className="text-xs font-semibold text-[#616161] hover:text-[#1a1a1a] hover:underline"
-            >
-              ← 返回网店前台首页
-            </Link>
           </div>
         </div>
       </div>

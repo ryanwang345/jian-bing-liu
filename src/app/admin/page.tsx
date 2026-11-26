@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { MenuAdminClient } from "@/components/admin/MenuAdminClient";
 import type { MainAdminTab } from "@/components/admin/ShopifyAdminShell";
 import { getAdminSessionStatus } from "@/lib/admin-auth";
@@ -41,6 +42,19 @@ export default async function AdminPage({
     searchParams,
     getAdminSessionStatus(),
   ]);
+
+  // Automatically forward `www.jianbingliu.uk/admin` to the Access-protected apex domain
+  if (
+    !session.authenticated &&
+    session.configured &&
+    session.requestHost === "www.jianbingliu.uk"
+  ) {
+    const tabParam = Array.isArray(params.tab) ? params.tab[0] : params.tab;
+    const target = tabParam
+      ? `https://jianbingliu.uk/admin?tab=${encodeURIComponent(tabParam)}`
+      : "https://jianbingliu.uk/admin";
+    redirect(target);
+  }
   const [initialSnapshot, initialFestivalTheme, initialSiteContent] =
     session.authenticated
       ? await Promise.all([

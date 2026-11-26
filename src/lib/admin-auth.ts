@@ -102,6 +102,14 @@ function parseAudienceList(raw: string | undefined): string[] {
     .filter(Boolean);
 }
 
+function parseEmailAllowlist(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 async function importCfPublicKey(
   jwk: CfJwk
 ): Promise<{ alg: "RS256" | "ES256"; cryptoKey: CryptoKey } | null> {
@@ -191,12 +199,14 @@ export type AdminAuthDiagnostic =
   | "token-expired"
   | "certs-fetch-failed"
   | "signing-key-missing"
-  | "bad-signature";
+  | "bad-signature"
+  | "email-not-allowed";
 
 async function verifyCfAccessJwt(
   token: string,
   teamOrigin: string,
-  allowedAuds: string[]
+  allowedAuds: string[],
+  allowedEmails: string[]
 ): Promise<
   | { ok: true; identity: string }
   | { ok: false; diagnostic: AdminAuthDiagnostic }
@@ -281,6 +291,13 @@ async function verifyCfAccessJwt(
     return { ok: false, diagnostic: "bad-signature" };
   }
 
+  const verifiedEmail = payload.email?.trim().toLowerCase();
+  if (allowedEmails.length > 0) {
+    if (!verifiedEmail || !allowedEmails.includes(verifiedEmail)) {
+      return { ok: false, diagnostic: "email-not-allowed" };
+    }
+  }
+
   const identity =
     payload.email?.trim() ||
     payload.common_name?.trim() ||
@@ -302,14 +319,21 @@ export interface AdminSessionStatus {
 }
 
 export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
-  const [rawTeamDomain, rawAud, rawDevBypass, headerStore, cookieStore] =
-    await Promise.all([
-      getRuntimeEnv("CF_ACCESS_TEAM_DOMAIN"),
-      getRuntimeEnv("CF_ACCESS_AUD"),
-      getRuntimeEnv("ADMIN_DEV_BYPASS"),
-      headers(),
-      cookies(),
-    ]);
+  const [
+    rawTeamDomain,
+    rawAud,
+    rawAllowedEmails,
+    rawDevBypass,
+    headerStore,
+    cookieStore,
+  ] = await Promise.all([
+    getRuntimeEnv("CF_ACCESS_TEAM_DOMAIN"),
+    getRuntimeEnv("CF_ACCESS_AUD"),
+    getRuntimeEnv("ADMIN_ALLOWED_EMAILS"),
+    getRuntimeEnv("ADMIN_DEV_BYPASS"),
+    headers(),
+    cookies(),
+  ]);
 
   const requestHost =
     headerStore.get("x-forwarded-host")?.split(",")[0]?.trim() ||
@@ -330,6 +354,7 @@ export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
 
   const teamOrigin = normalizeTeamOrigin(rawTeamDomain);
   const allowedAuds = parseAudienceList(rawAud);
+  const allowedEmails = parseEmailAllowlist(rawAllowedEmails);
   const configured = Boolean(teamOrigin && allowedAuds.length > 0);
 
   if (configured && teamOrigin) {
@@ -351,7 +376,8 @@ export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
     const verified = await verifyCfAccessJwt(
       jwtAssertion,
       teamOrigin,
-      allowedAuds
+      allowedAuds,
+      allowedEmails
     );
     if (verified.ok) {
       return {
