@@ -23,6 +23,7 @@ import type { MenuCategory, MenuItem } from "@/data/menu";
 import { defaultSiteContent, type SiteContentConfig } from "@/data/site-content";
 import type { AdminSessionStatus } from "@/lib/admin-auth";
 import type { ActiveFestivalThemeState } from "@/lib/festival-theme-service";
+import type { FestivalBannerText } from "@/data/festival-banners";
 import type { AdminMenuSnapshot, BulkMenuAction } from "@/lib/menu-service";
 
 interface MenuAdminClientProps {
@@ -412,6 +413,30 @@ export function MenuAdminClient({
     }
   };
 
+  const handleSaveFestivalBanner = async (festivalId: string, text: FestivalBannerText): Promise<boolean> => {
+    setIsUpdatingTheme(true);
+    try {
+      const res = await fetch("/api/admin/theme", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ festivalId, ...text }),
+      });
+      const data = (await res.json()) as { error?: string; state?: ActiveFestivalThemeState };
+      if (!res.ok || !data.state) {
+        showToast("error", data.error || "保存节日标题失败");
+        return false;
+      }
+      setFestivalTheme(data.state);
+      showToast("success", "节日标题已保存，启用该节日主题时会显示新文案");
+      return true;
+    } catch {
+      showToast("error", "网络错误，请稍后重试");
+      return false;
+    } finally {
+      setIsUpdatingTheme(false);
+    }
+  };
+
   const handleSaveSiteContent = async (
     nextContent: SiteContentConfig,
     successMsg = "全站内容与排版已保存生效"
@@ -653,6 +678,7 @@ export function MenuAdminClient({
           hasDb={snapshot?.hasDb ?? false}
           isUpdating={isUpdatingTheme}
           onSelectTheme={(val) => void handleChangeFestivalTheme(val)}
+          onSaveBanner={handleSaveFestivalBanner}
         />
       ) : activeTab === "customizer" ? (
         <AdminCustomizerView

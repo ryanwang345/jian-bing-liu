@@ -7,12 +7,15 @@ import {
   type FestivalGroupKey,
 } from "@/data/festivals";
 import type { ActiveFestivalThemeState } from "@/lib/festival-theme-service";
+import { resolveFestivalBanner, type FestivalBannerText } from "@/data/festival-banners";
+import { FestivalBannerEditor } from "@/components/admin/FestivalBannerEditor";
 
 interface AdminThemesViewProps {
   festivalTheme: ActiveFestivalThemeState | null;
   hasDb: boolean;
   isUpdating: boolean;
   onSelectTheme: (value: string) => void;
+  onSaveBanner: (id: string, text: FestivalBannerText) => Promise<boolean>;
 }
 
 const GROUPS: FestivalGroupKey[] = ["chinese", "uk", "islamic"];
@@ -22,6 +25,7 @@ export function AdminThemesView({
   hasDb,
   isUpdating,
   onSelectTheme,
+  onSaveBanner,
 }: AdminThemesViewProps) {
   const currentSetting = festivalTheme?.setting ?? "auto";
   const activeFestival = festivalTheme?.activeFestival ?? null;
@@ -34,14 +38,14 @@ export function AdminThemesView({
             网店节日与主题中心
           </h1>
           <p className="mt-0.5 text-xs text-[#616161] sm:text-sm">
-            一键切换中国、英国及伊斯兰 26 个节假日全站配色、滚动氛围灯与顶部双语祝福横幅。
+            一键切换中国、英国及伊斯兰 26 个节假日全站配色、滚动氛围灯，并可编辑顶部双语祝福横幅标题。
           </p>
         </div>
 
         {isUpdating && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#303030] shadow-2xs">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            正在应用主题...
+            正在保存主题设置...
           </span>
         )}
       </div>
@@ -125,6 +129,7 @@ export function AdminThemesView({
               .map((preset) => {
                 const isSelected = currentSetting === preset.id;
                 const isResolved = activeFestival?.id === preset.id;
+                const banner = resolveFestivalBanner(preset, festivalTheme?.bannerOverrides ?? {});
 
                 return (
                   <div
@@ -144,7 +149,7 @@ export function AdminThemesView({
                           color: preset.theme.bannerText,
                         }}
                       >
-                        {preset.bannerZh}
+                        {banner.bannerZh}
                       </div>
 
                       <div className="p-4">
@@ -178,6 +183,12 @@ export function AdminThemesView({
                         <p className="mt-2 text-[11px] font-medium text-[#616161]">
                           配色方案：{preset.paletteName.zh} ({preset.paletteName.en})
                         </p>
+                        <FestivalBannerEditor
+                          preset={preset}
+                          saved={banner}
+                          disabled={!hasDb || isUpdating}
+                          onSave={onSaveBanner}
+                        />
                       </div>
                     </div>
 
