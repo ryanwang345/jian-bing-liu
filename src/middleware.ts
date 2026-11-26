@@ -40,6 +40,17 @@ function prefersMarkdown(acceptHeader: string): boolean {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Auto-heal Cloudflare Access wildcard fallback redirects (e.g. `/admin*`, `/admin%2A`, `/admin/*`)
+  if (
+    /^\/admin(?:\/?(?:\*|%2a))+$/i.test(pathname)
+  ) {
+    const cleanUrl = request.nextUrl.clone();
+    cleanUrl.pathname = "/admin";
+    cleanUrl.searchParams.delete("__cf_access_message");
+    return NextResponse.redirect(cleanUrl, 307);
+  }
+
   if (!MACHINE_NEGOTIATED_PATHS.has(pathname)) {
     return NextResponse.next();
   }
@@ -67,5 +78,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/menu", "/our-story", "/visit-us", "/gallery"],
+  matcher: [
+    "/",
+    "/menu",
+    "/our-story",
+    "/visit-us",
+    "/gallery",
+    "/((?!api|_next/static|_next/image|images|icon\\.svg|apple-icon\\.png|robots\\.txt|sitemap\\.xml).*)",
+  ],
 };
