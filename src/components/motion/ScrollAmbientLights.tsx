@@ -65,24 +65,24 @@ export function ScrollAmbientLights() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      {/* Top-center warm kitchen-lantern studio gradient wash */}
+      {/* Top-center warm kitchen-lantern studio gradient wash (adapts to active festival theme) */}
       <div
         ref={primaryGlowRef}
         className="absolute -top-44 left-1/2 h-[540px] w-[min(120vw,1200px)] -translate-x-1/2 rounded-full will-change-transform"
         style={{
           background:
-            "radial-gradient(ellipse 68% 58% at 50% 45%, rgba(235,176,78,0.2) 0%, rgba(201,112,48,0.09) 48%, transparent 76%)",
+            "radial-gradient(ellipse 68% 58% at 50% 45%, var(--theme-glow-a) 0%, var(--theme-glow-b) 48%, transparent 76%)",
           filter: "blur(50px)",
         }}
       />
 
-      {/* Lower soft toasted-amber & subtle vermilion counterweight wash */}
+      {/* Lower soft counterweight wash (adapts to active festival theme) */}
       <div
         ref={secondaryGlowRef}
         className="absolute -bottom-48 left-1/2 h-[500px] w-[min(115vw,1120px)] -translate-x-1/2 rounded-full will-change-transform"
         style={{
           background:
-            "radial-gradient(ellipse 65% 55% at 50% 55%, rgba(184,58,34,0.08) 0%, rgba(235,176,78,0.14) 48%, transparent 76%)",
+            "radial-gradient(ellipse 65% 55% at 50% 55%, var(--theme-glow-c) 0%, var(--theme-glow-d) 48%, transparent 76%)",
           filter: "blur(54px)",
         }}
       />

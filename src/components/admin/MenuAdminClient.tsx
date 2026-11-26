@@ -14,6 +14,7 @@ import {
   Loader2,
   Lock,
   LogOut,
+  Palette,
   Pencil,
   Plus,
   RefreshCw,
@@ -37,11 +38,13 @@ import {
   type MenuItem,
 } from "@/data/menu";
 import type { AdminSessionStatus } from "@/lib/admin-auth";
+import type { ActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import type { AdminMenuSnapshot } from "@/lib/menu-service";
 
 interface MenuAdminClientProps {
   initialSession: AdminSessionStatus;
   initialSnapshot: AdminMenuSnapshot | null;
+  initialFestivalTheme?: ActiveFestivalThemeState | null;
 }
 
 interface EditableVariant {
@@ -185,11 +188,15 @@ function itemToFormState(categoryId: string, item?: MenuItem): DishFormState {
 export function MenuAdminClient({
   initialSession,
   initialSnapshot,
+  initialFestivalTheme = null,
 }: MenuAdminClientProps) {
   const [session, setSession] = useState<AdminSessionStatus>(initialSession);
   const [snapshot, setSnapshot] = useState<AdminMenuSnapshot | null>(
     initialSnapshot
   );
+  const [festivalTheme, setFestivalTheme] =
+    useState<ActiveFestivalThemeState | null>(initialFestivalTheme);
+  const [isUpdatingTheme, setIsUpdatingTheme] = useState(false);
 
   // Login state
   const [password, setPassword] = useState("");
@@ -219,10 +226,84 @@ export function MenuAdminClient({
   };
 
   const refreshMenu = async () => {
-    const res = await fetch("/api/admin/menu", { cache: "no-store" });
-    if (res.ok) {
-      const data = (await res.json()) as AdminMenuSnapshot;
+    const [menuRes, themeRes] = await Promise.all([
+      fetch("/api/admin/menu", { cache: "no-store" }),
+      fetch("/api/admin/theme", { cache: "no-store" }),
+    ]);
+    if (menuRes.ok) {
+      const data = (await menuRes.json()) as AdminMenuSnapshot;
       setSnapshot(data);
+    }
+    if (themeRes.ok) {
+      const themeData = (await themeRes.json()) as ActiveFestivalThemeState;
+      setFestivalTheme(themeData);
+    }
+  };
+
+  const applyThemeToDocument = (state: ActiveFestivalThemeState) => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    const active = state.activeFestival;
+    if (!active) {
+      root.dataset.festivalTheme = "default";
+      const props = [
+        "--theme-parchment",
+        "--theme-kraft",
+        "--theme-kraft-deep",
+        "--theme-cinnabar",
+        "--theme-cinnabar-dark",
+        "--theme-turmeric",
+        "--theme-jade",
+        "--theme-glow-a",
+        "--theme-glow-b",
+        "--theme-glow-c",
+        "--theme-glow-d",
+      ];
+      props.forEach((p) => root.style.removeProperty(p));
+      return;
+    }
+
+    root.dataset.festivalTheme = active.id;
+    root.style.setProperty("--theme-parchment", active.theme.parchment);
+    root.style.setProperty("--theme-kraft", active.theme.kraft);
+    root.style.setProperty("--theme-kraft-deep", active.theme.kraftDeep);
+    root.style.setProperty("--theme-cinnabar", active.theme.cinnabar);
+    root.style.setProperty("--theme-cinnabar-dark", active.theme.cinnabarDark);
+    root.style.setProperty("--theme-turmeric", active.theme.turmeric);
+    root.style.setProperty("--theme-jade", active.theme.jade);
+    root.style.setProperty("--theme-glow-a", active.theme.glowA);
+    root.style.setProperty("--theme-glow-b", active.theme.glowB);
+    root.style.setProperty("--theme-glow-c", active.theme.glowC);
+    root.style.setProperty("--theme-glow-d", active.theme.glowD);
+  };
+
+  const handleChangeFestivalTheme = async (nextValue: string) => {
+    setIsUpdatingTheme(true);
+    try {
+      const res = await fetch("/api/admin/theme", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme: nextValue }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        state?: ActiveFestivalThemeState;
+      };
+      if (!res.ok || !data.state) {
+        showToast("error", data.error || "切换主题失败");
+        return;
+      }
+      setFestivalTheme(data.state);
+      applyThemeToDocument(data.state);
+      const label = data.state.activeFestival
+        ? `${data.state.activeFestival.zh}（${data.state.activeFestival.paletteName.zh}）`
+        : "经典原版暖色主题";
+      showToast("success", `全站已切换为：${label}`);
+    } catch {
+      showToast("error", "网络错误，请稍后重试");
+    } finally {
+      setIsUpdatingTheme(false);
     }
   };
 
@@ -435,6 +516,14 @@ export function MenuAdminClient({
       if (data.snapshot) setSnapshot(data.snapshot);
       setEditorForm(null);
       showToast("success", `已保存「${editorForm.nameZh}」，前台菜单已即时同步`);
+      if (festivalTheme?.setting === "auto") {
+        const themeRes = await fetch("/api/admin/theme", { cache: "no-store" });
+        if (themeRes.ok) {
+          const nextTheme = (await themeRes.json()) as ActiveFestivalThemeState;
+          setFestivalTheme(nextTheme);
+          applyThemeToDocument(nextTheme);
+        }
+      }
     } catch {
       showToast("error", "保存失败，请重试");
     } finally {
@@ -677,6 +766,75 @@ export function MenuAdminClient({
               退出
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Website Festival Theme Switcher */}
+      <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-kraft-deep/90 bg-white/90 p-4 shadow-2xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cinnabar/10 text-cinnabar">
+            <Palette className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-bold text-ink">
+                全站节日主题风格
+              </span>
+              {festivalTheme?.activeFestival ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-cinnabar/10 px-2.5 py-0.5 text-[11px] font-bold text-cinnabar-dark">
+                  <span
+                    className="h-2.5 w-2.5 rounded-full border border-black/15"
+                    style={{
+                      backgroundColor:
+                        festivalTheme.activeFestival.theme.cinnabar,
+                    }}
+                  />
+                  {festivalTheme.activeFestival.zh} ·{" "}
+                  {festivalTheme.activeFestival.paletteName.zh}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-kraft px-2.5 py-0.5 text-[11px] font-semibold text-ink-soft">
+                  经典原版暖色
+                </span>
+              )}
+            </div>
+            <p className="mt-0.5 text-xs text-ink-muted">
+              选好节日后会立刻更新全站配色、背景氛围灯与顶部节日祝福条；默认「智能自动」会跟随节日限定菜单自动换肤。
+            </p>
+          </div>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2">
+          {isUpdatingTheme && (
+            <Loader2
+              className="h-4 w-4 animate-spin text-cinnabar"
+              aria-hidden="true"
+            />
+          )}
+          <select
+            aria-label="选择网站节日主题风格"
+            disabled={!snapshot?.hasDb || isUpdatingTheme}
+            value={festivalTheme?.setting ?? "auto"}
+            onChange={(e) => void handleChangeFestivalTheme(e.target.value)}
+            className="w-full rounded-xl border border-kraft-deep bg-parchment/70 px-3.5 py-2 text-xs font-semibold text-ink outline-none transition-colors focus:border-cinnabar focus:bg-white disabled:opacity-50 sm:w-64"
+          >
+            <option value="auto">✨ 智能自动（跟随节日菜单）</option>
+            <option value="default">🏮 经典原版主题（煎饼刘默认）</option>
+            {FESTIVAL_GROUPS.map((groupKey) => (
+              <optgroup
+                key={groupKey}
+                label={`── ${festivalGroupLabels[groupKey].zh} (${festivalGroupLabels[groupKey].en}) ──`}
+              >
+                {festivalPresets
+                  .filter((p) => p.group === groupKey)
+                  .map((preset) => (
+                    <option key={preset.id} value={preset.id}>
+                      {preset.zh}（{preset.paletteName.zh}）
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
+          </select>
         </div>
       </div>
 

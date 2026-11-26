@@ -1,18 +1,35 @@
 @import "tailwindcss";
 
+:root {
+  --theme-parchment: #fbf6ec;
+  --theme-kraft: #f2e6cf;
+  --theme-kraft-deep: #e2cca4;
+  --theme-ink: #1a1614;
+  --theme-ink-soft: #312a26;
+  --theme-ink-muted: #594f47;
+  --theme-cinnabar: #b8251c;
+  --theme-cinnabar-dark: #921b14;
+  --theme-turmeric: #c9861f;
+  --theme-jade: #2b593c;
+  --theme-glow-a: rgba(235, 176, 78, 0.2);
+  --theme-glow-b: rgba(201, 112, 48, 0.09);
+  --theme-glow-c: rgba(184, 58, 34, 0.08);
+  --theme-glow-d: rgba(235, 176, 78, 0.14);
+}
+
 @theme inline {
-  --color-parchment: #fbf6ec;
-  --color-kraft: #f2e6cf;
-  --color-kraft-deep: #e2cca4;
-  --color-ink: #1a1614;
-  --color-ink-soft: #312a26;
-  --color-ink-muted: #594f47;
-  --color-cinnabar: #b8251c;
-  --color-cinnabar-dark: #921b14;
+  --color-parchment: var(--theme-parchment);
+  --color-kraft: var(--theme-kraft);
+  --color-kraft-deep: var(--theme-kraft-deep);
+  --color-ink: var(--theme-ink);
+  --color-ink-soft: var(--theme-ink-soft);
+  --color-ink-muted: var(--theme-ink-muted);
+  --color-cinnabar: var(--theme-cinnabar);
+  --color-cinnabar-dark: var(--theme-cinnabar-dark);
   --color-dragonfruit: #e12d66;
   --color-yolk: #f4b23c;
-  --color-turmeric: #c9861f;
-  --color-jade: #2b593c;
+  --color-turmeric: var(--theme-turmeric);
+  --color-jade: var(--theme-jade);
   --font-sans: var(--font-ibm-plex-sans), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-newsreader), "Ma Shan Zheng", "Kaiti SC", "STKaiti", "KaiTi", Georgia, serif;
   --font-calligraphy: "Ma Shan Zheng", "Kaiti SC", "STKaiti", "KaiTi", serif;

@@ -1,8 +1,11 @@
+import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
 import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
+import { FestivalBanner } from "@/components/FestivalBanner";
 import { SocialLinksProvider } from "@/components/SocialLinksProvider";
+import { getActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import { getSocialProfiles } from "@/lib/social-profiles";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -97,7 +100,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [cookieStore, { profiles }] = await Promise.all([cookies(), getSocialProfiles()]);
+  const [cookieStore, { profiles }, festivalState] = await Promise.all([
+    cookies(),
+    getSocialProfiles(),
+    getActiveFestivalThemeState(),
+  ]);
   const visibleLinks = profiles.filter((profile) => profile.visible);
   const jsonLd = buildRestaurantJsonLd(visibleLinks);
   const savedCookie = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
@@ -108,10 +115,29 @@ export default async function RootLayout({
     : parseAcceptLanguage((await headers()).get("accept-language"));
 
   const calligraphyHref = getCalligraphyStylesheetHref(initialLocale);
+  const activeFestival = festivalState.activeFestival;
+
+  const htmlThemeStyle = activeFestival
+    ? ({
+        "--theme-parchment": activeFestival.theme.parchment,
+        "--theme-kraft": activeFestival.theme.kraft,
+        "--theme-kraft-deep": activeFestival.theme.kraftDeep,
+        "--theme-cinnabar": activeFestival.theme.cinnabar,
+        "--theme-cinnabar-dark": activeFestival.theme.cinnabarDark,
+        "--theme-turmeric": activeFestival.theme.turmeric,
+        "--theme-jade": activeFestival.theme.jade,
+        "--theme-glow-a": activeFestival.theme.glowA,
+        "--theme-glow-b": activeFestival.theme.glowB,
+        "--theme-glow-c": activeFestival.theme.glowC,
+        "--theme-glow-d": activeFestival.theme.glowD,
+      } as CSSProperties)
+    : undefined;
 
   return (
     <html
       lang={localeToHtmlLang(initialLocale)}
+      data-festival-theme={activeFestival?.id ?? "default"}
+      style={htmlThemeStyle}
       className={`${ibmPlexSans.variable} ${newsreader.variable}`}
     >
       <head>
@@ -157,6 +183,12 @@ export default async function RootLayout({
 
             <ScrollAmbientLights />
             <ScrollProgressBar />
+            {activeFestival && (
+              <FestivalBanner
+                festival={activeFestival}
+                hasFestiveDishes={festivalState.hasFestiveDishes}
+              />
+            )}
             <Header />
 
             <main id="main-content" className="relative z-10 flex-1">
