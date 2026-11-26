@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { restaurant } from "@/data/restaurant";
+import { useSiteContent } from "@/components/SiteContentProvider";
 import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
@@ -137,19 +138,27 @@ const storyHighlights: StoryHighlight[] = [
 
 export function SocialStoryStrip() {
   const { t, pick } = useLocale();
+  const { home } = useSiteContent();
+  const activeHighlights =
+    home.storyHighlights && home.storyHighlights.length > 0
+      ? home.storyHighlights
+      : storyHighlights;
   const socialLinks = useSocialLinks();
   const instagram = socialLinks.find((link) => link.platform === "instagram");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [viewedIds, setViewedIds] = useState<Set<string>>(() => new Set());
   const [isPaused, setIsPaused] = useState(false);
 
-  const openStory = useCallback((index: number) => {
-    setActiveIndex(index);
-    const id = storyHighlights[index]?.id;
-    if (id) {
-      setViewedIds((prev) => new Set(prev).add(id));
-    }
-  }, []);
+  const openStory = useCallback(
+    (index: number) => {
+      setActiveIndex(index);
+      const id = activeHighlights[index]?.id;
+      if (id) {
+        setViewedIds((prev) => new Set(prev).add(id));
+      }
+    },
+    [activeHighlights]
+  );
 
   // Body scroll lock + keyboard navigation while Story Viewer is open
   useEffect(() => {
@@ -162,7 +171,7 @@ export function SocialStoryStrip() {
       if (event.key === "Escape") {
         setActiveIndex(null);
       } else if (event.key === "ArrowRight") {
-        if (activeIndex < storyHighlights.length - 1) {
+        if (activeIndex < activeHighlights.length - 1) {
           openStory(activeIndex + 1);
         } else {
           setActiveIndex(null);
@@ -178,14 +187,14 @@ export function SocialStoryStrip() {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [activeIndex, openStory]);
+  }, [activeIndex, activeHighlights.length, openStory]);
 
   // Auto-advance active story every 5.5s unless paused by hover/hold
   useEffect(() => {
     if (activeIndex === null || isPaused) return;
 
     const timer = window.setTimeout(() => {
-      if (activeIndex < storyHighlights.length - 1) {
+      if (activeIndex < activeHighlights.length - 1) {
         openStory(activeIndex + 1);
       } else {
         setActiveIndex(null);
@@ -195,10 +204,10 @@ export function SocialStoryStrip() {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [activeIndex, isPaused, openStory]);
+  }, [activeIndex, activeHighlights.length, isPaused, openStory]);
 
   const activeStory =
-    activeIndex !== null ? storyHighlights[activeIndex] : null;
+    activeIndex !== null ? activeHighlights[activeIndex] : null;
 
   return (
     <>
@@ -226,7 +235,7 @@ export function SocialStoryStrip() {
         </div>
 
         <div className="no-scrollbar flex w-full max-w-full items-center gap-3 overflow-x-auto pb-1">
-          {storyHighlights.map((story, idx) => {
+          {activeHighlights.map((story, idx) => {
             const isViewed = viewedIds.has(story.id);
             return (
               <button
@@ -297,7 +306,7 @@ export function SocialStoryStrip() {
             {/* Top Progress Bars + Author Header */}
             <div className="relative z-20 p-4">
               <div className="flex gap-1.5">
-                {storyHighlights.map((s, i) => (
+                {activeHighlights.map((s, i) => (
                   <button
                     key={s.id}
                     type="button"
@@ -362,7 +371,7 @@ export function SocialStoryStrip() {
               <button
                 type="button"
                 onClick={() =>
-                  activeIndex < storyHighlights.length - 1
+                  activeIndex < activeHighlights.length - 1
                     ? openStory(activeIndex + 1)
                     : setActiveIndex(null)
                 }

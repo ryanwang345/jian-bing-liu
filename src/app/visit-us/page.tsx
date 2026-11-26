@@ -1,6 +1,8 @@
 import { VisitView } from "@/components/views/VisitView";
 import { buildPageMetadata } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = buildPageMetadata({
   title: "Visit Us",
   description:

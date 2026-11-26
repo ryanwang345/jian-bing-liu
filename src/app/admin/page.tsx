@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { MenuAdminClient } from "@/components/admin/MenuAdminClient";
+import type { MainAdminTab } from "@/components/admin/ShopifyAdminShell";
 import { getAdminSessionStatus } from "@/lib/admin-auth";
 import { getActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import { getAdminMenuSnapshot } from "@/lib/menu-service";
+import { getSiteContent } from "@/lib/site-content-service";
 
 export const dynamic = "force-dynamic";
 
@@ -14,15 +16,16 @@ export const metadata: Metadata = {
   },
 };
 
-type MainAdminTab = "overview" | "products" | "categories" | "themes";
-
 function parseInitialTab(raw?: string | string[]): MainAdminTab {
   const val = Array.isArray(raw) ? raw[0] : raw;
   if (
     val === "overview" ||
     val === "products" ||
     val === "categories" ||
-    val === "themes"
+    val === "themes" ||
+    val === "customizer" ||
+    val === "gallery" ||
+    val === "settings"
   ) {
     return val;
   }
@@ -38,18 +41,21 @@ export default async function AdminPage({
     searchParams,
     getAdminSessionStatus(),
   ]);
-  const [initialSnapshot, initialFestivalTheme] = session.authenticated
-    ? await Promise.all([
-        getAdminMenuSnapshot(),
-        getActiveFestivalThemeState(),
-      ])
-    : [null, null];
+  const [initialSnapshot, initialFestivalTheme, initialSiteContent] =
+    session.authenticated
+      ? await Promise.all([
+          getAdminMenuSnapshot(),
+          getActiveFestivalThemeState(),
+          getSiteContent(),
+        ])
+      : [null, null, null];
 
   return (
     <MenuAdminClient
       initialSession={session}
       initialSnapshot={initialSnapshot}
       initialFestivalTheme={initialFestivalTheme}
+      initialSiteContent={initialSiteContent}
       initialTab={parseInitialTab(params.tab)}
     />
   );

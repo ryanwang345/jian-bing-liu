@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { restaurant } from "@/data/restaurant";
+import { useSiteContent } from "@/components/SiteContentProvider";
 import { useLocale } from "@/lib/i18n";
 
 interface BrandMarkProps {
@@ -11,6 +11,7 @@ interface BrandMarkProps {
 
 export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
   const { locale, isZh, isTraditional, zhText, pick } = useLocale();
+  const { store } = useSiteContent();
   const isLight = variant === "light";
 
   const sizeStyles = {
@@ -48,7 +49,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
       >
         <Image
           src="/images/logo.svg"
-          alt={`${restaurant.name} (${restaurant.chineseName}) logo`}
+          alt={`${store.nameEn} (${store.nameZh}) logo`}
           width={sizeStyles.logoPx}
           height={sizeStyles.logoPx}
           priority
@@ -63,7 +64,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
             isLight ? "text-[#F0C26E]" : "text-cinnabar"
           }`}
         >
-          {pick("正宗果蔬煎饼", restaurant.name)}
+          {pick("正宗果蔬煎饼", store.nameEn)}
         </span>
         <span
           className={`mt-0.5 font-calligraphy ${sizeStyles.chinese} ${
@@ -71,7 +72,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
           }`}
           lang={isTraditional ? "zh-Hant" : "zh-Hans"}
         >
-          {zhText(restaurant.chineseName)}
+          {zhText(store.nameZh)}
         </span>
       </span>
       <span
@@ -83,7 +84,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
         } shadow-xs`}
         style={{ writingMode: "vertical-rl" }}
       >
-        {zhText(restaurant.sealText)}
+        {zhText(store.sealText)}
       </span>
     </span>
   );

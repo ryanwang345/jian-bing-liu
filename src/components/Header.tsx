@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ExternalLink, Globe, MapPin, Menu, Phone, X } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
-import { restaurant } from "@/data/restaurant";
+import { phoneToTelHref, useSiteContent } from "@/components/SiteContentProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 const navItems: Array<{ href: string; label: LocalizedText }> = [
@@ -122,6 +122,8 @@ function LanguageToggle() {
 export function Header() {
   const pathname = usePathname();
   const { locale, t, pick } = useLocale();
+  const { store } = useSiteContent();
+  const phoneHref = phoneToTelHref(store.phoneDisplay);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -212,8 +214,8 @@ export function Header() {
           href="/"
           className="group shrink-0 rounded-lg py-0.5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.015]"
           aria-label={pick(
-            `${restaurant.chineseName}（${restaurant.sealText}）— 返回首页`,
-            `${restaurant.name} — Home`
+            `${store.nameZh}（${store.sealText}）— 返回首页`,
+            `${store.nameEn} — Home`
           )}
         >
           <BrandMark size="md" variant="dark" />
@@ -282,14 +284,14 @@ export function Header() {
 
         <div className="hidden items-center gap-2.5 lg:flex">
           <LanguageToggle />
-          {restaurant.links.orderOnline && (
+          {store.orderOnlineUrl && (
             <a
-              href={restaurant.links.orderOnline}
+              href={store.orderOnlineUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={pick(
-                `前往${restaurant.links.orderOnlineProviderZh}在线点餐（新窗口打开）`,
-                `Order Online via ${restaurant.links.orderOnlineProvider} (opens in a new tab)`
+                `前往${store.orderProviderZh}在线点餐（新窗口打开）`,
+                `Order Online via ${store.orderProviderEn} (opens in a new tab)`
               )}
               className="sticker-shadow inline-flex items-center gap-1.5 rounded-full bg-cinnabar px-4 py-2 text-sm font-bold text-parchment transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-cinnabar-dark hover:shadow-md active:scale-[0.97]"
             >
@@ -302,9 +304,9 @@ export function Header() {
         {/* Mobile & iPad Portrait: Language toggle + iPad Order button + Menu drawer trigger */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5 lg:hidden">
           <LanguageToggle />
-          {restaurant.links.orderOnline && (
+          {store.orderOnlineUrl && (
             <a
-              href={restaurant.links.orderOnline}
+              href={store.orderOnlineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="sticker-shadow hidden items-center gap-1.5 rounded-full bg-cinnabar px-3.5 py-1.5 text-xs font-bold text-parchment transition-all hover:bg-cinnabar-dark active:scale-[0.97] sm:inline-flex"
@@ -373,16 +375,16 @@ export function Header() {
           </nav>
 
           <div className="mt-4 space-y-3 border-t border-kraft-deep/70 pt-4">
-            {restaurant.links.orderOnline && (
+            {store.orderOnlineUrl && (
               <a
-                href={restaurant.links.orderOnline}
+                href={store.orderOnlineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-cinnabar px-5 py-3 text-sm font-semibold text-parchment shadow-sm transition-colors hover:bg-cinnabar-dark"
               >
                 {pick(
-                  `前往${restaurant.links.orderOnlineProviderZh}在线点餐`,
-                  `Order Online via ${restaurant.links.orderOnlineProvider}`
+                  `前往${store.orderProviderZh}在线点餐`,
+                  `Order Online via ${store.orderProviderEn}`
                 )}
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
               </a>
@@ -390,14 +392,14 @@ export function Header() {
 
             <div className="grid grid-cols-2 gap-2 text-xs text-ink-muted">
               <a
-                href={restaurant.phone.href}
+                href={phoneHref}
                 className="flex items-center justify-center gap-1.5 rounded-xl border border-kraft-deep bg-kraft/50 px-3 py-2.5 font-medium text-ink"
               >
                 <Phone className="h-3.5 w-3.5 text-cinnabar" aria-hidden="true" />
-                {restaurant.phone.display}
+                {store.phoneDisplay}
               </a>
               <a
-                href={restaurant.links.googleMapsDirections}
+                href={store.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-1.5 rounded-xl border border-kraft-deep bg-kraft/50 px-3 py-2.5 font-medium text-ink"

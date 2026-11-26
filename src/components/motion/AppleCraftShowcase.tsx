@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
+import { useSiteContent } from "@/components/SiteContentProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 interface CraftHighlight {
@@ -135,6 +136,7 @@ const highlights: CraftHighlight[] = [
  */
 export function AppleCraftShowcase() {
   const { isTraditional, t, zhText, pick } = useLocale();
+  const { home } = useSiteContent();
   const [activeIndex, setActiveIndex] = useState(0);
   const runwayRef = useRef<HTMLElement>(null);
   const tabListRef = useRef<HTMLDivElement>(null);
@@ -144,8 +146,19 @@ export function AppleCraftShowcase() {
   const photoZoomRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
 
-  const total = highlights.length;
-  const current = highlights[activeIndex] ?? highlights[0];
+  const liveSlides: CraftHighlight[] =
+    home.craftShowcase.slides && home.craftShowcase.slides.length > 0
+      ? home.craftShowcase.slides.map((s, idx) => ({
+          ...s,
+          alt: s.title,
+          glow:
+            highlights[idx % highlights.length]?.glow ??
+            "radial-gradient(ellipse at 25% 30%, rgba(214, 58, 92, 0.24), transparent 62%)",
+        }))
+      : highlights;
+
+  const total = liveSlides.length;
+  const current = liveSlides[activeIndex] ?? liveSlides[0];
 
   // Keep the active pill tab centered inside the mobile horizontal strip without affecting vertical scroll
   useEffect(() => {
@@ -305,10 +318,7 @@ export function AppleCraftShowcase() {
                 </span>
               </p>
               <h2 className="mt-1 font-display text-xl leading-[1.16] font-medium tracking-[-0.025em] text-parchment sm:mt-1.5 sm:text-3xl lg:text-4xl">
-                {pick(
-                  "一口铁板，四件让人排队的理由。",
-                  "One cast-iron griddle. Four reasons people queue."
-                )}
+                {t(home.craftShowcase.heading)}
               </h2>
             </div>
 
@@ -319,7 +329,7 @@ export function AppleCraftShowcase() {
               aria-label={pick("选择查看亮点", "Choose a highlight")}
               className="no-scrollbar flex w-full max-w-full flex-nowrap gap-1.5 overflow-x-auto pb-0.5 sm:w-auto sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0"
             >
-              {highlights.map((item, idx) => {
+              {liveSlides.map((item, idx) => {
                 const isActive = idx === activeIndex;
                 return (
                   <button
@@ -358,7 +368,7 @@ export function AppleCraftShowcase() {
                   ref={photoZoomRef}
                   className="absolute inset-0 will-change-transform"
                 >
-                  {highlights.map((item, idx) => {
+                  {liveSlides.map((item, idx) => {
                     const isActive = idx === activeIndex;
                     return (
                       <div
@@ -455,7 +465,7 @@ export function AppleCraftShowcase() {
           {/* Scroll-Scrubbed Capsule Progress Dock (Visible on Mobile & Desktop!) */}
           <div className="mt-3 flex items-center justify-center gap-2.5 sm:mt-5 sm:gap-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-parchment/15 bg-white/[0.07] px-3.5 py-1.5 backdrop-blur-md sm:px-4 sm:py-2">
-              {highlights.map((item, idx) => {
+              {liveSlides.map((item, idx) => {
                 const isActive = idx === activeIndex;
                 const isPassed = idx < activeIndex;
                 return (

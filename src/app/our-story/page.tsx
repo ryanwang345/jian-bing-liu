@@ -1,6 +1,8 @@
 import { StoryView } from "@/components/views/StoryView";
 import { buildPageMetadata } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = buildPageMetadata({
   title: "Our Story",
   description:

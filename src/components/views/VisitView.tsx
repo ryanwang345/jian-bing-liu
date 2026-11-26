@@ -16,17 +16,23 @@ import {
 } from "lucide-react";
 import { LiveOpenBadge } from "@/components/LiveOpenBadge";
 import { ShareSpotButton } from "@/components/ShareSpotButton";
+import { phoneToTelHref, useSiteContent } from "@/components/SiteContentProvider";
 import { SocialIcon } from "@/components/SocialIcon";
-import { restaurant } from "@/data/restaurant";
 import { useSocialLinks } from "@/components/SocialLinksProvider";
+import { restaurant } from "@/data/restaurant";
 import { useLocale } from "@/lib/i18n";
 
 export function VisitView() {
   const { isZh, isTraditional, t, zhText, pick } = useLocale();
+  const { store, pages } = useSiteContent();
+  const visitCopy = pages.visit;
   const socialLinks = useSocialLinks();
-  const messagingLinks = socialLinks.filter((link) => ["rednote", "instagram", "tiktok"].includes(link.platform));
+  const messagingLinks = socialLinks.filter((link) =>
+    ["rednote", "instagram", "tiktok"].includes(link.platform)
+  );
   const [mapReady, setMapReady] = useState(false);
-  const mapEmbedUrl = `https://maps.google.com/maps?q=${restaurant.links.googleMapsEmbedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${store.googleMapsEmbedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+  const phoneHref = phoneToTelHref(store.phoneDisplay);
 
   useEffect(() => {
     const id = window.setTimeout(() => setMapReady(true), 150);
@@ -39,7 +45,7 @@ export function VisitView() {
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="animate-fade-up max-w-2xl">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-cinnabar uppercase">
-              <span>{pick("位置与联系", "Visit & Contact")}</span>
+              <span>{t(visitCopy.eyebrow)}</span>
               <span aria-hidden="true" className="text-kraft-deep">
                 ·
               </span>
@@ -47,17 +53,14 @@ export function VisitView() {
                 lang={isTraditional ? "zh-Hant" : "zh-Hans"}
                 className="font-calligraphy text-lg font-normal tracking-normal text-ink"
               >
-                {zhText("来店指南")}
+                {zhText(visitCopy.chineseAccent)}
               </span>
             </p>
             <h1 className="mt-2 font-display text-4xl font-medium tracking-[-0.025em] text-ink sm:text-5xl">
-              {pick("在伦敦卡姆登路找到我们", "Find us on Camden Road")}
+              {t(visitCopy.title)}
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg">
-              {pick(
-                "支持到店自取外带热乎现摊煎饼，以及卡姆登及周边伦敦区域无接触配送（不提供堂食）。",
-                "Pick up a hot takeaway on Camden Road, or order no-contact delivery across Camden and nearby North London (takeaway & delivery only — no dine-in)."
-              )}
+              {t(visitCopy.description)}
             </p>
           </div>
         </div>
@@ -78,32 +81,28 @@ export function VisitView() {
                   <address className="mt-1.5 not-italic text-sm leading-relaxed text-ink-muted">
                     {isZh ? (
                       <>
-                        {zhText(restaurant.chineseName)}（
-                        {zhText(restaurant.sealText)}）
+                        {zhText(store.nameZh)}（{zhText(store.sealText)}）
                         <br />
-                        {zhText(restaurant.address.chineseLine)}
+                        {zhText(store.addressZh)}
                         <br />
-                        {restaurant.address.street},{" "}
-                        {restaurant.address.locality}{" "}
-                        {restaurant.address.postalCode}
+                        {store.street}, {store.locality} {store.postalCode}
                       </>
                     ) : (
                       <>
-                        {restaurant.name} (
-                        <span lang="zh-Hans">{restaurant.chineseName}</span>)
+                        {store.nameEn} (
+                        <span lang="zh-Hans">{store.nameZh}</span>)
                         <br />
-                        {restaurant.address.street}
+                        {store.street}
                         <br />
-                        {restaurant.address.locality}{" "}
-                        {restaurant.address.postalCode}
+                        {store.locality} {store.postalCode}
                         <br />
-                        {restaurant.address.country}
+                        United Kingdom
                       </>
                     )}
                   </address>
 
                   <a
-                    href={restaurant.links.googleMapsDirections}
+                    href={store.googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-cinnabar px-5 py-2.5 text-sm font-semibold text-parchment shadow-xs transition-all hover:-translate-y-0.5 hover:bg-cinnabar-dark"
@@ -129,25 +128,25 @@ export function VisitView() {
                     <LiveOpenBadge />
                   </div>
                   <dl className="mt-3 space-y-2 text-sm">
-                    {restaurant.openingHours.map((row) => (
-                      <div
-                        key={row.days.en}
-                        className="flex items-center justify-between gap-4 border-b border-kraft-deep/60 pb-2 last:border-0 last:pb-0"
-                      >
-                        <dt className="font-medium text-ink-soft">
-                          {t(row.days)}
-                        </dt>
-                        <dd className="font-semibold text-ink">
-                          {t(row.hours)}
-                        </dd>
-                      </div>
-                    ))}
+                    <div className="flex items-center justify-between gap-4 border-b border-kraft-deep/60 pb-2">
+                      <dt className="font-medium text-ink-soft">
+                        {pick("周一至周三", "Monday – Wednesday")}
+                      </dt>
+                      <dd className="font-semibold tabular-nums text-ink">
+                        {store.monWedOpens} – {store.monWedCloses}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <dt className="font-medium text-ink-soft">
+                        {pick("周四至周日", "Thursday – Sunday")}
+                      </dt>
+                      <dd className="font-semibold tabular-nums text-ink">
+                        {store.thuSunOpens} – {store.thuSunCloses}
+                      </dd>
+                    </div>
                   </dl>
                   <p className="mt-3 text-xs text-ink-muted">
-                    {pick(
-                      "节假日营业时间可能略有调整，如临近打烊前来店，建议提前致电确认。",
-                      "Bank holiday hours can vary, so give us a quick ring if you're heading over late."
-                    )}
+                    {t(visitCopy.hoursHint)}
                   </p>
                 </div>
               </div>
@@ -169,24 +168,24 @@ export function VisitView() {
                     )}
                   </p>
                   <a
-                    href={restaurant.phone.href}
+                    href={phoneHref}
                     className="mt-2 inline-block font-display text-xl font-bold text-cinnabar hover:text-cinnabar-dark"
                   >
-                    {restaurant.phone.display}
+                    {store.phoneDisplay}
                   </a>
 
-                  {restaurant.links.orderOnline && (
+                  {store.orderOnlineUrl && (
                     <div className="mt-4 space-y-2.5 border-t border-kraft-deep/60 pt-4">
                       <a
-                        href={restaurant.links.orderOnline}
+                        href={store.orderOnlineUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-parchment transition-colors hover:bg-cinnabar"
                       >
                         <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                         {pick(
-                          `前往${restaurant.links.orderOnlineProviderZh}在线点餐`,
-                          `Order Online via ${restaurant.links.orderOnlineProvider}`
+                          `前往${store.orderProviderZh}在线点餐`,
+                          `Order Online via ${store.orderProviderEn}`
                         )}
                         <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                       </a>
@@ -195,12 +194,20 @@ export function VisitView() {
 
                   {messagingLinks.length > 0 && (
                     <div className="mt-4 flex items-start gap-2 rounded-xl border border-kraft-deep/80 bg-parchment p-3 text-xs text-ink-muted">
-                      <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar" aria-hidden="true" />
+                      <MessageCircle
+                        className="mt-0.5 h-4 w-4 shrink-0 text-cinnabar"
+                        aria-hidden="true"
+                      />
                       <div className="flex flex-wrap gap-x-2 gap-y-1">
                         {pick("也可以通过这些平台给我们留言：", "Message us on")}
                         {messagingLinks.map((link) => (
-                          <a key={link.platform} href={link.href} target="_blank" rel="noopener noreferrer"
-                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar">
+                          <a
+                            key={link.platform}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-ink underline underline-offset-2 hover:text-cinnabar"
+                          >
                             {t(link.label)} ({link.handle})
                           </a>
                         ))}
@@ -213,33 +220,29 @@ export function VisitView() {
           </div>
 
           <div className="min-w-0 space-y-6 lg:col-span-7">
-            <figure className="relative overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
-              <div className="relative aspect-[16/10] w-full">
-                <Image
-                  src="/images/storefront-camden.webp"
-                  alt={pick(
-                    "伦敦卡姆登路 124 号煎饼刘门店外景，门口挂着红底中式果蔬煎饼旗帜",
-                    "Exterior of Jian Bing Liu at 124 Camden Road, London NW1 9EE with the red Chinese Jian Bing banner outside"
-                  )}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 58vw"
-                  className="object-cover"
-                />
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pt-10 pb-3.5 text-xs font-medium text-parchment sm:text-sm">
-                  {pick(
-                    "门店外景 · 伦敦卡姆登路 124 号（认准门口红底中式果蔬煎饼旗帜）",
-                    "124 Camden Rd, NW1 9EE — look for the red Jian Bing banner outside"
-                  )}
-                </figcaption>
-              </div>
-            </figure>
+            {visitCopy.storefrontPhoto && (
+              <figure className="relative overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
+                <div className="relative aspect-[16/10] w-full">
+                  <Image
+                    src={visitCopy.storefrontPhoto}
+                    alt={t(visitCopy.storefrontCaption)}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    className="object-cover"
+                  />
+                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pt-10 pb-3.5 text-xs font-medium text-parchment sm:text-sm">
+                    {t(visitCopy.storefrontCaption)}
+                  </figcaption>
+                </div>
+              </figure>
+            )}
 
             <div className="overflow-hidden rounded-3xl border border-kraft-deep bg-kraft shadow-sm">
               {mapReady ? (
                 <iframe
                   title={pick(
-                    "煎饼刘地图位置：124 Camden Rd, London NW1 9EE",
-                    "Map showing Jian Bing Liu at 124 Camden Rd, London NW1 9EE"
+                    `煎饼刘地图位置：${store.street}, ${store.postalCode}`,
+                    `Map showing ${store.nameEn} at ${store.street}, ${store.postalCode}`
                   )}
                   src={mapEmbedUrl}
                   loading="lazy"
@@ -333,7 +336,10 @@ export function VisitView() {
                       <SocialIcon platform={social.platform} className="h-4 w-4" />
                       <span>{t(social.label)}</span>
                       <span className="text-xs opacity-75">{social.handle}</span>
-                      <ExternalLink className="h-3 w-3 opacity-70" aria-hidden="true" />
+                      <ExternalLink
+                        className="h-3 w-3 opacity-70"
+                        aria-hidden="true"
+                      />
                     </a>
                   ))}
               </div>

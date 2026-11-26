@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { Clock, ExternalLink, Lock, MapPin, Phone, ShoppingBag } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
+import { phoneToTelHref, useSiteContent } from "@/components/SiteContentProvider";
 import { SocialIcon } from "@/components/SocialIcon";
-import { restaurant } from "@/data/restaurant";
 import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
@@ -18,8 +18,10 @@ const quickLinks: Array<{ href: string; label: LocalizedText }> = [
 
 export function Footer() {
   const { isZh, t, zhText, pick } = useLocale();
+  const { store } = useSiteContent();
   const socialLinks = useSocialLinks();
   const instagram = socialLinks.find((link) => link.platform === "instagram");
+  const phoneHref = phoneToTelHref(store.phoneDisplay);
 
   return (
     <footer className="relative z-10 border-t border-ink-soft bg-ink pb-28 text-parchment/90 md:pb-0">
@@ -30,17 +32,14 @@ export function Footer() {
               href="/"
               className="inline-block rounded-lg"
               aria-label={pick(
-                `${restaurant.chineseName} — 返回首页`,
-                `${restaurant.name} — Home`
+                `${store.nameZh} — 返回首页`,
+                `${store.nameEn} — Home`
               )}
             >
               <BrandMark variant="light" size="md" />
             </Link>
             <p className="text-sm leading-relaxed text-parchment/75">
-              {pick(
-                "国内退休后赴英三次归零创业，扎根伦敦卡姆登路！鲜榨红心火龙果与甜菜根果蔬煎饼，清真牛鸡与素食皆全，现点现摊。",
-                "Handmade Northern Chinese Jian Bing on Camden Road — natural dragon fruit & beetroot batters, Halal beef & chicken, and veggie & vegan favourites."
-              )}
+              {t(store.footerIntro)}
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
               {instagram && (
@@ -75,18 +74,18 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
-              {restaurant.links.orderOnline && (
+              {store.orderOnlineUrl && (
                 <li>
                   <a
-                    href={restaurant.links.orderOnline}
+                    href={store.orderOnlineUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 font-medium text-[#F0C26E] transition-colors hover:text-white"
                   >
                     <ShoppingBag className="h-3.5 w-3.5" aria-hidden="true" />
                     {pick(
-                      `在线点餐（${restaurant.links.orderOnlineProviderZh}）`,
-                      `Order Online (${restaurant.links.orderOnlineProvider})`
+                      `在线点餐（${store.orderProviderZh}）`,
+                      `Order Online (${store.orderProviderEn})`
                     )}
                     <ExternalLink className="h-3 w-3" aria-hidden="true" />
                   </a>
@@ -106,26 +105,24 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <a
-                  href={restaurant.links.googleMapsDirections}
+                  href={store.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors hover:text-[#F0C26E]"
                 >
                   {isZh ? (
                     <>
-                      {zhText(restaurant.address.chineseLine)}
+                      {zhText(store.addressZh)}
                       <br />
-                      {restaurant.address.street}, {restaurant.address.locality}{" "}
-                      {restaurant.address.postalCode}
+                      {store.street}, {store.locality} {store.postalCode}
                     </>
                   ) : (
                     <>
-                      {restaurant.address.street}
+                      {store.street}
                       <br />
-                      {restaurant.address.locality}{" "}
-                      {restaurant.address.postalCode}
+                      {store.locality} {store.postalCode}
                       <br />
-                      {restaurant.address.country}
+                      United Kingdom
                     </>
                   )}
                 </a>
@@ -136,10 +133,10 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <a
-                  href={restaurant.phone.href}
+                  href={phoneHref}
                   className="transition-colors hover:text-[#F0C26E]"
                 >
-                  {restaurant.phone.display}
+                  {store.phoneDisplay}
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
@@ -147,7 +144,9 @@ export function Footer() {
                   className="mt-0.5 h-4 w-4 shrink-0 text-[#F0C26E]"
                   aria-hidden="true"
                 />
-                <span>{t(restaurant.openingHoursSummary)}</span>
+                <span>
+                  {pick(store.hoursSummaryZh, store.hoursSummaryEn)}
+                </span>
               </li>
             </ul>
           </div>
@@ -188,11 +187,11 @@ export function Footer() {
           <p>
             &copy; {new Date().getFullYear()}{" "}
             {pick(
-              `${restaurant.chineseName}（${restaurant.sealText}）`,
-              `${restaurant.name} (${restaurant.chineseName} · ${restaurant.sealText})`
+              `${store.nameZh}（${store.sealText}）`,
+              `${store.nameEn} (${store.nameZh} · ${store.sealText})`
             )}
             {" · "}
-            {restaurant.address.street}, {restaurant.address.postalCode}
+            {store.street}, {store.postalCode}
             <span aria-hidden="true" className="text-parchment/25">
               {" · "}
             </span>
@@ -205,12 +204,7 @@ export function Footer() {
               {pick("店主登录", "Staff Login")}
             </Link>
           </p>
-          <p>
-            {pick(
-              "仅限外带与无接触配送（不提供堂食） · 菜品供应及价格以门店实际为准",
-              "Takeaway & no-contact delivery only (no dine-in) · Prices & availability subject to in-store confirmation."
-            )}
-          </p>
+          <p>{t(store.footerNote)}</p>
         </div>
       </div>
     </footer>

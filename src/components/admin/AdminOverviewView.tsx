@@ -8,9 +8,12 @@ import {
   Eye,
   FolderKanban,
   ImagePlus,
+  Images,
+  LayoutTemplate,
   Package,
   Palette,
   Plus,
+  Settings,
   Sparkles,
   Star,
 } from "lucide-react";
@@ -25,7 +28,15 @@ interface AdminOverviewViewProps {
   onAddProduct: () => void;
   onEditProduct: (categoryId: string, item: MenuItem) => void;
   onQuickToggleAvailable: (item: MenuItem, isAvailable: boolean) => void;
-  onNavigateTab: (tab: "products" | "categories" | "themes") => void;
+  onNavigateTab: (
+    tab:
+      | "products"
+      | "categories"
+      | "themes"
+      | "customizer"
+      | "gallery"
+      | "settings"
+  ) => void;
 }
 
 export function AdminOverviewView({
@@ -292,6 +303,39 @@ export function AdminOverviewView({
               快捷通道
             </h2>
             <div className="mt-3 space-y-2 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => onNavigateTab("customizer")}
+                className="flex w-full items-center justify-between rounded-lg border border-[#ebebeb] px-3 py-2.5 text-left text-[#303030] hover:bg-[#fafafa]"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <LayoutTemplate className="h-3.5 w-3.5 text-[#616161]" />
+                  页面装修与排版（全站文字 / 照片 / 板块顺序）
+                </span>
+                <span>→</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigateTab("gallery")}
+                className="flex w-full items-center justify-between rounded-lg border border-[#ebebeb] px-3 py-2.5 text-left text-[#303030] hover:bg-[#fafafa]"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Images className="h-3.5 w-3.5 text-[#616161]" />
+                  实拍图集管理（上传与整理照片）
+                </span>
+                <span>→</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigateTab("settings")}
+                className="flex w-full items-center justify-between rounded-lg border border-[#ebebeb] px-3 py-2.5 text-left text-[#303030] hover:bg-[#fafafa]"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Settings className="h-3.5 w-3.5 text-[#616161]" />
+                  店铺与营业设置（临时店休 / 营业时间 / 电话）
+                </span>
+                <span>→</span>
+              </button>
               <Link
                 href="/admin/posts"
                 className="flex items-center justify-between rounded-lg border border-[#ebebeb] px-3 py-2.5 text-[#303030] hover:bg-[#fafafa]"

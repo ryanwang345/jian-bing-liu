@@ -8,27 +8,33 @@ import {
   FolderKanban,
   HardDrive,
   Home,
+  Images,
+  LayoutTemplate,
   LogOut,
   Menu,
   MessageSquareHeart,
   Package,
   Palette,
+  Settings,
   Share2,
   Store,
   X,
 } from "lucide-react";
 
-export type AdminNavKey =
+export type MainAdminTab =
   | "overview"
   | "products"
   | "categories"
   | "themes"
-  | "posts"
-  | "social";
+  | "customizer"
+  | "gallery"
+  | "settings";
+
+export type AdminNavKey = MainAdminTab | "posts" | "social";
 
 interface ShopifyAdminShellProps {
   activeNav: AdminNavKey;
-  onSelectMainTab?: (tab: "overview" | "products" | "categories" | "themes") => void;
+  onSelectMainTab?: (tab: MainAdminTab) => void;
   totalProducts?: number;
   soldOutProducts?: number;
   totalCategories?: number;
@@ -53,15 +59,16 @@ export function ShopifyAdminShell({
 }: ShopifyAdminShellProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  const navItems: Array<{
+  type NavItemDef = {
     key: AdminNavKey;
     label: string;
     href: string;
     icon: typeof Home;
     badge?: string | number;
-    badgeTone?: "neutral" | "warning";
-    mainTab?: "overview" | "products" | "categories" | "themes";
-  }> = [
+    mainTab?: MainAdminTab;
+  };
+
+  const catalogItems: NavItemDef[] = [
     {
       key: "overview",
       label: "首页概览",
@@ -75,7 +82,6 @@ export function ShopifyAdminShell({
       href: "/admin?tab=products",
       icon: Package,
       badge: totalProducts,
-      badgeTone: "neutral",
       mainTab: "products",
     },
     {
@@ -84,16 +90,35 @@ export function ShopifyAdminShell({
       href: "/admin?tab=categories",
       icon: FolderKanban,
       badge: totalCategories,
-      badgeTone: "neutral",
       mainTab: "categories",
+    },
+  ];
+
+  const storefrontItems: NavItemDef[] = [
+    {
+      key: "customizer",
+      label: "页面装修与排版",
+      href: "/admin?tab=customizer",
+      icon: LayoutTemplate,
+      mainTab: "customizer",
+    },
+    {
+      key: "gallery",
+      label: "实拍图集管理",
+      href: "/admin?tab=gallery",
+      icon: Images,
+      mainTab: "gallery",
     },
     {
       key: "themes",
-      label: "节日与主题",
+      label: "节日与主题皮肤",
       href: "/admin?tab=themes",
       icon: Palette,
       mainTab: "themes",
     },
+  ];
+
+  const channelAndSettingsItems: NavItemDef[] = [
     {
       key: "posts",
       label: "社媒展示帖",
@@ -106,67 +131,76 @@ export function ShopifyAdminShell({
       href: "/admin/social",
       icon: Share2,
     },
+    {
+      key: "settings",
+      label: "店铺与营业设置",
+      href: "/admin?tab=settings",
+      icon: Settings,
+      mainTab: "settings",
+    },
   ];
+
+  const renderSingleItem = (item: NavItemDef, closeDrawerOnClick: boolean) => {
+    const Icon = item.icon;
+    const active = activeNav === item.key;
+    const commonClass = `flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-[13px] font-semibold transition-colors ${
+      active
+        ? "bg-[#fafafa] text-[#1a1a1a] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+        : "text-[#4a4a4a] hover:bg-[#e3e3e3]/70 hover:text-[#1a1a1a]"
+    }`;
+
+    if (item.mainTab && onSelectMainTab) {
+      return (
+        <button
+          key={item.key}
+          type="button"
+          onClick={() => {
+            onSelectMainTab(item.mainTab!);
+            if (closeDrawerOnClick) setMobileDrawerOpen(false);
+          }}
+          className={commonClass}
+        >
+          <span className="flex items-center gap-2.5">
+            <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{item.label}</span>
+          </span>
+          {typeof item.badge === "number" && (
+            <span className="rounded-full bg-[#dcdcdc] px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#303030]">
+              {item.badge}
+            </span>
+          )}
+        </button>
+      );
+    }
+
+    return (
+      <Link
+        key={item.key}
+        href={item.href}
+        onClick={() => {
+          if (closeDrawerOnClick) setMobileDrawerOpen(false);
+        }}
+        className={commonClass}
+      >
+        <span className="flex items-center gap-2.5">
+          <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>{item.label}</span>
+        </span>
+        {typeof item.badge === "number" && (
+          <span className="rounded-full bg-[#dcdcdc] px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#303030]">
+            {item.badge}
+          </span>
+        )}
+      </Link>
+    );
+  };
 
   const renderNavList = (closeDrawerOnClick: boolean) => (
     <nav aria-label="后台主导航" className="flex flex-1 flex-col gap-1 px-3 py-3">
       <p className="px-2.5 pb-1 text-[11px] font-semibold tracking-wider text-[#616161] uppercase">
-        门店管理
+        门店与菜单管理
       </p>
-      {navItems.slice(0, 4).map((item) => {
-        const Icon = item.icon;
-        const active = activeNav === item.key;
-        const commonClass = `flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-[13px] font-semibold transition-colors ${
-          active
-            ? "bg-[#fafafa] text-[#1a1a1a] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
-            : "text-[#4a4a4a] hover:bg-[#e3e3e3]/70 hover:text-[#1a1a1a]"
-        }`;
-
-        if (item.mainTab && onSelectMainTab) {
-          return (
-            <button
-              key={item.key}
-              type="button"
-              onClick={() => {
-                onSelectMainTab(item.mainTab!);
-                if (closeDrawerOnClick) setMobileDrawerOpen(false);
-              }}
-              className={commonClass}
-            >
-              <span className="flex items-center gap-2.5">
-                <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span>{item.label}</span>
-              </span>
-              {typeof item.badge === "number" && (
-                <span className="rounded-full bg-[#dcdcdc] px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#303030]">
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          );
-        }
-
-        return (
-          <Link
-            key={item.key}
-            href={item.href}
-            onClick={() => {
-              if (closeDrawerOnClick) setMobileDrawerOpen(false);
-            }}
-            className={commonClass}
-          >
-            <span className="flex items-center gap-2.5">
-              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>{item.label}</span>
-            </span>
-            {typeof item.badge === "number" && (
-              <span className="rounded-full bg-[#dcdcdc] px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#303030]">
-                {item.badge}
-              </span>
-            )}
-          </Link>
-        );
-      })}
+      {catalogItems.map((item) => renderSingleItem(item, closeDrawerOnClick))}
 
       {typeof soldOutProducts === "number" && soldOutProducts > 0 && (
         <div className="mx-1 mt-1 rounded-lg border border-[#ffd6a4] bg-[#fff5ea] px-2.5 py-1.5 text-[11px] font-semibold text-[#8a5000]">
@@ -175,31 +209,16 @@ export function ShopifyAdminShell({
       )}
 
       <p className="mt-4 px-2.5 pb-1 text-[11px] font-semibold tracking-wider text-[#616161] uppercase">
-        销售与社媒渠道
+        在线网店装修
       </p>
-      {navItems.slice(4).map((item) => {
-        const Icon = item.icon;
-        const active = activeNav === item.key;
-        return (
-          <Link
-            key={item.key}
-            href={item.href}
-            onClick={() => {
-              if (closeDrawerOnClick) setMobileDrawerOpen(false);
-            }}
-            className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-[13px] font-semibold transition-colors ${
-              active
-                ? "bg-[#fafafa] text-[#1a1a1a] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
-                : "text-[#4a4a4a] hover:bg-[#e3e3e3]/70 hover:text-[#1a1a1a]"
-            }`}
-          >
-            <span className="flex items-center gap-2.5">
-              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>{item.label}</span>
-            </span>
-          </Link>
-        );
-      })}
+      {storefrontItems.map((item) => renderSingleItem(item, closeDrawerOnClick))}
+
+      <p className="mt-4 px-2.5 pb-1 text-[11px] font-semibold tracking-wider text-[#616161] uppercase">
+        社媒渠道与设置
+      </p>
+      {channelAndSettingsItems.map((item) =>
+        renderSingleItem(item, closeDrawerOnClick)
+      )}
 
       <div className="mt-auto space-y-1.5 border-t border-[#dcdcdc] pt-3 text-[11px] text-[#616161]">
         <div className="flex items-center gap-1.5 px-2">

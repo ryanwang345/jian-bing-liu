@@ -9,7 +9,9 @@ import { MobileActionBar } from "@/components/MobileActionBar";
 import { RouteTransition } from "@/components/motion/RouteTransition";
 import { ScrollAmbientLights } from "@/components/motion/ScrollAmbientLights";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
+import { useSiteContent } from "@/components/SiteContentProvider";
 import type { FestivalPreset } from "@/data/festivals";
+import { useLocale } from "@/lib/i18n";
 
 interface StorefrontChromeProps {
   children: ReactNode;
@@ -23,6 +25,8 @@ export function StorefrontChrome({
   hasFestiveDishes,
 }: StorefrontChromeProps) {
   const pathname = usePathname();
+  const { t } = useLocale();
+  const { store } = useSiteContent();
   const isAdminRoute = pathname?.startsWith("/admin");
 
   if (isAdminRoute) {
@@ -33,10 +37,25 @@ export function StorefrontChrome({
     );
   }
 
+  const customBannerText = store.temporarilyClosed
+    ? t(store.closedNotice)
+    : store.customAnnouncementEnabled
+      ? t(store.customAnnouncement)
+      : "";
+
   return (
     <>
       <ScrollAmbientLights />
       <ScrollProgressBar />
+      {customBannerText.trim() && (
+        <div
+          role="region"
+          aria-label="Store announcement"
+          className="relative z-40 border-b border-white/10 bg-cinnabar px-4 py-2 text-center text-xs font-semibold text-parchment"
+        >
+          {customBannerText}
+        </div>
+      )}
       {activeFestival && (
         <FestivalBanner
           festival={activeFestival}

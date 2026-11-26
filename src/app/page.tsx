@@ -5,6 +5,8 @@ import { getFeaturedMenuItems } from "@/lib/menu-service";
 import { getInitialReviewsForSsr } from "@/lib/reviews-service";
 import { buildPageMetadata } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = buildPageMetadata({
   title: `${restaurant.name} (${restaurant.chineseName}) | Authentic Chinese Street Food in Camden`,
   description: restaurant.description.en,

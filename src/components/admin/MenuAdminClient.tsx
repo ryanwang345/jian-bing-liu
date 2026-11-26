@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Loader2, Lock } from "lucide-react";
 import { AdminCategoriesView } from "@/components/admin/AdminCategoriesView";
+import { AdminCustomizerView } from "@/components/admin/AdminCustomizerView";
+import { AdminGalleryView } from "@/components/admin/AdminGalleryView";
 import { AdminOverviewView } from "@/components/admin/AdminOverviewView";
 import {
   AdminProductEditor,
@@ -11,19 +13,23 @@ import {
   type DishFormState,
 } from "@/components/admin/AdminProductEditor";
 import { AdminProductsView } from "@/components/admin/AdminProductsView";
+import { AdminSettingsView } from "@/components/admin/AdminSettingsView";
 import { AdminThemesView } from "@/components/admin/AdminThemesView";
-import { ShopifyAdminShell } from "@/components/admin/ShopifyAdminShell";
+import {
+  ShopifyAdminShell,
+  type MainAdminTab,
+} from "@/components/admin/ShopifyAdminShell";
 import type { MenuCategory, MenuItem } from "@/data/menu";
+import { defaultSiteContent, type SiteContentConfig } from "@/data/site-content";
 import type { AdminSessionStatus } from "@/lib/admin-auth";
 import type { ActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import type { AdminMenuSnapshot, BulkMenuAction } from "@/lib/menu-service";
-
-type MainAdminTab = "overview" | "products" | "categories" | "themes";
 
 interface MenuAdminClientProps {
   initialSession: AdminSessionStatus;
   initialSnapshot: AdminMenuSnapshot | null;
   initialFestivalTheme?: ActiveFestivalThemeState | null;
+  initialSiteContent?: SiteContentConfig | null;
   initialTab?: MainAdminTab;
 }
 
@@ -31,6 +37,7 @@ export function MenuAdminClient({
   initialSession,
   initialSnapshot,
   initialFestivalTheme = null,
+  initialSiteContent = null,
   initialTab = "products",
 }: MenuAdminClientProps) {
   const [session, setSession] = useState<AdminSessionStatus>(initialSession);
@@ -39,6 +46,10 @@ export function MenuAdminClient({
   );
   const [festivalTheme, setFestivalTheme] =
     useState<ActiveFestivalThemeState | null>(initialFestivalTheme);
+  const [siteContent, setSiteContent] = useState<SiteContentConfig>(
+    initialSiteContent ?? defaultSiteContent
+  );
+  const [contentRevision, setContentRevision] = useState(0);
 
   // Navigation & Editor state
   const [activeTab, setActiveTab] = useState<MainAdminTab>(initialTab);
@@ -53,6 +64,7 @@ export function MenuAdminClient({
   const [isBusy, setIsBusy] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUpdatingTheme, setIsUpdatingTheme] = useState(false);
+  const [isSavingContent, setIsSavingContent] = useState(false);
 
   const [toast, setToast] = useState<{
     type: "success" | "error";
@@ -83,15 +95,23 @@ export function MenuAdminClient({
   };
 
   const refreshAll = async () => {
-    const [menuRes, themeRes] = await Promise.all([
+    const [menuRes, themeRes, contentRes] = await Promise.all([
       fetch("/api/admin/menu", { cache: "no-store" }),
       fetch("/api/admin/theme", { cache: "no-store" }),
+      fetch("/api/admin/site-content", { cache: "no-store" }),
     ]);
     if (menuRes.ok) {
       setSnapshot((await menuRes.json()) as AdminMenuSnapshot);
     }
     if (themeRes.ok) {
       setFestivalTheme((await themeRes.json()) as ActiveFestivalThemeState);
+    }
+    if (contentRes.ok) {
+      const data = (await contentRes.json()) as { content?: SiteContentConfig };
+      if (data.content) {
+        setSiteContent(data.content);
+        setContentRevision((r) => r + 1);
+      }
     }
   };
 
@@ -391,6 +411,63 @@ export function MenuAdminClient({
     }
   };
 
+  const handleSaveSiteContent = async (
+    nextContent: SiteContentConfig,
+    successMsg = "全站内容与排版已保存生效"
+  ) => {
+    setIsSavingContent(true);
+    try {
+      const res = await fetch("/api/admin/site-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: nextContent }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        content?: SiteContentConfig;
+      };
+      if (!res.ok || !data.content) {
+        showToast("error", data.error || "保存失败");
+        return;
+      }
+      setSiteContent(data.content);
+      setContentRevision((r) => r + 1);
+      showToast("success", successMsg);
+    } catch {
+      showToast("error", "网络错误，请稍后重试");
+    } finally {
+      setIsSavingContent(false);
+    }
+  };
+
+  const handleResetSiteContent = async () => {
+    setIsSavingContent(true);
+    try {
+      const res = await fetch("/api/admin/site-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reset-all" }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        content?: SiteContentConfig;
+      };
+      if (!res.ok || !data.content) {
+        showToast("error", data.error || "恢复默认失败");
+        return;
+      }
+      setSiteContent(data.content);
+      setContentRevision((r) => r + 1);
+      showToast("success", "已恢复全站默认文案、照片与板块顺序");
+    } catch {
+      showToast("error", "网络错误，请稍后重试");
+    } finally {
+      setIsSavingContent(false);
+    }
+  };
+
   const categories: MenuCategory[] = useMemo(
     () => snapshot?.categories ?? [],
     [snapshot]
@@ -575,6 +652,36 @@ export function MenuAdminClient({
           hasDb={snapshot?.hasDb ?? false}
           isUpdating={isUpdatingTheme}
           onSelectTheme={(val) => void handleChangeFestivalTheme(val)}
+        />
+      ) : activeTab === "customizer" ? (
+        <AdminCustomizerView
+          key={`customizer-${contentRevision}`}
+          content={siteContent}
+          hasDb={snapshot?.hasDb ?? false}
+          hasR2={snapshot?.hasR2 ?? false}
+          isSaving={isSavingContent}
+          onSaveContent={handleSaveSiteContent}
+          onResetAllContent={handleResetSiteContent}
+          onNavigateMainTab={selectTab}
+          showToast={showToast}
+        />
+      ) : activeTab === "gallery" ? (
+        <AdminGalleryView
+          key={`gallery-${contentRevision}`}
+          content={siteContent}
+          hasDb={snapshot?.hasDb ?? false}
+          hasR2={snapshot?.hasR2 ?? false}
+          isSaving={isSavingContent}
+          onSaveContent={handleSaveSiteContent}
+          showToast={showToast}
+        />
+      ) : activeTab === "settings" ? (
+        <AdminSettingsView
+          key={`settings-${contentRevision}`}
+          content={siteContent}
+          hasDb={snapshot?.hasDb ?? false}
+          isSaving={isSavingContent}
+          onSaveContent={handleSaveSiteContent}
         />
       ) : (
         <AdminProductsView

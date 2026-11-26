@@ -3,9 +3,11 @@ import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
 import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
+import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SocialLinksProvider } from "@/components/SocialLinksProvider";
 import { StorefrontChrome } from "@/components/StorefrontChrome";
 import { getActiveFestivalThemeState } from "@/lib/festival-theme-service";
+import { getSiteContent } from "@/lib/site-content-service";
 import { getSocialProfiles } from "@/lib/social-profiles";
 import { restaurant, SITE_URL } from "@/data/restaurant";
 import { getCalligraphyStylesheetHref } from "@/lib/fonts";
@@ -94,11 +96,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [cookieStore, { profiles }, festivalState] = await Promise.all([
-    cookies(),
-    getSocialProfiles(),
-    getActiveFestivalThemeState(),
-  ]);
+  const [cookieStore, { profiles }, festivalState, siteContent] =
+    await Promise.all([
+      cookies(),
+      getSocialProfiles(),
+      getActiveFestivalThemeState(),
+      getSiteContent(),
+    ]);
   const visibleLinks = profiles.filter((profile) => profile.visible);
   const jsonLd = buildRestaurantJsonLd(visibleLinks);
   const savedCookie = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
@@ -164,23 +168,25 @@ export default async function RootLayout({
           hasSavedPreference={hasSavedPreference}
         >
           <SocialLinksProvider links={visibleLinks}>
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-cinnabar focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
-            >
-              {initialLocale === "zh"
-                ? "跳到正文"
-                : initialLocale === "zh-Hant"
-                  ? "跳至正文"
-                  : "Skip to main content"}
-            </a>
+            <SiteContentProvider content={siteContent}>
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-cinnabar focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+              >
+                {initialLocale === "zh"
+                  ? "跳到正文"
+                  : initialLocale === "zh-Hant"
+                    ? "跳至正文"
+                    : "Skip to main content"}
+              </a>
 
-            <StorefrontChrome
-              activeFestival={activeFestival}
-              hasFestiveDishes={festivalState.hasFestiveDishes}
-            >
-              {children}
-            </StorefrontChrome>
+              <StorefrontChrome
+                activeFestival={activeFestival}
+                hasFestiveDishes={festivalState.hasFestiveDishes}
+              >
+                {children}
+              </StorefrontChrome>
+            </SiteContentProvider>
           </SocialLinksProvider>
         </LocaleProvider>
       </body>
