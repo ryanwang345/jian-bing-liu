@@ -36,9 +36,10 @@
 ### 第 2 步：创建 Access Application 保护 `/admin`
 1. 进入左侧 **Zero Trust → Access controls → Applications** → 点击 **Add an application** → 选择 **Self-hosted**。
 2. **Application name** 填写 `Jian Bing Liu Admin`，**Session Duration** 建议选 `1 week` 或 `1 month`（方便门店手机/iPad 日常免重复登录）。
-3. 在 **Public Hostnames** 添加 **两条** 受保护路径：
-   - Domain: `jianbingliu.uk` · Path: `admin*`
-   - Domain: `jianbingliu.uk` · Path: `api/admin*`
+3. 在 **Public Hostnames / Destinations** 添加以下 **三条** 受保护路径（注意通配符前需带斜杠 `/*`，且第一条主入口不带 `*`）：
+   - 第 1 条（主入口）：Domain: `jianbingliu.uk` · Path: `admin`
+   - 第 2 条（后台子页）：Domain: `jianbingliu.uk` · Path: `admin/*`
+   - 第 3 条（后台接口）：Domain: `jianbingliu.uk` · Path: `api/admin/*`
 4. 添加一条 **Access Policy**（例如命名为 `Store Staff`）：
    - **Action**: `Allow`
    - **Include → Emails**：填入你和店员的邮箱地址（只有白名单内的邮箱才能登录，陌生人即使拿到验证码或有 Google 账号也会在边缘被直接拒绝）。

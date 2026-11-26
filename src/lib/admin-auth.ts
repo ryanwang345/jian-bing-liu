@@ -183,16 +183,33 @@ async function getVerificationKey(
   return nextMap.get(kid) ?? null;
 }
 
+export type AdminAuthDiagnostic =
+  | "missing-token"
+  | "invalid-jwt-format"
+  | "issuer-mismatch"
+  | "aud-mismatch"
+  | "token-expired"
+  | "certs-fetch-failed"
+  | "signing-key-missing"
+  | "bad-signature";
+
 async function verifyCfAccessJwt(
   token: string,
   teamOrigin: string,
   allowedAuds: string[]
-): Promise<{ identity: string } | null> {
+): Promise<
+  | { ok: true; identity: string }
+  | { ok: false; diagnostic: AdminAuthDiagnostic }
+> {
   const parts = token.split(".");
-  if (parts.length !== 3) return null;
+  if (parts.length !== 3) {
+    return { ok: false, diagnostic: "invalid-jwt-format" };
+  }
 
   const [headerB64, payloadB64, sigB64] = parts;
-  if (!headerB64 || !payloadB64 || !sigB64) return null;
+  if (!headerB64 || !payloadB64 || !sigB64) {
+    return { ok: false, diagnostic: "invalid-jwt-format" };
+  }
 
   const header = decodeJwtJson<JwtHeader>(headerB64);
   if (
@@ -200,15 +217,17 @@ async function verifyCfAccessJwt(
     !header.kid ||
     (header.alg !== "RS256" && header.alg !== "ES256")
   ) {
-    return null;
+    return { ok: false, diagnostic: "invalid-jwt-format" };
   }
 
   const payload = decodeJwtJson<CfAccessJwtPayload>(payloadB64);
-  if (!payload) return null;
+  if (!payload) {
+    return { ok: false, diagnostic: "invalid-jwt-format" };
+  }
 
   // Validate issuer & audience before network JWKS lookup
   if (payload.iss?.replace(/\/+$/, "") !== teamOrigin) {
-    return null;
+    return { ok: false, diagnostic: "issuer-mismatch" };
   }
 
   const tokenAuds = Array.isArray(payload.aud)
@@ -218,31 +237,33 @@ async function verifyCfAccessJwt(
       : [];
   const audMatched = tokenAuds.some((aud) => allowedAuds.includes(aud));
   if (!audMatched) {
-    return null;
+    return { ok: false, diagnostic: "aud-mismatch" };
   }
 
   const nowSec = Math.floor(Date.now() / 1000);
   if (typeof payload.exp !== "number" || payload.exp <= nowSec) {
-    return null;
+    return { ok: false, diagnostic: "token-expired" };
   }
   if (typeof payload.nbf === "number" && payload.nbf > nowSec + CLOCK_SKEW_SEC) {
-    return null;
+    return { ok: false, diagnostic: "token-expired" };
   }
   if (typeof payload.iat === "number" && payload.iat > nowSec + CLOCK_SKEW_SEC) {
-    return null;
+    return { ok: false, diagnostic: "token-expired" };
   }
 
   const sigBytes = fromBase64Url(sigB64);
-  if (!sigBytes) return null;
+  if (!sigBytes) {
+    return { ok: false, diagnostic: "invalid-jwt-format" };
+  }
 
   let keyEntry: { alg: "RS256" | "ES256"; cryptoKey: CryptoKey } | null = null;
   try {
     keyEntry = await getVerificationKey(teamOrigin, header.kid);
   } catch {
-    return null;
+    return { ok: false, diagnostic: "certs-fetch-failed" };
   }
   if (!keyEntry || keyEntry.alg !== header.alg) {
-    return null;
+    return { ok: false, diagnostic: "signing-key-missing" };
   }
 
   const verifyAlgorithm =
@@ -257,7 +278,7 @@ async function verifyCfAccessJwt(
     encoder.encode(`${headerB64}.${payloadB64}`)
   );
   if (!signatureValid) {
-    return null;
+    return { ok: false, diagnostic: "bad-signature" };
   }
 
   const identity =
@@ -266,7 +287,7 @@ async function verifyCfAccessJwt(
     payload.sub?.trim() ||
     "authenticated-admin";
 
-  return { identity };
+  return { ok: true, identity };
 }
 
 export interface AdminSessionStatus {
@@ -276,50 +297,24 @@ export interface AdminSessionStatus {
   method: "cloudflare-access" | "local-dev-bypass" | null;
   identity?: string;
   logoutUrl?: string;
+  requestHost?: string;
+  diagnostic?: AdminAuthDiagnostic;
 }
 
 export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
-  const [rawTeamDomain, rawAud, rawDevBypass] = await Promise.all([
-    getRuntimeEnv("CF_ACCESS_TEAM_DOMAIN"),
-    getRuntimeEnv("CF_ACCESS_AUD"),
-    getRuntimeEnv("ADMIN_DEV_BYPASS"),
-  ]);
+  const [rawTeamDomain, rawAud, rawDevBypass, headerStore, cookieStore] =
+    await Promise.all([
+      getRuntimeEnv("CF_ACCESS_TEAM_DOMAIN"),
+      getRuntimeEnv("CF_ACCESS_AUD"),
+      getRuntimeEnv("ADMIN_DEV_BYPASS"),
+      headers(),
+      cookies(),
+    ]);
 
-  const teamOrigin = normalizeTeamOrigin(rawTeamDomain);
-  const allowedAuds = parseAudienceList(rawAud);
-  const configured = Boolean(teamOrigin && allowedAuds.length > 0);
-
-  if (configured && teamOrigin) {
-    const [headerStore, cookieStore] = await Promise.all([headers(), cookies()]);
-    const jwtAssertion =
-      headerStore.get("cf-access-jwt-assertion")?.trim() ||
-      cookieStore.get(CF_ACCESS_COOKIE_NAME)?.value?.trim();
-
-    if (jwtAssertion) {
-      const verified = await verifyCfAccessJwt(
-        jwtAssertion,
-        teamOrigin,
-        allowedAuds
-      );
-      if (verified) {
-        return {
-          authenticated: true,
-          configured: true,
-          isLocalDevBypass: false,
-          method: "cloudflare-access",
-          identity: verified.identity,
-          logoutUrl: "/cdn-cgi/access/logout",
-        };
-      }
-    }
-
-    return {
-      authenticated: false,
-      configured: true,
-      isLocalDevBypass: false,
-      method: null,
-    };
-  }
+  const requestHost =
+    headerStore.get("x-forwarded-host")?.split(",")[0]?.trim() ||
+    headerStore.get("host")?.trim() ||
+    undefined;
 
   // Strictly non-production local UI development bypass (never active in production builds)
   if (process.env.NODE_ENV === "development" && rawDevBypass === "true") {
@@ -329,6 +324,54 @@ export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
       isLocalDevBypass: true,
       method: "local-dev-bypass",
       identity: "local-dev@localhost",
+      requestHost,
+    };
+  }
+
+  const teamOrigin = normalizeTeamOrigin(rawTeamDomain);
+  const allowedAuds = parseAudienceList(rawAud);
+  const configured = Boolean(teamOrigin && allowedAuds.length > 0);
+
+  if (configured && teamOrigin) {
+    const jwtAssertion =
+      headerStore.get("cf-access-jwt-assertion")?.trim() ||
+      cookieStore.get(CF_ACCESS_COOKIE_NAME)?.value?.trim();
+
+    if (!jwtAssertion) {
+      return {
+        authenticated: false,
+        configured: true,
+        isLocalDevBypass: false,
+        method: null,
+        requestHost,
+        diagnostic: "missing-token",
+      };
+    }
+
+    const verified = await verifyCfAccessJwt(
+      jwtAssertion,
+      teamOrigin,
+      allowedAuds
+    );
+    if (verified.ok) {
+      return {
+        authenticated: true,
+        configured: true,
+        isLocalDevBypass: false,
+        method: "cloudflare-access",
+        identity: verified.identity,
+        logoutUrl: "/cdn-cgi/access/logout",
+        requestHost,
+      };
+    }
+
+    return {
+      authenticated: false,
+      configured: true,
+      isLocalDevBypass: false,
+      method: null,
+      requestHost,
+      diagnostic: verified.diagnostic,
     };
   }
 
@@ -337,5 +380,6 @@ export async function getAdminSessionStatus(): Promise<AdminSessionStatus> {
     configured: false,
     isLocalDevBypass: false,
     method: null,
+    requestHost,
   };
 }

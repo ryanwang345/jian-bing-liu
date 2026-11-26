@@ -490,18 +490,43 @@ export function MenuAdminClient({
                 <ShieldCheck className="h-4 w-4 shrink-0 text-[#047b5d]" />
                 需通过 Cloudflare Zero Trust 身份验证
               </p>
-              <p>
-                当前请求未携带有效的{" "}
-                <code>Cf-Access-Jwt-Assertion</code> 签名凭证。请通过受{" "}
-                <strong>Cloudflare Access</strong> 保护的正式域名访问{" "}
-                <code>/admin</code>。
-              </p>
+
+              {session.requestHost &&
+              session.requestHost !== "jianbingliu.uk" ? (
+                <p>
+                  你当前正在通过 <code>{session.requestHost}</code>{" "}
+                  访问，而单点登录网关绑定在主域名{" "}
+                  <code>jianbingliu.uk</code> 上（<code>www.</code>、
+                  <code>*.workers.dev</code> 或 <code>localhost</code>{" "}
+                  不会触发网关登录）。请点击下方按钮前往正式后台地址：
+                </p>
+              ) : (
+                <p>
+                  当前请求未能完成签名验证
+                  {session.diagnostic ? (
+                    <>
+                      （状态码：<code>{session.diagnostic}</code>）
+                    </>
+                  ) : null}
+                  。请通过受 <strong>Cloudflare Access</strong>{" "}
+                  保护的正式域名重新进入：
+                </p>
+              )}
+
+              {process.env.NODE_ENV === "development" && (
+                <p className="rounded-lg border border-[#ffd6a4] bg-[#fff5ea] p-2.5 text-[#8a5000]">
+                  本地 <code>pnpm dev</code> 免网关调试：在{" "}
+                  <code>.env.local</code> 或 <code>.dev.vars</code> 中添加{" "}
+                  <code>ADMIN_DEV_BYPASS=true</code> 后重启即可。
+                </p>
+              )}
+
               <a
-                href="/admin"
+                href="https://jianbingliu.uk/admin"
                 className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#303030]"
               >
                 <RefreshCw className="h-4 w-4" />
-                进入单点登录验证
+                前往 https://jianbingliu.uk/admin 登录
               </a>
             </div>
           )}
