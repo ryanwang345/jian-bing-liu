@@ -57,7 +57,7 @@ export function ScrollProgressBar() {
     >
       <div
         ref={barRef}
-        className="h-full w-full origin-left bg-gradient-to-r from-cinnabar via-turmeric to-[#F0C26E]"
+        className="h-full w-full origin-left bg-gradient-to-r from-cinnabar via-turmeric to-accent-bright"
         style={{ transform: "scaleX(0)" }}
       />
     </div>

@@ -264,7 +264,9 @@ export function MenuBrowser({
       )}
 
       <div className="mt-12 space-y-16">
-        {filteredCategories.map((category) => (
+        {filteredCategories.map((category) => {
+          const isFestiveCategory = category.id === "festive-specials";
+          return (
           <section
             key={category.id}
             id={category.id}
@@ -272,7 +274,11 @@ export function MenuBrowser({
               category.id === NEW_ARRIVALS_SECTION_ID ? "true" : undefined
             }
             aria-labelledby={`${category.id}-heading`}
-            className="scroll-mt-40"
+            className={`scroll-mt-40 ${
+              isFestiveCategory
+                ? "festive-specials-panel rounded-3xl border border-cinnabar/25 bg-kraft/45 p-5 sm:p-7"
+                : ""
+            }`}
           >
             <div className="border-b border-kraft-deep pb-4">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -280,6 +286,11 @@ export function MenuBrowser({
                   id={`${category.id}-heading`}
                   className="font-display text-2xl font-bold text-ink sm:text-3xl"
                 >
+                  {isFestiveCategory && (
+                    <span aria-hidden="true" className="mr-1.5">
+                      ✨
+                    </span>
+                  )}
                   {t(category.title)}
                 </h2>
                 <span
@@ -404,7 +415,8 @@ export function MenuBrowser({
               ))}
             </div>
           </section>
-        ))}
+          );
+        })}
 
         {filteredCategories.length === 0 && (
           <div className="rounded-2xl border border-kraft-deep bg-kraft/40 p-10 text-center">

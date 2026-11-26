@@ -44,7 +44,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
     <span className="inline-flex items-center gap-2 sm:gap-3">
       <span
         className={`relative shrink-0 overflow-hidden rounded-full bg-black shadow-xs ${sizeStyles.logo} ${
-          isLight ? "ring-1 ring-[#F0C26E]/40" : "ring-1 ring-ink/15"
+          isLight ? "ring-1 ring-accent-bright/45" : "ring-1 ring-ink/15"
         }`}
       >
         <Image
@@ -61,7 +61,7 @@ export function BrandMark({ variant = "dark", size = "md" }: BrandMarkProps) {
           className={`font-display font-semibold ${
             locale === "en" ? "uppercase" : ""
           } ${sizeStyles.top} ${
-            isLight ? "text-[#F0C26E]" : "text-cinnabar"
+            isLight ? "text-accent-bright" : "text-cinnabar"
           }`}
         >
           {pick("正宗果蔬煎饼", store.nameEn)}

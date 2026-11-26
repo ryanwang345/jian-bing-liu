@@ -2,14 +2,21 @@
 
 import { useEffect, useRef } from "react";
 
+interface ScrollAmbientLightsProps {
+  isFestive?: boolean;
+}
+
 /**
  * Clean, classic scroll-driven studio gradient lighting.
- * Smoothly glides two wide, softly diffused warm brand gradient lights as the user scrolls,
- * keeping the layout refined, balanced, and easy to read.
+ * Smoothly glides wide, diffused warm brand gradient lights as the user scrolls,
+ * intensifying into a richer multi-layered celebratory glow when a holiday theme is active.
  */
-export function ScrollAmbientLights() {
+export function ScrollAmbientLights({
+  isFestive = false,
+}: ScrollAmbientLightsProps) {
   const primaryGlowRef = useRef<HTMLDivElement>(null);
   const secondaryGlowRef = useRef<HTMLDivElement>(null);
+  const sideGlowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (
@@ -41,6 +48,12 @@ export function ScrollAmbientLights() {
         const x = -p * 6 + 3; // +3vw -> -3vw
         secondaryGlowRef.current.style.transform = `translate3d(${x.toFixed(2)}vw, ${y.toFixed(2)}vh, 0)`;
       }
+
+      if (sideGlowRef.current) {
+        const y = p * 26 - 10;
+        const x = Math.sin(p * Math.PI) * 6;
+        sideGlowRef.current.style.transform = `translate3d(${x.toFixed(2)}vw, ${y.toFixed(2)}vh, 0)`;
+      }
     };
 
     const onScroll = () => {
@@ -65,25 +78,46 @@ export function ScrollAmbientLights() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      {/* Top-center warm kitchen-lantern studio gradient wash (adapts to active festival theme) */}
+      {/* Top-center studio gradient wash (vivid & luminous in holiday mode) */}
       <div
         ref={primaryGlowRef}
-        className="absolute -top-44 left-1/2 h-[540px] w-[min(120vw,1200px)] -translate-x-1/2 rounded-full will-change-transform"
+        className={`absolute left-1/2 -translate-x-1/2 rounded-full will-change-transform ${
+          isFestive
+            ? "-top-36 h-[620px] w-[min(130vw,1360px)]"
+            : "-top-44 h-[540px] w-[min(120vw,1200px)]"
+        }`}
         style={{
           background:
-            "radial-gradient(ellipse 68% 58% at 50% 45%, var(--theme-glow-a) 0%, var(--theme-glow-b) 48%, transparent 76%)",
-          filter: "blur(50px)",
+            "radial-gradient(ellipse 68% 58% at 50% 45%, var(--theme-glow-a) 0%, var(--theme-glow-b) 52%, transparent 78%)",
+          filter: isFestive ? "blur(42px)" : "blur(50px)",
         }}
       />
+
+      {/* Extra festive mid-page colour pool for richer holiday depth */}
+      {isFestive && (
+        <div
+          ref={sideGlowRef}
+          className="absolute top-1/3 right-[-12%] h-[460px] w-[min(72vw,680px)] rounded-full will-change-transform"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 50%, var(--theme-glow-b) 0%, var(--theme-glow-c) 46%, transparent 74%)",
+            filter: "blur(48px)",
+          }}
+        />
+      )}
 
       {/* Lower soft counterweight wash (adapts to active festival theme) */}
       <div
         ref={secondaryGlowRef}
-        className="absolute -bottom-48 left-1/2 h-[500px] w-[min(115vw,1120px)] -translate-x-1/2 rounded-full will-change-transform"
+        className={`absolute left-1/2 -translate-x-1/2 rounded-full will-change-transform ${
+          isFestive
+            ? "-bottom-40 h-[560px] w-[min(125vw,1280px)]"
+            : "-bottom-48 h-[500px] w-[min(115vw,1120px)]"
+        }`}
         style={{
           background:
-            "radial-gradient(ellipse 65% 55% at 50% 55%, var(--theme-glow-c) 0%, var(--theme-glow-d) 48%, transparent 76%)",
-          filter: "blur(54px)",
+            "radial-gradient(ellipse 65% 55% at 50% 55%, var(--theme-glow-c) 0%, var(--theme-glow-d) 52%, transparent 78%)",
+          filter: isFestive ? "blur(46px)" : "blur(54px)",
         }}
       />
     </div>

@@ -420,7 +420,7 @@ export function SocialShowcaseBand({ posts }: { posts: SocialPost[] }) {
                         <SocialIcon
                           platform={social.platform}
                           className={`h-3.5 w-3.5 ${
-                            isCruising ? "text-[#F0C26E]" : "text-cinnabar"
+                            isCruising ? "text-accent-bright" : "text-cinnabar"
                           }`}
                         />
                         {t(social.label)}

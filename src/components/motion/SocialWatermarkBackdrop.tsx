@@ -155,8 +155,14 @@ export function SocialWatermarkBackdrop() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 overflow-hidden select-none"
     >
-      {/* Subtle warm radial paper vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(201,134,31,0.09),transparent_55%),radial-gradient(ellipse_at_50%_100%,rgba(184,37,28,0.07),transparent_55%)]" />
+      {/* Theme-reactive radial paper vignette */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, var(--theme-glow-a), transparent 58%), radial-gradient(ellipse at 50% 100%, var(--theme-glow-c), transparent 58%)",
+        }}
+      />
 
       {/* Top embossed drifting brand watermark ribbon (2x loop, pauses off-screen) */}
       <div className="watermark-mask absolute inset-x-0 top-4 overflow-hidden opacity-[0.07]">

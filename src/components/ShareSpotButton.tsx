@@ -48,7 +48,7 @@ export function ShareSpotButton({ variant = "light" }: ShareSpotButtonProps) {
 
   const styles =
     variant === "dark"
-      ? "border-parchment/25 bg-parchment/10 text-parchment hover:border-[#F0C26E] hover:text-[#F0C26E]"
+      ? "border-parchment/25 bg-parchment/10 text-parchment hover:border-accent-bright hover:text-accent-bright"
       : "border-kraft-deep bg-white/90 text-ink hover:border-cinnabar hover:text-cinnabar";
 
   return (

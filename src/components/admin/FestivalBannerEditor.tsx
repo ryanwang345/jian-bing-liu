@@ -65,7 +65,14 @@ export function FestivalBannerEditor({ preset, saved, disabled, onSave }: Festiv
           />
         </div>
       ))}
-      <div className="rounded-lg p-3 text-sm break-words" style={{ backgroundColor: preset.theme.bannerBg, color: preset.theme.bannerText }}>
+      <div
+        className="rounded-lg p-3 text-sm break-words shadow-xs"
+        style={{
+          backgroundImage: `linear-gradient(105deg, ${preset.theme.bannerBg} 0%, ${preset.theme.bannerBgEnd} 60%, ${preset.theme.bannerBg} 100%)`,
+          color: preset.theme.bannerText,
+          borderBottom: `2px solid ${preset.theme.bannerAccent}`,
+        }}
+      >
         <p>{draft.bannerZh.trim() || preset.bannerZh}</p>
         <p className="mt-2">{draft.bannerEn.trim() || preset.bannerEn}</p>
       </div>

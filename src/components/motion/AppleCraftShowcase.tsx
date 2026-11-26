@@ -289,7 +289,7 @@ export function AppleCraftShowcase() {
       ref={runwayRef}
       aria-label={pick("铁板匠心亮点", "Crafted on the Griddle")}
       onKeyDown={handleKeyDown}
-      className="gradient-light-edge relative h-[235svh] border-y border-kraft-deep/80 bg-ink text-parchment motion-reduce:h-auto lg:h-[250vh]"
+      className="gradient-light-edge relative h-[235svh] border-y border-kraft-deep/80 bg-surface-dark text-parchment motion-reduce:h-auto lg:h-[250vh]"
     >
       {/* Compact sticky single-viewport stage across iPhone, iPad, and Desktop (clears MobileActionBar at bottom!) */}
       <div className="sticky top-[57px] flex min-h-[calc(100svh-57px)] items-center overflow-x-clip pb-[74px] motion-reduce:static motion-reduce:min-h-0 sm:top-[72px] sm:min-h-[calc(100svh-72px)] md:pb-6">
@@ -304,7 +304,7 @@ export function AppleCraftShowcase() {
           {/* Top Row: Heading + 4 Instant Step Tabs */}
           <div className="flex flex-col justify-between gap-2.5 sm:gap-4 lg:flex-row lg:items-end lg:gap-6">
             <div className="min-w-0">
-              <p className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#F0C26E] uppercase sm:text-xs">
+              <p className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-accent-bright uppercase sm:text-xs">
                 <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 <span>{pick("滑动浏览后厨亮点", "Scroll to Explore")}</span>
                 <span aria-hidden="true" className="text-parchment/30">
@@ -343,7 +343,7 @@ export function AppleCraftShowcase() {
                     onClick={() => jumpToIndex(idx)}
                     className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-all duration-300 sm:px-3.5 sm:py-2 sm:text-xs ${
                       isActive
-                        ? "bg-[#F0C26E] text-ink shadow-md"
+                        ? "bg-accent-bright text-ink shadow-md"
                         : "border border-parchment/20 bg-white/[0.06] text-parchment/85 hover:border-parchment/40 hover:bg-white/[0.12] hover:text-parchment"
                     }`}
                   >
@@ -398,7 +398,7 @@ export function AppleCraftShowcase() {
                 </span>
 
                 {/* Compact Mobile Stat Pill over bottom-right of image so mobile card stays crisp and fits 100% in viewport */}
-                <span className="absolute right-3 bottom-3 z-10 rounded-full border border-[#F0C26E]/35 bg-ink/80 px-3 py-1 font-display text-xs font-semibold tabular-nums text-[#F0C26E] backdrop-blur-md sm:hidden">
+                <span className="absolute right-3 bottom-3 z-10 rounded-full border border-accent-bright/35 bg-surface-dark/80 px-3 py-1 font-display text-xs font-semibold tabular-nums text-accent-bright backdrop-blur-md sm:hidden">
                   {t(current.metricValue)}
                 </span>
               </div>
@@ -406,7 +406,7 @@ export function AppleCraftShowcase() {
               {/* Crisp Editorial Content Column */}
               <div className="flex min-w-0 flex-col justify-between p-4 sm:p-7 lg:col-span-5 lg:p-7 xl:p-10">
                 <div key={current.id} className="animate-fade-up">
-                  <p className="text-[11px] font-semibold tracking-[0.16em] text-[#F0C26E] uppercase sm:text-xs">
+                  <p className="text-[11px] font-semibold tracking-[0.16em] text-accent-bright uppercase sm:text-xs">
                     {t(current.eyebrow)}
                   </p>
 
@@ -420,7 +420,7 @@ export function AppleCraftShowcase() {
 
                   {/* Full Key Stat Callout on sm+ (compact pill shown on photo for mobile) */}
                   <div className="mt-4 hidden rounded-2xl border border-parchment/12 bg-white/[0.05] px-4 py-3 sm:mt-6 sm:block sm:py-3.5">
-                    <p className="font-display text-lg font-semibold tabular-nums text-[#F0C26E] sm:text-xl">
+                    <p className="font-display text-lg font-semibold tabular-nums text-accent-bright sm:text-xl">
                       {t(current.metricValue)}
                     </p>
                     <p className="mt-0.5 text-xs text-parchment/70">
@@ -432,7 +432,7 @@ export function AppleCraftShowcase() {
                 <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2.5 border-t border-parchment/12 pt-3 sm:mt-7 sm:gap-3 sm:pt-5">
                   <Link
                     href={current.href}
-                    className="inline-flex items-center gap-2 rounded-full bg-parchment px-4 py-2 text-xs font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#F0C26E] sm:px-5 sm:py-2.5 sm:text-sm"
+                    className="inline-flex items-center gap-2 rounded-full bg-parchment px-4 py-2 text-xs font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent-bright sm:px-5 sm:py-2.5 sm:text-sm"
                   >
                     {t(current.cta)}
                     <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
@@ -444,7 +444,7 @@ export function AppleCraftShowcase() {
                       type="button"
                       onClick={goPrev}
                       aria-label={pick("上一条亮点", "Previous highlight")}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-[#F0C26E] hover:bg-white/[0.14] hover:text-[#F0C26E] sm:h-10 sm:w-10"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-accent-bright hover:bg-white/[0.14] hover:text-accent-bright sm:h-10 sm:w-10"
                     >
                       <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -452,7 +452,7 @@ export function AppleCraftShowcase() {
                       type="button"
                       onClick={goNext}
                       aria-label={pick("下一条亮点", "Next highlight")}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-[#F0C26E] hover:bg-white/[0.14] hover:text-[#F0C26E] sm:h-10 sm:w-10"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-parchment/20 bg-white/[0.06] text-parchment transition-colors hover:border-accent-bright hover:bg-white/[0.14] hover:text-accent-bright sm:h-10 sm:w-10"
                     >
                       <ChevronRight className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -479,14 +479,14 @@ export function AppleCraftShowcase() {
                       isActive
                         ? "w-10 bg-parchment/25 sm:w-12"
                         : isPassed
-                          ? "w-2.5 bg-[#F0C26E]/65 hover:bg-[#F0C26E]"
+                          ? "w-2.5 bg-accent-bright/65 hover:bg-accent-bright"
                           : "w-2 bg-parchment/35 hover:bg-parchment/65"
                     }`}
                   >
                     {isActive && (
                       <span
                         ref={pillFillRef}
-                        className="block h-full w-full origin-left rounded-full bg-[#F0C26E] will-change-transform"
+                        className="block h-full w-full origin-left rounded-full bg-accent-bright will-change-transform"
                         style={{ transform: "scaleX(0.2)" }}
                       />
                     )}

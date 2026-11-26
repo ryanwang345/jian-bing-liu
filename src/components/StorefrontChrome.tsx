@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { FestivalAtmosphere } from "@/components/FestivalAtmosphere";
 import { FestivalBanner } from "@/components/FestivalBanner";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -49,7 +50,8 @@ export function StorefrontChrome({
 
   return (
     <>
-      <ScrollAmbientLights />
+      <ScrollAmbientLights isFestive={Boolean(activeFestival)} />
+      {activeFestival && <FestivalAtmosphere festival={activeFestival} />}
       <ScrollProgressBar />
       {customBannerText.trim() && (
         <div

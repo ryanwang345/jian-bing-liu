@@ -141,15 +141,30 @@ export function AdminThemesView({
                     }`}
                   >
                     <div>
-                      {/* Mini Banner Preview */}
+                      {/* Mini Vivid Gradient Banner Preview */}
                       <div
-                        className="px-3.5 py-2 text-[11px] font-medium truncate"
+                        className="relative overflow-hidden px-3.5 py-2.5 text-[11px] font-semibold"
                         style={{
-                          backgroundColor: preset.theme.bannerBg,
+                          backgroundImage: `linear-gradient(105deg, ${preset.theme.bannerBg} 0%, ${preset.theme.bannerBgEnd} 65%, ${preset.theme.bannerBg} 100%)`,
                           color: preset.theme.bannerText,
                         }}
                       >
-                        {banner.bannerZh}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate">{banner.bannerZh}</span>
+                          <span
+                            className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-extrabold text-[#1a1614]"
+                            style={{ backgroundColor: preset.theme.bannerAccent }}
+                          >
+                            限定
+                          </span>
+                        </div>
+                        <div
+                          aria-hidden="true"
+                          className="absolute inset-x-0 bottom-0 h-[2px]"
+                          style={{
+                            backgroundImage: `linear-gradient(90deg, transparent, ${preset.theme.bannerAccent}, transparent)`,
+                          }}
+                        />
                       </div>
 
                       <div className="p-4">
@@ -163,17 +178,18 @@ export function AdminThemesView({
                             </p>
                           </div>
 
-                          {/* Color Swatch Dots */}
+                          {/* Vivid 5-Tone Color Swatch Dots */}
                           <div className="flex shrink-0 items-center -space-x-1">
                             {[
                               preset.theme.parchment,
-                              preset.theme.kraftDeep,
+                              preset.theme.kraft,
                               preset.theme.cinnabar,
                               preset.theme.turmeric,
+                              preset.theme.surfaceDark,
                             ].map((hex, i) => (
                               <span
                                 key={i}
-                                className="h-4 w-4 rounded-full border border-black/15"
+                                className="h-4 w-4 rounded-full border border-white shadow-2xs ring-1 ring-black/15"
                                 style={{ backgroundColor: hex }}
                               />
                             ))}

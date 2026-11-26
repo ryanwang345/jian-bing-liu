@@ -11,6 +11,11 @@
   --theme-cinnabar-dark: #921b14;
   --theme-turmeric: #c9861f;
   --theme-jade: #2b593c;
+  --theme-surface-dark: #1a1614;
+  --theme-accent-bright: #f0c26e;
+  --theme-banner-bg: #8f1414;
+  --theme-banner-end: #6b0f14;
+  --theme-banner-accent: #f0c26e;
   --theme-glow-a: rgba(235, 176, 78, 0.2);
   --theme-glow-b: rgba(201, 112, 48, 0.09);
   --theme-glow-c: rgba(184, 58, 34, 0.08);
@@ -30,6 +35,8 @@
   --color-yolk: #f4b23c;
   --color-turmeric: var(--theme-turmeric);
   --color-jade: var(--theme-jade);
+  --color-surface-dark: var(--theme-surface-dark);
+  --color-accent-bright: var(--theme-accent-bright);
   --font-sans: var(--font-ibm-plex-sans), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-newsreader), "Ma Shan Zheng", "Kaiti SC", "STKaiti", "KaiTi", Georgia, serif;
   --font-calligraphy: "Ma Shan Zheng", "Kaiti SC", "STKaiti", "KaiTi", serif;
@@ -152,6 +159,20 @@ html[lang="zh-Hant"] h3.font-display {
     transparent 0
   );
   background-size: 20px 20px;
+}
+
+html:not([data-festival-theme="default"]) .kraft-grain {
+  background-image:
+    radial-gradient(
+      color-mix(in srgb, var(--theme-cinnabar) 12%, transparent) 1.25px,
+      transparent 0
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--theme-kraft) 58%, transparent) 0%,
+      transparent 70%
+    );
+  background-size: 20px 20px, 100% 100%;
 }
 
 :root {
@@ -393,16 +414,109 @@ html[data-locale-switching="true"] #main-content {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(240, 194, 110, 0.45) 28%,
-    rgba(224, 134, 58, 0.58) 50%,
-    rgba(240, 194, 110, 0.45) 72%,
+    color-mix(in srgb, var(--theme-accent-bright) 55%, transparent) 26%,
+    color-mix(in srgb, var(--theme-turmeric) 75%, var(--theme-cinnabar)) 50%,
+    color-mix(in srgb, var(--theme-accent-bright) 55%, transparent) 74%,
     transparent 100%
   );
 }
 
-/* Warm appetizing golden-vermilion story highlight ring */
+html:not([data-festival-theme="default"]) .gradient-light-edge::after {
+  width: min(92%, 960px);
+  height: 2px;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--theme-accent-bright) 55%, transparent);
+}
+
+/* Warm appetizing golden-vermilion story highlight ring (adapts vividly to festival theme) */
 .story-ring {
-  background: linear-gradient(135deg, #b8251c 0%, #d47a27 52%, #f0c26e 100%);
+  background: linear-gradient(
+    135deg,
+    var(--theme-cinnabar) 0%,
+    var(--theme-turmeric) 52%,
+    var(--theme-accent-bright) 100%
+  );
+}
+
+/* Festive animated banner sheen & motif animations */
+@keyframes festivalShimmer {
+  0% {
+    transform: translate3d(-130%, 0, 0) skewX(-22deg);
+  }
+  100% {
+    transform: translate3d(260%, 0, 0) skewX(-22deg);
+  }
+}
+
+@keyframes festivalSway {
+  0%,
+  100% {
+    transform: rotate(-3.5deg);
+  }
+  50% {
+    transform: rotate(3.5deg);
+  }
+}
+
+@keyframes festivalFloatSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0) rotate(4deg);
+  }
+}
+
+@keyframes festivalTwinkle {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+.festival-banner-shimmer {
+  animation: festivalShimmer 5.6s var(--ease-apple) infinite;
+  will-change: transform;
+}
+
+.festival-sway {
+  transform-origin: top center;
+  animation: festivalSway 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.festival-float-slow {
+  animation: festivalFloatSlow 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+.festival-twinkle {
+  animation: festivalTwinkle 3.6s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Vivid holiday mode header highlight & festive specials section frame */
+html:not([data-festival-theme="default"]) header.sticky {
+  border-bottom-color: color-mix(in srgb, var(--theme-cinnabar) 28%, var(--theme-kraft-deep));
+  box-shadow: 0 4px 22px color-mix(in srgb, var(--theme-cinnabar) 10%, transparent);
+}
+
+html:not([data-festival-theme="default"]) .festive-specials-panel {
+  border-color: color-mix(in srgb, var(--theme-cinnabar) 36%, var(--theme-kraft-deep));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--theme-kraft) 85%, white) 0%,
+    color-mix(in srgb, var(--theme-parchment) 92%, white) 58%,
+    color-mix(in srgb, var(--theme-kraft) 70%, white) 100%
+  );
+  box-shadow:
+    0 12px 32px color-mix(in srgb, var(--theme-cinnabar) 12%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 /* Tactile street-food sticker pill shadow */
@@ -443,6 +557,10 @@ html[data-locale-switching="true"] #main-content {
   .animate-heart-pop,
   .animate-route-enter,
   .animate-drawer-down,
+  .festival-banner-shimmer,
+  .festival-sway,
+  .festival-float-slow,
+  .festival-twinkle,
   html[data-locale-switching="true"] #main-content {
     animation: none !important;
   }

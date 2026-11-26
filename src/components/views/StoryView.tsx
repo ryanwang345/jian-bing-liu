@@ -139,7 +139,7 @@ export function StoryView() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover"
                   />
-                  <span className="absolute top-3 left-3 rounded-full bg-ink/85 px-3 py-1 font-display text-xs font-bold text-[#F0C26E]">
+                  <span className="absolute top-3 left-3 rounded-full bg-surface-dark/88 px-3 py-1 font-display text-xs font-bold text-accent-bright">
                     {t(item.step)}
                   </span>
                 </div>

@@ -93,7 +93,11 @@ export function HomeView({
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_18%_22%,rgba(235,176,78,0.16),transparent_55%),radial-gradient(ellipse_at_84%_28%,rgba(184,37,28,0.08),transparent_50%)]"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse at 18% 22%, var(--theme-glow-a), transparent 56%), radial-gradient(ellipse at 84% 28%, var(--theme-glow-b), transparent 54%)",
+              }}
             />
 
             <div className="relative z-10 mx-auto max-w-7xl px-4 pt-5 pb-10 sm:px-6 sm:pt-8 sm:pb-14 lg:px-8 lg:pt-14 lg:pb-16">
@@ -298,11 +302,11 @@ export function HomeView({
                           className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
                         />
 
-                        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pt-14 pb-4 text-parchment">
+                        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-surface-dark/88 via-surface-dark/35 to-transparent px-5 pt-14 pb-4 text-parchment">
                           <div>
                             <p
                               lang={isTraditional ? "zh-Hant" : "zh-Hans"}
-                              className="font-calligraphy text-xl text-[#F0C26E] sm:text-2xl"
+                              className="font-calligraphy text-xl text-accent-bright sm:text-2xl"
                             >
                               {zhText(store.taglineZh)}
                             </p>
@@ -311,7 +315,7 @@ export function HomeView({
                             </p>
                           </div>
                           {home.hero.mainPhotoPrice && (
-                            <span className="shrink-0 rounded-full border border-[#F0C26E]/45 bg-ink/80 px-3.5 py-1 font-sans text-xs font-bold tabular-nums text-[#F0C26E] backdrop-blur-md">
+                            <span className="shrink-0 rounded-full border border-accent-bright/45 bg-surface-dark/80 px-3.5 py-1 font-sans text-xs font-bold tabular-nums text-accent-bright backdrop-blur-md">
                               {home.hero.mainPhotoPrice}
                             </span>
                           )}
@@ -331,8 +335,8 @@ export function HomeView({
                           sizes="(max-width: 1024px) 48vw, 28vw"
                           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                         />
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-3.5 pt-10 pb-3 text-parchment">
-                          <p className="text-xs font-bold text-[#F0C26E]">
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface-dark/88 via-surface-dark/35 to-transparent px-3.5 pt-10 pb-3 text-parchment">
+                          <p className="text-xs font-bold text-accent-bright">
                             {t(home.hero.subPhotoLeftSub)}
                           </p>
                           <p className="mt-0.5 text-xs text-parchment/95 sm:text-sm sm:font-semibold">
@@ -352,8 +356,8 @@ export function HomeView({
                           sizes="(max-width: 1024px) 48vw, 28vw"
                           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                         />
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-3.5 pt-10 pb-3 text-parchment">
-                          <p className="text-xs font-bold text-[#F0C26E]">
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface-dark/88 via-surface-dark/35 to-transparent px-3.5 pt-10 pb-3 text-parchment">
+                          <p className="text-xs font-bold text-accent-bright">
                             {t(home.hero.subPhotoRightSub)}
                           </p>
                           <p className="mt-0.5 text-xs text-parchment/95 sm:text-sm sm:font-semibold">
@@ -529,7 +533,7 @@ export function HomeView({
                             className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                           />
                           {item.price && (
-                            <span className="absolute right-3 bottom-3 rounded-full bg-ink/85 px-3 py-1 font-sans text-sm font-bold tabular-nums text-[#F0C26E] backdrop-blur-xs">
+                            <span className="absolute right-3 bottom-3 rounded-full bg-surface-dark/88 px-3 py-1 font-sans text-sm font-bold tabular-nums text-accent-bright backdrop-blur-xs">
                               {item.price}
                             </span>
                           )}
@@ -582,16 +586,20 @@ export function HomeView({
         return (
           <section
             key="combos"
-            className="cv-auto gradient-light-edge relative overflow-hidden border-y border-kraft-deep/80 bg-ink text-parchment"
+            className="cv-auto gradient-light-edge relative overflow-hidden border-y border-kraft-deep/80 bg-surface-dark text-parchment"
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_0%,rgba(240,194,110,0.18),rgba(184,58,34,0.09)_48%,transparent_75%)]"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 72% 48% at 50% 0%, var(--theme-glow-a), var(--theme-glow-c) 48%, transparent 76%)",
+              }}
             />
             <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
               <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
                 <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
+                  <div className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] text-accent-bright uppercase">
                     <span>{t(home.combos.eyebrow)}</span>
                     <span aria-hidden="true" className="text-parchment/30">
                       ·
@@ -618,7 +626,7 @@ export function HomeView({
                       href={rednote.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full border border-parchment/25 bg-white/10 px-4 py-2 text-xs font-semibold text-parchment transition-colors hover:border-[#F0C26E] hover:text-[#F0C26E]"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-parchment/25 bg-white/10 px-4 py-2 text-xs font-semibold text-parchment transition-colors hover:border-accent-bright hover:text-accent-bright"
                     >
                       <SocialIcon platform="rednote" className="h-3.5 w-3.5" />
                       {t(rednote.label)} · {rednote.handle}
@@ -632,7 +640,7 @@ export function HomeView({
                   <Reveal key={combo.id || idx} delay={idx * 100} className="h-full">
                     <Link
                       href={combo.href}
-                      className="apple-card group flex h-full flex-col overflow-hidden rounded-[28px] border border-parchment/15 bg-white/[0.05] hover:border-yolk/55 hover:bg-white/[0.09]"
+                      className="apple-card group flex h-full flex-col overflow-hidden rounded-[28px] border border-parchment/15 bg-white/[0.05] hover:border-accent-bright/60 hover:bg-white/[0.09]"
                     >
                       <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/30">
                         <Image
@@ -642,7 +650,7 @@ export function HomeView({
                           sizes="(max-width: 768px) calc(100vw - 2rem), 356px"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
-                        <span className="absolute top-3 left-3 rounded-full bg-ink/82 px-3 py-1 text-[11px] font-semibold text-[#F0C26E] backdrop-blur-xs">
+                        <span className="absolute top-3 left-3 rounded-full bg-surface-dark/85 px-3 py-1 text-[11px] font-semibold text-accent-bright backdrop-blur-xs">
                           {t(combo.tag)}
                         </span>
                         <span className="absolute right-3 bottom-3 rounded-full bg-parchment/95 px-3 py-1 font-sans text-xs font-bold tabular-nums text-ink shadow-xs">
@@ -651,14 +659,14 @@ export function HomeView({
                       </div>
                       <div className="flex flex-1 flex-col justify-between p-6">
                         <div>
-                          <h3 className="font-display text-xl font-medium text-parchment transition-colors group-hover:text-[#F0C26E]">
+                          <h3 className="font-display text-xl font-medium text-parchment transition-colors group-hover:text-accent-bright">
                             {t(combo.title)}
                           </h3>
                           <p className="mt-2 text-sm leading-relaxed text-parchment/75">
                             {t(combo.desc)}
                           </p>
                         </div>
-                        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F0C26E]">
+                        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-bright">
                           {t(combo.cta)}
                           <ArrowRight
                             className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
@@ -897,14 +905,18 @@ export function HomeView({
             className="cv-auto mx-auto max-w-6xl px-4 pt-12 pb-20 sm:px-6 lg:px-8"
           >
             <Reveal variant="scale">
-              <div className="gradient-light-edge relative overflow-hidden rounded-[34px] border border-parchment/15 bg-ink px-6 py-12 text-parchment shadow-2xl sm:px-12 sm:py-16">
+              <div className="gradient-light-edge relative overflow-hidden rounded-[34px] border border-parchment/15 bg-surface-dark px-6 py-12 text-parchment shadow-2xl sm:px-12 sm:py-16">
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(240,194,110,0.2),rgba(184,58,34,0.1)_50%,transparent_76%)]"
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse 72% 52% at 50% 0%, var(--theme-glow-a), var(--theme-glow-c) 50%, transparent 76%)",
+                  }}
                 />
                 <div className="relative z-10 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
                   <div className="min-w-0 lg:col-span-7">
-                    <p className="text-xs font-semibold tracking-[0.2em] text-[#F0C26E] uppercase">
+                    <p className="text-xs font-semibold tracking-[0.2em] text-accent-bright uppercase">
                       {t(home.ctaBanner.eyebrow)}
                     </p>
                     <h2 className="mt-2.5 font-display text-3xl font-bold tracking-tight text-parchment sm:text-4xl">
@@ -914,7 +926,7 @@ export function HomeView({
                       {t(home.ctaBanner.description)}{" "}
                       <a
                         href={phoneHref}
-                        className="font-semibold text-[#F0C26E] underline underline-offset-4 hover:text-white"
+                        className="font-semibold text-accent-bright underline underline-offset-4 hover:text-white"
                       >
                         {store.phoneDisplay}
                       </a>
@@ -926,7 +938,7 @@ export function HomeView({
                       href={store.googleMapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full bg-[#F0C26E] px-6 py-3.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-white"
+                      className="inline-flex items-center gap-2 rounded-full bg-accent-bright px-6 py-3.5 text-sm font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-white"
                     >
                       <MapPin className="h-4 w-4" aria-hidden="true" />
                       {pick("获取地图导航", "Get Directions")}

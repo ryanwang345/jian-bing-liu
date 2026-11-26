@@ -22,6 +22,10 @@ import {
 import type { MenuCategory, MenuItem } from "@/data/menu";
 import { defaultSiteContent, type SiteContentConfig } from "@/data/site-content";
 import type { AdminSessionStatus } from "@/lib/admin-auth";
+import {
+  FESTIVAL_THEME_CSS_PROPS,
+  getFestivalThemeCssVars,
+} from "@/data/festivals";
 import type { ActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import type { FestivalBannerText } from "@/data/festival-banners";
 import type { AdminMenuSnapshot, BulkMenuAction } from "@/lib/menu-service";
@@ -120,37 +124,17 @@ export function MenuAdminClient({
     if (typeof document === "undefined") return;
     const root = document.documentElement;
     const active = state.activeFestival;
-    const props = [
-      "--theme-parchment",
-      "--theme-kraft",
-      "--theme-kraft-deep",
-      "--theme-cinnabar",
-      "--theme-cinnabar-dark",
-      "--theme-turmeric",
-      "--theme-jade",
-      "--theme-glow-a",
-      "--theme-glow-b",
-      "--theme-glow-c",
-      "--theme-glow-d",
-    ];
     if (!active) {
       root.dataset.festivalTheme = "default";
-      props.forEach((p) => root.style.removeProperty(p));
+      FESTIVAL_THEME_CSS_PROPS.forEach((p) => root.style.removeProperty(p));
       return;
     }
 
     root.dataset.festivalTheme = active.id;
-    root.style.setProperty("--theme-parchment", active.theme.parchment);
-    root.style.setProperty("--theme-kraft", active.theme.kraft);
-    root.style.setProperty("--theme-kraft-deep", active.theme.kraftDeep);
-    root.style.setProperty("--theme-cinnabar", active.theme.cinnabar);
-    root.style.setProperty("--theme-cinnabar-dark", active.theme.cinnabarDark);
-    root.style.setProperty("--theme-turmeric", active.theme.turmeric);
-    root.style.setProperty("--theme-jade", active.theme.jade);
-    root.style.setProperty("--theme-glow-a", active.theme.glowA);
-    root.style.setProperty("--theme-glow-b", active.theme.glowB);
-    root.style.setProperty("--theme-glow-c", active.theme.glowC);
-    root.style.setProperty("--theme-glow-d", active.theme.glowD);
+    const vars = getFestivalThemeCssVars(active.theme);
+    for (const [prop, val] of Object.entries(vars)) {
+      root.style.setProperty(prop, val);
+    }
   };
 
   const handleLogin = async (event: React.FormEvent) => {

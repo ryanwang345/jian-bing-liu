@@ -6,6 +6,7 @@ import "./globals.css";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SocialLinksProvider } from "@/components/SocialLinksProvider";
 import { StorefrontChrome } from "@/components/StorefrontChrome";
+import { getFestivalThemeCssVars } from "@/data/festivals";
 import { getActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import { getActiveNewArrivals } from "@/lib/menu-service";
 import { getSiteContent } from "@/lib/site-content-service";
@@ -118,19 +119,7 @@ export default async function RootLayout({
   const activeFestival = festivalState.activeFestival;
 
   const htmlThemeStyle = activeFestival
-    ? ({
-        "--theme-parchment": activeFestival.theme.parchment,
-        "--theme-kraft": activeFestival.theme.kraft,
-        "--theme-kraft-deep": activeFestival.theme.kraftDeep,
-        "--theme-cinnabar": activeFestival.theme.cinnabar,
-        "--theme-cinnabar-dark": activeFestival.theme.cinnabarDark,
-        "--theme-turmeric": activeFestival.theme.turmeric,
-        "--theme-jade": activeFestival.theme.jade,
-        "--theme-glow-a": activeFestival.theme.glowA,
-        "--theme-glow-b": activeFestival.theme.glowB,
-        "--theme-glow-c": activeFestival.theme.glowC,
-        "--theme-glow-d": activeFestival.theme.glowD,
-      } as CSSProperties)
+    ? (getFestivalThemeCssVars(activeFestival.theme) as CSSProperties)
     : undefined;
 
   return (

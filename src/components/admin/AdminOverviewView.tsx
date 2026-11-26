@@ -262,28 +262,42 @@ export function AdminOverviewView({
               </button>
             </div>
 
-            <div className="mt-3 rounded-lg border border-[#ebebeb] bg-[#fafafa] p-3.5">
+            <div className="mt-3 overflow-hidden rounded-lg border border-[#ebebeb] bg-[#fafafa]">
               {festivalTheme?.activeFestival ? (
                 <>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="h-3.5 w-3.5 rounded-full border border-black/15"
-                      style={{
-                        backgroundColor:
+                  <div
+                    className="h-2 w-full"
+                    style={{
+                      backgroundImage: `linear-gradient(90deg, ${festivalTheme.activeFestival.theme.bannerBg}, ${festivalTheme.activeFestival.theme.cinnabar}, ${festivalTheme.activeFestival.theme.bannerAccent})`,
+                    }}
+                  />
+                  <div className="p-3.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-xs font-bold text-[#1a1a1a]">
+                        {festivalTheme.activeFestival.zh}（
+                        {festivalTheme.activeFestival.paletteName.zh}）
+                      </p>
+                      <div className="flex shrink-0 items-center -space-x-1">
+                        {[
                           festivalTheme.activeFestival.theme.cinnabar,
-                      }}
-                    />
-                    <p className="text-xs font-bold text-[#1a1a1a]">
-                      {festivalTheme.activeFestival.zh}（
-                      {festivalTheme.activeFestival.paletteName.zh}）
+                          festivalTheme.activeFestival.theme.turmeric,
+                          festivalTheme.activeFestival.theme.surfaceDark,
+                        ].map((hex, i) => (
+                          <span
+                            key={i}
+                            className="h-3.5 w-3.5 rounded-full border border-white ring-1 ring-black/15"
+                            style={{ backgroundColor: hex }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="mt-1.5 text-[11px] leading-relaxed text-[#616161]">
+                      {festivalTheme.activeFestival.bannerZh}
                     </p>
                   </div>
-                  <p className="mt-1.5 text-[11px] leading-relaxed text-[#616161]">
-                    {festivalTheme.activeFestival.bannerZh}
-                  </p>
                 </>
               ) : (
-                <>
+                <div className="p-3.5">
                   <p className="text-xs font-bold text-[#1a1a1a]">
                     🏮 经典原版暖色主题
                   </p>
@@ -292,7 +306,7 @@ export function AdminOverviewView({
                       ? "智能自动模式：添加节日限定菜品后将自动切换对应节日皮肤。"
                       : "固定使用煎饼刘经典暖色厨房风格。"}
                   </p>
-                </>
+                </div>
               )}
             </div>
           </div>

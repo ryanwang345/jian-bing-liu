@@ -24,7 +24,7 @@ export function Footer() {
   const phoneHref = phoneToTelHref(store.phoneDisplay);
 
   return (
-    <footer className="relative z-10 border-t border-ink-soft bg-ink pb-28 text-parchment/90 md:pb-0">
+    <footer className="gradient-light-edge relative z-10 border-t border-parchment/12 bg-surface-dark pb-28 text-parchment/90 md:pb-0">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
@@ -43,7 +43,7 @@ export function Footer() {
             </p>
             <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
               {instagram && (
-                <span className="rounded-full border border-[#F0C26E]/35 bg-[#F0C26E]/12 px-3 py-1 text-[#F0C26E]">
+                <span className="rounded-full border border-accent-bright/35 bg-accent-bright/12 px-3 py-1 text-accent-bright">
                   {instagram.handle}
                 </span>
               )}
@@ -60,7 +60,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h2 className="font-display text-base font-semibold text-[#F0C26E]">
+            <h2 className="font-display text-base font-semibold text-accent-bright">
               {pick("快速导航", "Explore")}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
@@ -68,7 +68,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-parchment/80 transition-colors hover:text-[#F0C26E]"
+                    className="text-parchment/80 transition-colors hover:text-accent-bright"
                   >
                     {t(link.label)}
                   </Link>
@@ -80,7 +80,7 @@ export function Footer() {
                     href={store.orderOnlineUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 font-medium text-[#F0C26E] transition-colors hover:text-white"
+                    className="inline-flex items-center gap-1.5 font-medium text-accent-bright transition-colors hover:text-white"
                   >
                     <ShoppingBag className="h-3.5 w-3.5" aria-hidden="true" />
                     {pick(
@@ -95,20 +95,20 @@ export function Footer() {
           </div>
 
           <div>
-            <h2 className="font-display text-base font-semibold text-[#F0C26E]">
+            <h2 className="font-display text-base font-semibold text-accent-bright">
               {pick("门店信息", "Visit & Contact")}
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-parchment/80">
               <li className="flex items-start gap-2.5">
                 <MapPin
-                  className="mt-0.5 h-4 w-4 shrink-0 text-[#F0C26E]"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-accent-bright"
                   aria-hidden="true"
                 />
                 <a
                   href={store.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors hover:text-[#F0C26E]"
+                  className="transition-colors hover:text-accent-bright"
                 >
                   {isZh ? (
                     <>
@@ -129,19 +129,19 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone
-                  className="h-4 w-4 shrink-0 text-[#F0C26E]"
+                  className="h-4 w-4 shrink-0 text-accent-bright"
                   aria-hidden="true"
                 />
                 <a
                   href={phoneHref}
-                  className="transition-colors hover:text-[#F0C26E]"
+                  className="transition-colors hover:text-accent-bright"
                 >
                   {store.phoneDisplay}
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock
-                  className="mt-0.5 h-4 w-4 shrink-0 text-[#F0C26E]"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-accent-bright"
                   aria-hidden="true"
                 />
                 <span>
@@ -152,7 +152,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h2 className="font-display text-base font-semibold text-[#F0C26E]">
+            <h2 className="font-display text-base font-semibold text-accent-bright">
               {pick("关注我们", "Follow Us")}
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
@@ -162,14 +162,14 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 text-parchment/85 transition-colors hover:text-[#F0C26E]"
+                    className="group inline-flex items-center gap-2 text-parchment/85 transition-colors hover:text-accent-bright"
                   >
                     <SocialIcon
                       platform={social.platform}
-                      className="h-4 w-4 shrink-0 text-[#F0C26E]"
+                      className="h-4 w-4 shrink-0 text-accent-bright"
                     />
                     <span>{t(social.label)}</span>
-                    <span className="text-xs text-parchment/55 group-hover:text-[#F0C26E]/80">
+                    <span className="text-xs text-parchment/55 group-hover:text-accent-bright/80">
                       {social.handle}
                     </span>
                     <ExternalLink
