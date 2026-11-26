@@ -553,3 +553,252 @@ export async function deleteMenuItem(id: string): Promise<void> {
   ]);
   await deleteRetiredMenuPhotos(db, id);
 }
+
+export type BulkMenuAction =
+  | { type: "set-available"; ids: string[]; isAvailable: boolean }
+  | { type: "set-featured"; ids: string[]; featured: boolean }
+  | { type: "move-category"; ids: string[]; categoryId: string }
+  | { type: "delete"; ids: string[] }
+  | { type: "reorder-items"; categoryId: string; orderedIds: string[] }
+  | {
+      type: "quick-prices";
+      itemId: string;
+      variants: Array<{
+        id?: string;
+        sizeEn: string;
+        sizeZh: string;
+        pricePence: number;
+        isDefault?: boolean;
+      }>;
+    };
+
+export async function bulkMenuItemsAction(action: BulkMenuAction): Promise<void> {
+  const db = await getMenuDb();
+  if (!db) {
+    throw new Error("Cloudflare D1 binding MENU_DB is not available.");
+  }
+
+  if (action.type === "set-available") {
+    const cleanIds = action.ids.map((id) => id.trim()).filter(Boolean);
+    if (cleanIds.length === 0) return;
+    const val = action.isAvailable ? 1 : 0;
+    const stmts = cleanIds.map((id) =>
+      db
+        .prepare(
+          "UPDATE menu_items SET is_available = ?, updated_at = datetime('now') WHERE id = ?"
+        )
+        .bind(val, id)
+    );
+    await db.batch(stmts);
+    return;
+  }
+
+  if (action.type === "set-featured") {
+    const cleanIds = action.ids.map((id) => id.trim()).filter(Boolean);
+    if (cleanIds.length === 0) return;
+    const val = action.featured ? 1 : 0;
+    const stmts = cleanIds.map((id) =>
+      db
+        .prepare(
+          "UPDATE menu_items SET is_featured = ?, updated_at = datetime('now') WHERE id = ?"
+        )
+        .bind(val, id)
+    );
+    await db.batch(stmts);
+    return;
+  }
+
+  if (action.type === "move-category") {
+    const cleanIds = action.ids.map((id) => id.trim()).filter(Boolean);
+    const categoryId = action.categoryId.trim();
+    if (cleanIds.length === 0 || !categoryId) return;
+    const maxRow = await db
+      .prepare(
+        "SELECT COALESCE(MAX(sort_order), -1) as max_order FROM menu_items WHERE category_id = ?"
+      )
+      .bind(categoryId)
+      .first<{ max_order: number }>();
+    const startOrder = (maxRow?.max_order ?? -1) + 1;
+    const stmts = cleanIds.map((id, idx) =>
+      db
+        .prepare(
+          "UPDATE menu_items SET category_id = ?, sort_order = ?, updated_at = datetime('now') WHERE id = ?"
+        )
+        .bind(categoryId, startOrder + idx, id)
+    );
+    await db.batch(stmts);
+    return;
+  }
+
+  if (action.type === "delete") {
+    const cleanIds = action.ids.map((id) => id.trim()).filter(Boolean);
+    for (const id of cleanIds) {
+      await deleteMenuItem(id);
+    }
+    return;
+  }
+
+  if (action.type === "reorder-items") {
+    const categoryId = action.categoryId.trim();
+    const cleanIds = action.orderedIds.map((id) => id.trim()).filter(Boolean);
+    if (!categoryId || cleanIds.length === 0) return;
+    const stmts = cleanIds.map((id, idx) =>
+      db
+        .prepare(
+          "UPDATE menu_items SET sort_order = ?, updated_at = datetime('now') WHERE id = ? AND category_id = ?"
+        )
+        .bind(idx, id, categoryId)
+    );
+    await db.batch(stmts);
+    return;
+  }
+
+  if (action.type === "quick-prices") {
+    const itemId = action.itemId.trim();
+    if (!itemId) return;
+    const normalized = action.variants
+      .filter((v) => Number.isFinite(v.pricePence) && v.pricePence >= 0)
+      .map((v, idx) => ({
+        id:
+          v.id?.trim() ||
+          `${itemId}-v${idx}-${Math.random().toString(36).slice(2, 6)}`,
+        sizeEn: v.sizeEn.trim() || "Regular",
+        sizeZh: v.sizeZh.trim() || "标准",
+        pricePence: Math.round(v.pricePence),
+        isDefault: Boolean(v.isDefault),
+        sortOrder: idx,
+      }));
+    if (normalized.length > 0 && !normalized.some((v) => v.isDefault)) {
+      normalized[0].isDefault = true;
+    }
+
+    await db.batch([
+      db.prepare("DELETE FROM menu_variants WHERE item_id = ?").bind(itemId),
+      ...normalized.map((v) =>
+        db
+          .prepare(
+            `INSERT INTO menu_variants
+              (id, item_id, size_en, size_zh, price_pence, is_default, sort_order)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`
+          )
+          .bind(
+            v.id,
+            itemId,
+            v.sizeEn,
+            v.sizeZh,
+            v.pricePence,
+            v.isDefault ? 1 : 0,
+            v.sortOrder
+          )
+      ),
+      db
+        .prepare(
+          "UPDATE menu_items SET updated_at = datetime('now') WHERE id = ?"
+        )
+        .bind(itemId),
+    ]);
+  }
+}
+
+export interface MenuCategoryUpsertInput {
+  id?: string;
+  titleZh: string;
+  titleEn: string;
+  chineseTitle?: string;
+  subtitleZh?: string;
+  subtitleEn?: string;
+}
+
+export async function upsertMenuCategory(
+  input: MenuCategoryUpsertInput
+): Promise<string> {
+  const db = await getMenuDb();
+  if (!db) {
+    throw new Error("Cloudflare D1 binding MENU_DB is not available.");
+  }
+
+  await ensureDefaultCategoriesInDb(db);
+
+  const id =
+    input.id?.trim() ||
+    slugifyId(input.titleEn || input.titleZh || "category");
+
+  const existing = await db
+    .prepare("SELECT sort_order FROM menu_categories WHERE id = ?")
+    .bind(id)
+    .first<{ sort_order: number }>();
+
+  let sortOrder = existing?.sort_order;
+  if (typeof sortOrder !== "number") {
+    const maxRow = await db
+      .prepare("SELECT COALESCE(MAX(sort_order), -1) as max_order FROM menu_categories")
+      .first<{ max_order: number }>();
+    sortOrder = (maxRow?.max_order ?? -1) + 1;
+  }
+
+  await db
+    .prepare(
+      `INSERT INTO menu_categories
+        (id, title_en, title_zh, chinese_title, subtitle_en, subtitle_zh, sort_order, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+         title_en = excluded.title_en,
+         title_zh = excluded.title_zh,
+         chinese_title = excluded.chinese_title,
+         subtitle_en = excluded.subtitle_en,
+         subtitle_zh = excluded.subtitle_zh,
+         updated_at = datetime('now')`
+    )
+    .bind(
+      id,
+      input.titleEn.trim(),
+      input.titleZh.trim(),
+      (input.chineseTitle?.trim() || input.titleZh.trim().slice(0, 6)),
+      (input.subtitleEn ?? "").trim(),
+      (input.subtitleZh ?? "").trim(),
+      sortOrder
+    )
+    .run();
+
+  return id;
+}
+
+export async function reorderMenuCategories(orderedIds: string[]): Promise<void> {
+  const db = await getMenuDb();
+  if (!db) {
+    throw new Error("Cloudflare D1 binding MENU_DB is not available.");
+  }
+
+  const cleanIds = orderedIds.map((id) => id.trim()).filter(Boolean);
+  if (cleanIds.length === 0) return;
+
+  await db.batch(
+    cleanIds.map((id, idx) =>
+      db
+        .prepare(
+          "UPDATE menu_categories SET sort_order = ?, updated_at = datetime('now') WHERE id = ?"
+        )
+        .bind(idx, id)
+    )
+  );
+}
+
+export async function deleteMenuCategory(id: string): Promise<void> {
+  const db = await getMenuDb();
+  if (!db) {
+    throw new Error("Cloudflare D1 binding MENU_DB is not available.");
+  }
+
+  const countRow = await db
+    .prepare("SELECT COUNT(*) as total FROM menu_items WHERE category_id = ?")
+    .bind(id)
+    .first<{ total: number }>();
+
+  if ((countRow?.total ?? 0) > 0) {
+    throw new Error(
+      `该分类下还有 ${countRow?.total} 道菜品，请先将菜品移动到其他分类或删除后再移除分类。`
+    );
+  }
+
+  await db.prepare("DELETE FROM menu_categories WHERE id = ?").bind(id).run();
+}

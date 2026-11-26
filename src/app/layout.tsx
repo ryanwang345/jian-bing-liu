@@ -3,16 +3,10 @@ import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
 import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
-import { FestivalBanner } from "@/components/FestivalBanner";
 import { SocialLinksProvider } from "@/components/SocialLinksProvider";
+import { StorefrontChrome } from "@/components/StorefrontChrome";
 import { getActiveFestivalThemeState } from "@/lib/festival-theme-service";
 import { getSocialProfiles } from "@/lib/social-profiles";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { MobileActionBar } from "@/components/MobileActionBar";
-import { RouteTransition } from "@/components/motion/RouteTransition";
-import { ScrollAmbientLights } from "@/components/motion/ScrollAmbientLights";
-import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { restaurant, SITE_URL } from "@/data/restaurant";
 import { getCalligraphyStylesheetHref } from "@/lib/fonts";
 import { LocaleProvider } from "@/lib/i18n";
@@ -181,22 +175,12 @@ export default async function RootLayout({
                   : "Skip to main content"}
             </a>
 
-            <ScrollAmbientLights />
-            <ScrollProgressBar />
-            {activeFestival && (
-              <FestivalBanner
-                festival={activeFestival}
-                hasFestiveDishes={festivalState.hasFestiveDishes}
-              />
-            )}
-            <Header />
-
-            <main id="main-content" className="relative z-10 flex-1">
-              <RouteTransition>{children}</RouteTransition>
-            </main>
-
-            <Footer />
-            <MobileActionBar />
+            <StorefrontChrome
+              activeFestival={activeFestival}
+              hasFestiveDishes={festivalState.hasFestiveDishes}
+            >
+              {children}
+            </StorefrontChrome>
           </SocialLinksProvider>
         </LocaleProvider>
       </body>
