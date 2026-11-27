@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Save } from "lucide-react";
+import { Download, Loader2, Save } from "lucide-react";
 import type { SiteContentConfig } from "@/data/site-content";
 
 interface AdminSettingsViewProps {
@@ -23,6 +23,32 @@ export function AdminSettingsView({
   const [newArrivals, setNewArrivals] = useState<
     SiteContentConfig["newArrivals"]
   >(() => structuredClone(content.newArrivals));
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+
+  const handleExportBackup = async () => {
+    setIsExporting(true);
+    setExportError(null);
+    try {
+      const res = await fetch("/api/admin/export", { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `jian-bing-liu-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setExportError("备份导出失败，请刷新页面确认登录状态后重试。");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -650,6 +676,36 @@ export function AdminSettingsView({
             />
           </div>
         </div>
+      </div>
+
+      {/* Card 5: Backup & JSON Export */}
+      <div className="space-y-3 rounded-xl border border-[#e3e3e3] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-bold text-[#1a1a1a]">
+              菜单与配置一键备份（JSON）
+            </h2>
+            <p className="mt-0.5 text-xs text-[#616161]">
+              导出当前全部菜品、分类、店铺设置、节日主题文案、社媒账号及展示帖为 JSON 文件，建议大改菜单前先留存一份备份。
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => void handleExportBackup()}
+            disabled={isExporting}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[#c9cccf] bg-white px-3.5 py-2 text-xs font-semibold text-[#1a1a1a] shadow-xs hover:bg-[#f6f6f7] disabled:opacity-50"
+          >
+            {isExporting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Download className="h-3.5 w-3.5" />
+            )}
+            {isExporting ? "正在导出..." : "导出 JSON 备份"}
+          </button>
+        </div>
+        {exportError && (
+          <p className="text-xs font-medium text-[#d82c0d]">{exportError}</p>
+        )}
       </div>
     </form>
   );
