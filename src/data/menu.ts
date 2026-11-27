@@ -490,6 +490,11 @@ export const menuCategories: MenuCategory[] = [
           zh: "慢火熬出浓香油润的台式卤肉燥，厚厚浇在热米饭上，咸香微甜，十镑吃得特别满足。",
         },
         price: "£10.00",
+        image: "/images/taiwan-braised-pork.webp",
+        imageAlt: {
+          en: "Glossy slow-braised Taiwanese pork belly topped with fresh green spring onions",
+          zh: "浓香油润、撒满翠绿葱花的慢熬台式卤肉燥",
+        },
       },
       {
         id: "braised-beef-rice",
@@ -524,14 +529,14 @@ export const menuCategories: MenuCategory[] = [
         name: { en: "Braised Chicken Rice Roll", zh: "卤鸡肉饭团" },
         chineseName: "卤鸡肉饭团",
         description: {
-          en: "Warm, hearty sticky rice roll packed with tender house-braised chicken, crispy fillings and savoury seasoning.",
-          zh: "热乎扎实的米饭团，满满裹入自家慢火卤制的鲜嫩鸡肉与酥脆配料，咸香饱满、顶饿又满足。",
+          en: "Warm, hearty sticky rice roll packed with tender house-braised chicken, sweetcorn, seaweed and crispy savoury fillings.",
+          zh: "热乎扎实的米饭团，满满裹入自家慢火卤制的鲜嫩鸡肉、甜玉米、海苔与酥脆配料，咸香饱满、顶饿又满足。",
         },
         price: "£9.50",
-        image: "/images/purple-rice-roll.webp",
+        image: "/images/chicken-rice-roll.webp",
         imageAlt: {
-          en: "Hearty sliced rice roll packed with braised chicken and crispy savoury fillings",
-          zh: "对半切开的饱满卤鸡肉饭团，露出扎实鸡肉与酥脆配料",
+          en: "Freshly wrapped sticky rice roll packed with braised chicken, sweetcorn and seaweed in a cute takeaway pouch",
+          zh: "饱满扎实的卤鸡肉海苔玉米饭团，配可爱卡通饭团包装袋",
         },
       },
       {
@@ -545,8 +550,8 @@ export const menuCategories: MenuCategory[] = [
         price: "£9.50",
         image: "/images/purple-rice-roll.webp",
         imageAlt: {
-          en: "Hearty sliced rice roll packed with spiced braised beef and crispy fillings",
-          zh: "对半切开的饱满酱牛肉饭团，露出大片酱牛肉与酥脆配料",
+          en: "Hearty sliced purple sticky rice roll packed with spiced braised beef and crispy fillings",
+          zh: "对半切开的饱满紫米酱牛肉饭团，露出大片酱牛肉与酥脆配料",
         },
       },
       {
@@ -558,10 +563,10 @@ export const menuCategories: MenuCategory[] = [
           zh: "热乎饱满的米饭团，裹入焦香油润的烧肉与酥脆配料，咸香微甜、一口大满足。",
         },
         price: "£9.50",
-        image: "/images/purple-rice-roll.webp",
+        image: "/images/assorted-rice-rolls.webp",
         imageAlt: {
-          en: "Hearty sliced rice roll packed with savoury roast pork and crispy fillings",
-          zh: "对半切开的饱满烧肉饭团，露出焦香烧肉与酥脆配料",
+          en: "Handmade purple-rice and seaweed-rice rolls wrapped fresh for takeaway",
+          zh: "手工现握现包的饱满紫米与海苔烧肉饭团",
         },
       },
     ],
@@ -616,6 +621,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£3.50",
         dietary: ["halal"],
+        image: "/images/halal-beef-stuffed-bun.webp",
+        imageAlt: {
+          en: "Fluffy steamed bun broken open to reveal juicy savoury Halal beef filling",
+          zh: "掰开露出饱满多汁牛肉鲜馅的热乎清真牛肉大包子",
+        },
       },
       {
         id: "beef-flatbread",
@@ -793,6 +803,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/hk-iced-milk-tea.webp",
+        imageAlt: {
+          en: "Chilled cup of classic strong-brewed Hong Kong iced milk tea",
+          zh: "冰爽醇厚的经典港式冰奶茶",
+        },
       },
       {
         id: "pistachio-matcha-boba",
@@ -804,6 +819,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/pistachio-matcha-boba.webp",
+        imageAlt: {
+          en: "Iced pistachio cream and matcha boba tea layered in a clear cup",
+          zh: "层次分明的开心果奶油抹茶珍珠奶茶",
+        },
       },
       {
         id: "mango-sago",
@@ -815,17 +835,27 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/mango-pomelo-sago.webp",
+        imageAlt: {
+          en: "Golden chilled Mango Pomelo Sago topped with translucent sago pearls and pomelo pulp",
+          zh: "铺满晶莹西米与清甜柚肉的冰爽杨枝甘露",
+        },
       },
       {
         id: "lucky-2026-special",
         name: { en: "Lucky New Year 2026 Special (Iced)", zh: "鸿运当头 2026（冰）" },
         chineseName: "鸿运当头2026（冰）",
         description: {
-          en: "Our bright, fruity house special iced refresher crafted for 2026 — crisp, vibrant and refreshing.",
-          zh: "2026 店长限定鲜果特调冰饮，色泽红润喜庆、酸甜清口。",
+          en: "Our bright, fruity lychee & cranberry house special iced refresher crafted for 2026 — crisp, vibrant and refreshing.",
+          zh: "2026 店长限定荔枝蔓越莓鲜果特调冰饮，色泽红润喜庆、酸甜清口。",
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/lucky-2026-lychee-cranberry.webp",
+        imageAlt: {
+          en: "Ruby-pink lychee and cranberry iced refresher topped with a whole peeled lychee",
+          zh: "红润喜庆、点缀饱满鲜荔枝的鸿运当头荔枝蔓越莓冰饮",
+        },
       },
       {
         id: "fresh-strawberry-milk",
@@ -837,6 +867,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/fresh-strawberry-milk.webp",
+        imageAlt: {
+          en: "Cold creamy fresh milk swirled with crushed pink strawberries",
+          zh: "粉白渐变、果肉饱满的冰镇草莓鲜奶",
+        },
       },
       {
         id: "hk-lemon-tea",
@@ -848,6 +883,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegan"],
+        image: "/images/hk-iced-lemon-tea.webp",
+        imageAlt: {
+          en: "Brisk iced Hong Kong black tea topped with fresh yellow lemon slices",
+          zh: "铺满新鲜黄柠檬片的冰爽港式冻柠茶",
+        },
       },
       {
         id: "lemon-ginger-honey-tea",
@@ -859,6 +899,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/lemon-ginger-honey-tea.webp",
+        imageAlt: {
+          en: "Chilled lemon, ginger and honey tea served with fresh lemon slices and a paper straw",
+          zh: "清润爽口、点缀鲜柠檬片的冰镇冻柠姜蜜茶",
+        },
       },
       {
         id: "soya-milk-latte",
@@ -870,6 +915,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegan"],
+        image: "/images/soya-milk-latte.webp",
+        imageAlt: {
+          en: "Cup of velvety house-ground soya milk crowned with smooth foam",
+          zh: "绵密顺滑、豆香醇厚的现磨豆浆奶",
+        },
       },
       {
         id: "matcha-latte",
@@ -881,6 +931,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegetarian"],
+        image: "/images/whisked-matcha-latte.webp",
+        imageAlt: {
+          en: "Vibrant green whisked matcha swirled with cold creamy milk",
+          zh: "翠绿手打抹茶与醇香鲜奶交融的抹茶拿铁",
+        },
       },
       {
         id: "soya-or-sesame-hot",
@@ -909,6 +964,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegan"],
+        image: "/images/passion-fruit-sparkling.webp",
+        imageAlt: {
+          en: "Bright sparkling passion fruit refresher garnished with fresh lemon and calamansi lime",
+          zh: "点缀鲜柠檬与青柠的冰爽百香果气泡水",
+        },
       },
       {
         id: "passion-fruit-lemon-tea",
@@ -920,6 +980,11 @@ export const menuCategories: MenuCategory[] = [
         },
         price: "£6.00",
         dietary: ["vegan"],
+        image: "/images/passion-fruit-lemon-tea.webp",
+        imageAlt: {
+          en: "Chilled amber black tea shaken with passion fruit, fresh lemon slices and green lime",
+          zh: "果香浓郁、配鲜切柠檬与小青柑的冰镇百香果柠檬红茶",
+        },
       },
       {
         id: "chilled-drinks",
