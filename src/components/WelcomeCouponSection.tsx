@@ -16,9 +16,11 @@ import {
   Check,
   CheckCircle2,
   Copy,
+  Download,
   Gift,
   Loader2,
   Mail,
+  ShieldCheck,
   Sparkles,
   Ticket,
   X,
@@ -67,13 +69,16 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [restoredExisting, setRestoredExisting] = useState(false);
   const [claimed, setClaimed] = useState<ClaimedCouponClient | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [liveTimeStr, setLiveTimeStr] = useState<string>("");
 
   const openCouponModal = useCallback(() => {
     setErrorMsg(null);
@@ -173,6 +178,29 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
     };
   }, [claimed?.couponCode]);
 
+  // Live ticking London timestamp inside open QR modal to deter static screenshot spoofing
+  useEffect(() => {
+    if (!modalOpen || !claimed) return;
+    const updateClock = () => {
+      try {
+        setLiveTimeStr(
+          new Intl.DateTimeFormat("en-GB", {
+            timeZone: "Europe/London",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+          }).format(new Date())
+        );
+      } catch {
+        setLiveTimeStr(new Date().toTimeString().slice(0, 8));
+      }
+    };
+    updateClock();
+    const id = window.setInterval(updateClock, 1000);
+    return () => window.clearInterval(id);
+  }, [modalOpen, claimed]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
@@ -186,11 +214,13 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
           name: name.trim(),
           email: email.trim(),
           marketingOptIn,
+          website: honeypot,
         }),
       });
       const data = (await res.json()) as {
         ok?: boolean;
         emailSent?: boolean;
+        restoredExisting?: boolean;
         coupon?: ClaimedCouponClient;
         messageZh?: string;
         messageEn?: string;
@@ -207,6 +237,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
 
       setClaimed(data.coupon);
       setEmailSent(Boolean(data.emailSent));
+      setRestoredExisting(Boolean(data.restoredExisting));
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.coupon));
         window.sessionStorage.setItem(POPUP_DISMISS_SESSION_KEY, "1");
@@ -223,6 +254,81 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleDownloadVoucherImage = () => {
+    if (!claimed || !qrDataUrl) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = 720;
+    canvas.height = 960;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Warm parchment background
+    ctx.fillStyle = "#fbf6ec";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Top vermilion header band
+    ctx.fillStyle = "#b8251c";
+    ctx.fillRect(0, 0, canvas.width, 210);
+
+    ctx.fillStyle = "#f0c26e";
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("JIAN BING LIU 煎饼刘 · 124 CAMDEN RD", 360, 68);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 40px sans-serif";
+    ctx.fillText(
+      `${claimed.discountLabelZh} / ${claimed.discountLabelEn}`,
+      360,
+      130
+    );
+
+    ctx.fillStyle = "#fde8c8";
+    ctx.font = "22px sans-serif";
+    ctx.fillText("Walk-in Counter Orders £10+ Only · 限到店柜台点餐满 £10 使用", 360, 176);
+
+    // White QR card box
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#d9c39e";
+    ctx.lineWidth = 3;
+    ctx.fillRect(110, 260, 500, 520);
+    ctx.strokeRect(110, 260, 500, 520);
+
+    const qrImg = new window.Image();
+    qrImg.onload = () => {
+      ctx.drawImage(qrImg, 200, 295, 320, 320);
+
+      ctx.fillStyle = "#1a1614";
+      ctx.font = "bold 46px monospace";
+      ctx.fillText(claimed.couponCode, 360, 675);
+
+      ctx.fillStyle = "#594f47";
+      ctx.font = "22px sans-serif";
+      ctx.fillText(
+        `Valid until / 有效期至: ${claimed.expiresAt.slice(0, 10)} (1 use)`,
+        360,
+        732
+      );
+
+      ctx.fillStyle = "#8a1c14";
+      ctx.font = "bold 20px sans-serif";
+      ctx.fillText(
+        "付款前出示由店员扫码核销 · 不与外卖平台同享",
+        360,
+        845
+      );
+      ctx.fillStyle = "#6e6258";
+      ctx.font = "18px sans-serif";
+      ctx.fillText("124 Camden Rd, London NW1 9EE · jianbingliu.uk", 360, 885);
+
+      const link = document.createElement("a");
+      link.download = `JianBingLiu-${claimed.couponCode}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+    qrImg.src = qrDataUrl;
   };
 
   const handleCopyCode = async () => {
@@ -309,6 +415,22 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
             <div className="p-6 pt-5">
               {!claimed ? (
                 <form onSubmit={handleSubmit} className="space-y-3.5">
+                  {/* Invisible anti-bot honeypot field */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0"
+                  >
+                    <label htmlFor="coupon-website- trap">Website</label>
+                    <input
+                      id="coupon-website- trap"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </div>
+
                   <div>
                     <label
                       htmlFor="coupon-customer-name"
@@ -399,33 +521,44 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                   <div className="flex items-center justify-between pt-0.5 text-[11px] text-ink-soft">
                     <span>
                       {pick(
-                        `领取后 ${welcomeCoupon.validDays} 天内有效 · 到店核销 ${welcomeCoupon.maxUses} 次`,
-                        `Valid ${welcomeCoupon.validDays} days · In-store (${welcomeCoupon.maxUses} use)`
+                        `限到店柜台满 £10 使用 · ${welcomeCoupon.validDays} 天内有效（不与外卖平台同享）`,
+                        `Counter orders £10+ only · Valid ${welcomeCoupon.validDays} days (excl. delivery apps)`
                       )}
                     </span>
                     <button
                       type="button"
                       onClick={closeCouponModal}
-                      className="font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
+                      className="shrink-0 pl-2 font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
                     >
                       {pick("稍后再领", "Maybe later")}
                     </button>
                   </div>
                 </form>
               ) : (
-                <div className="space-y-4 text-center">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-jade/15 px-3 py-1 text-xs font-bold text-jade">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    {pick("新客优惠券已领取", "Welcome Coupon Ready")}
+                <div className="space-y-3.5 text-center">
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-jade/15 px-3 py-1 text-xs font-bold text-jade">
+                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      {restoredExisting
+                        ? pick("已为你找回未使用的优惠券", "Active Voucher Restored")
+                        : pick("新客优惠券已领取", "Welcome Coupon Ready")}
+                    </span>
+
+                    {liveTimeStr && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-jade/30 bg-white px-2.5 py-1 font-mono text-[11px] font-semibold tabular-nums text-ink">
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-jade" />
+                        {pick(`实时凭证 ${liveTimeStr}`, `LIVE ${liveTimeStr}`)}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="rounded-2xl border-2 border-dashed border-cinnabar/45 bg-white p-5">
+                  <div className="rounded-2xl border-2 border-dashed border-cinnabar/45 bg-white p-4 sm:p-5">
                     <p className="text-xs font-bold tracking-wider text-cinnabar uppercase">
                       {isZh ? claimed.discountLabelZh : claimed.discountLabelEn}
                     </p>
 
                     {qrDataUrl && (
-                      <div className="mx-auto mt-3 w-fit rounded-xl border border-kraft-deep/60 bg-white p-2">
+                      <div className="mx-auto mt-2.5 w-fit rounded-xl border border-kraft-deep/60 bg-white p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={qrDataUrl}
@@ -437,7 +570,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                       </div>
                     )}
 
-                    <div className="mt-3 flex items-center justify-center gap-2">
+                    <div className="mt-2.5 flex items-center justify-center gap-2">
                       <span className="font-mono text-2xl font-extrabold tracking-[0.14em] text-ink">
                         {claimed.couponCode}
                       </span>
@@ -455,13 +588,24 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                       </button>
                     </div>
 
-                    <p className="mt-2.5 text-xs text-ink-soft">
+                    <p className="mt-2 text-xs font-medium text-ink-soft">
                       {pick(
-                        `有效期至：${claimed.expiresAt.slice(0, 10)} · 可使用 ${claimed.maxUses} 次`,
-                        `Valid until ${claimed.expiresAt.slice(0, 10)} · ${claimed.maxUses} use allowed`
+                        `有效期至：${claimed.expiresAt.slice(0, 10)} · 限到店核销 ${claimed.maxUses} 次`,
+                        `Valid until ${claimed.expiresAt.slice(0, 10)} · ${claimed.maxUses} in-store use`
                       )}
                     </p>
                   </div>
+
+                  {qrDataUrl && (
+                    <button
+                      type="button"
+                      onClick={handleDownloadVoucherImage}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-4 py-2.5 text-xs font-extrabold text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-parchment"
+                    >
+                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                      {pick("保存优惠券图片到手机相册", "Save Voucher Card to Phone")}
+                    </button>
+                  )}
 
                   {emailSent && (
                     <p className="text-xs font-medium text-jade">
@@ -472,11 +616,14 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     </p>
                   )}
 
-                  <p className="text-xs leading-relaxed text-ink-soft">
-                    {pick(
-                      "到店点餐付款前，请向店员出示此二维码或券码，店员扫码核销后立减生效（以门店实时系统核销状态为准）。",
-                      "Show this QR code at our Camden counter before paying. Staff will scan and redeem it once in-store."
-                    )}
+                  <p className="flex items-start justify-center gap-1.5 text-left text-[11px] leading-relaxed text-ink-soft">
+                    <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
+                    <span>
+                      {pick(
+                        "仅限到店柜台直接点餐单笔满 £10 使用（每单限 1 张，不与饭团等外卖平台同享）。付款前由店员实时扫码核销生效。",
+                        "Walk-in counter orders £10+ only (limit 1 per order, not valid on delivery apps). Staff must scan live at counter."
+                      )}
+                    </span>
                   </p>
                 </div>
               )}

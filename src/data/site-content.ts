@@ -289,8 +289,8 @@ export const defaultSiteContent: SiteContentConfig = {
       en: "Get £2 off your first Camden order",
     },
     subtitle: {
-      zh: "满 £10 可用 · 登记邮箱立即出码，到店点餐出示二维码由店员核销。",
-      en: "Valid on orders £10+ · Register with your email to get an instant QR code for in-store pickup.",
+      zh: "到店柜台点餐满 £10 可用（不与外卖平台同享）· 登记邮箱立即出码，出示二维码由店员扫码核销。",
+      en: "Walk-in counter orders £10+ (not valid on delivery apps) · Enter your email for an instant in-store QR voucher.",
     },
     discountLabel: { zh: "满 £10 减 £2", en: "£2 OFF £10+" },
     ctaLabel: { zh: "免费领券", en: "Claim £2 Off" },

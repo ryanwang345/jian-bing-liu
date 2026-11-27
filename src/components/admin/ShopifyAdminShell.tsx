@@ -97,6 +97,12 @@ export function ShopifyAdminShell({
       badge: totalCategories,
       mainTab: "categories",
     },
+    {
+      key: "coupons",
+      label: "优惠券扫码核销",
+      href: "/admin/coupons",
+      icon: Ticket,
+    },
   ];
 
   const storefrontItems: NavItemDef[] = [
@@ -124,12 +130,6 @@ export function ShopifyAdminShell({
   ];
 
   const channelAndSettingsItems: NavItemDef[] = [
-    {
-      key: "coupons",
-      label: "新客优惠券与核销",
-      href: "/admin/coupons",
-      icon: Ticket,
-    },
     {
       key: "posts",
       label: "社媒展示帖",
@@ -284,9 +284,21 @@ export function ShopifyAdminShell({
 
         <div className="flex items-center gap-2">
           <Link
+            href="/admin/coupons"
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
+              activeNav === "coupons"
+                ? "bg-[#135e18] text-white"
+                : "border border-[#36fba1]/35 bg-[#135e18]/90 text-white hover:bg-[#135e18]"
+            }`}
+          >
+            <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>核销券</span>
+          </Link>
+
+          <Link
             href="/menu"
             target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-[#303030] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#404040]"
+            className="hidden items-center gap-1.5 rounded-lg border border-white/15 bg-[#303030] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#404040] sm:inline-flex"
           >
             <Store className="h-3.5 w-3.5" aria-hidden="true" />
             <span>查看网店菜单</span>

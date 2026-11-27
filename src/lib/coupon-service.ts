@@ -5,6 +5,8 @@ import { getSiteContent } from "@/lib/site-content-service";
 export type CouponStoredStatus = "active" | "redeemed" | "void";
 export type CouponEffectiveStatus = CouponStoredStatus | "expired";
 
+export const DEVICE_COUPON_COOKIE_NAME = "jbl_coupon_device";
+
 export interface WelcomeCouponRecord {
   id: string;
   email: string;
@@ -53,15 +55,200 @@ interface RawCouponRow {
   created_at: string;
   redeemed_at: string | null;
   redeemed_by: string | null;
+  ip_hash?: string | null;
 }
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+const RAW_CODE_BODY_RE = /^[A-Z0-9]{4,12}$/;
 const CODE_RE = /^JBL-[A-Z0-9]{4,12}$/;
+
+// Anti-abuse rate limits
+const IP_BURST_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const IP_BURST_MAX_ATTEMPTS = 6;
+const MAX_ISSUED_PER_IP_24H = 2; // Allows couples/flatmates on shared Wi-Fi, stops repeat incognito abuse
+const MAX_ISSUED_PER_IP_30D = 3;
+const MAX_GLOBAL_ISSUED_PER_24H = 250; // Circuit breaker against botnet DDoS
+
+// Known trusted consumer email domains (skip external MX lookup for instant 0ms validation)
+const TRUSTED_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "outlook.com",
+  "hotmail.com",
+  "hotmail.co.uk",
+  "live.com",
+  "live.co.uk",
+  "msn.com",
+  "yahoo.com",
+  "yahoo.co.uk",
+  "ymail.com",
+  "btinternet.com",
+  "sky.com",
+  "virginmedia.com",
+  "talktalk.net",
+  "proton.me",
+  "protonmail.com",
+  "qq.com",
+  "vip.qq.com",
+  "foxmail.com",
+  "163.com",
+  "126.com",
+  "yeah.net",
+  "sina.com",
+  "aliyun.com",
+]);
+
+// Disposable / burner / fake test email domains blocked from claiming welcome coupons
+const BLOCKED_EMAIL_DOMAINS = new Set([
+  "example.com",
+  "example.org",
+  "example.net",
+  "test.com",
+  "testing.com",
+  "abc.com",
+  "123.com",
+  "asdf.com",
+  "qwer.com",
+  "localhost",
+  "invalid",
+  "mailinator.com",
+  "guerrillamail.com",
+  "guerrillamailblock.com",
+  "sharklasers.com",
+  "grr.la",
+  "pokemail.net",
+  "10minutemail.com",
+  "10minutemail.net",
+  "tempmail.com",
+  "temp-mail.org",
+  "temp-mail.io",
+  "tmpmail.net",
+  "tmpmail.org",
+  "yopmail.com",
+  "yopmail.fr",
+  "yopmail.net",
+  "trashmail.com",
+  "trashmail.net",
+  "getnada.com",
+  "nada.email",
+  "fakeinbox.com",
+  "dispostable.com",
+  "maildrop.cc",
+  "mailnesia.com",
+  "mohmal.com",
+  "throwawaymail.com",
+  "mintemail.com",
+  "mytemp.email",
+  "emailondeck.com",
+  "burnermail.io",
+  "inboxkitten.com",
+]);
+
+const ipBurstTracker = new Map<string, number[]>();
+const mxDomainCache = new Map<string, { valid: boolean; expiresAt: number }>();
 
 let schemaReady = false;
 
 type MenuDb = NonNullable<Awaited<ReturnType<typeof getMenuDb>>>;
+
+function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export async function hashClientIp(rawIp: string | null | undefined): Promise<string | null> {
+  const clean = rawIp?.trim();
+  if (!clean || clean === "unknown") return null;
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`jbl-coupon-ip-v1:${clean}`)
+  );
+  return Array.from(new Uint8Array(digest))
+    .slice(0, 16)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function checkAndRecordIpBurst(ipHash: string | null): boolean {
+  if (!ipHash) return true;
+  const now = Date.now();
+  const prev = (ipBurstTracker.get(ipHash) ?? []).filter(
+    (ts) => now - ts < IP_BURST_WINDOW_MS
+  );
+  if (prev.length >= IP_BURST_MAX_ATTEMPTS) {
+    ipBurstTracker.set(ipHash, prev);
+    return false;
+  }
+  prev.push(now);
+  ipBurstTracker.set(ipHash, prev);
+  if (ipBurstTracker.size > 2000) {
+    for (const [key, timestamps] of ipBurstTracker) {
+      if (timestamps.every((ts) => now - ts >= IP_BURST_WINDOW_MS)) {
+        ipBurstTracker.delete(key);
+      }
+    }
+  }
+  return true;
+}
+
+async function hasValidMailExchange(domain: string): Promise<boolean> {
+  if (TRUSTED_EMAIL_DOMAINS.has(domain)) return true;
+  if (BLOCKED_EMAIL_DOMAINS.has(domain)) return false;
+
+  const now = Date.now();
+  const cached = mxDomainCache.get(domain);
+  if (cached && cached.expiresAt > now) {
+    return cached.valid;
+  }
+
+  try {
+    const res = await fetch(
+      `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=MX`,
+      {
+        headers: { Accept: "application/dns-json" },
+        signal: AbortSignal.timeout(1600),
+      }
+    );
+    if (!res.ok) {
+      // Fail open on transient DNS gateway issues so genuine customers aren't blocked
+      return true;
+    }
+    const data = (await res.json()) as {
+      Status?: number;
+      Answer?: Array<{ type?: number; data?: string }>;
+    };
+    // Status 3 = NXDOMAIN (non-existent domain, e.g. `abc@sdjfkl123.com`)
+    if (data.Status === 3) {
+      mxDomainCache.set(domain, { valid: false, expiresAt: now + 30 * 60 * 1000 });
+      return false;
+    }
+    const hasMx =
+      Array.isArray(data.Answer) &&
+      data.Answer.some(
+        (ans) =>
+          ans.type === 15 &&
+          typeof ans.data === "string" &&
+          ans.data.trim() !== "" &&
+          ans.data.trim() !== "0 ."
+      );
+    mxDomainCache.set(domain, {
+      valid: hasMx,
+      expiresAt: now + 30 * 60 * 1000,
+    });
+    return hasMx;
+  } catch {
+    // Fail open in offline / sandboxed dev environments
+    return true;
+  }
+}
 
 async function ensureCouponsSchema(db: MenuDb): Promise<void> {
   if (schemaReady) return;
@@ -84,10 +271,19 @@ async function ensureCouponsSchema(db: MenuDb): Promise<void> {
         expires_at TEXT NOT NULL,
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         redeemed_at TEXT,
-        redeemed_by TEXT
+        redeemed_by TEXT,
+        ip_hash TEXT
       )`
     )
     .run();
+
+  // Safely upgrade pre-existing tables that were created before `ip_hash` was added
+  try {
+    await db.prepare("ALTER TABLE welcome_coupons ADD COLUMN ip_hash TEXT").run();
+  } catch {
+    // Column already exists
+  }
+
   await db
     .prepare(
       "CREATE INDEX IF NOT EXISTS idx_welcome_coupons_code ON welcome_coupons(coupon_code)"
@@ -96,6 +292,11 @@ async function ensureCouponsSchema(db: MenuDb): Promise<void> {
   await db
     .prepare(
       "CREATE INDEX IF NOT EXISTS idx_welcome_coupons_created ON welcome_coupons(created_at DESC)"
+    )
+    .run();
+  await db
+    .prepare(
+      "CREATE INDEX IF NOT EXISTS idx_welcome_coupons_ip_created ON welcome_coupons(ip_hash, created_at DESC)"
     )
     .run();
   schemaReady = true;
@@ -144,7 +345,10 @@ function toCouponRecord(row: RawCouponRow): WelcomeCouponRecord {
   };
 }
 
-export function normalizeCustomerEmail(raw: string): string | null {
+export function normalizeCustomerEmail(raw: string): {
+  normalized: string;
+  domain: string;
+} | null {
   const trimmed = raw.trim().toLowerCase();
   if (!trimmed || trimmed.length > 254 || !EMAIL_RE.test(trimmed)) {
     return null;
@@ -152,7 +356,8 @@ export function normalizeCustomerEmail(raw: string): string | null {
   const atIndex = trimmed.lastIndexOf("@");
   const local = trimmed.slice(0, atIndex);
   const domain = trimmed.slice(atIndex + 1);
-  if (!local || !domain) return null;
+  if (!local || !domain || local.length < 2) return null;
+  if (BLOCKED_EMAIL_DOMAINS.has(domain)) return null;
 
   if (domain === "gmail.com" || domain === "googlemail.com") {
     const plusIdx = local.indexOf("+");
@@ -160,17 +365,22 @@ export function normalizeCustomerEmail(raw: string): string | null {
       /\./g,
       ""
     );
-    if (!baseLocal) return null;
-    return `${baseLocal}@gmail.com`;
+    if (baseLocal.length < 2) return null;
+    return { normalized: `${baseLocal}@gmail.com`, domain: "gmail.com" };
   }
 
-  return `${local}@${domain}`;
+  return { normalized: `${local}@${domain}`, domain };
 }
 
+/**
+ * Accepts both full `JBL-7K3M2A` and shorthand `7K3M2A` so staff at the counter
+ * never have to type the `JBL-` prefix manually.
+ */
 export function normalizeCouponCode(raw: string): string | null {
-  const clean = raw.trim().toUpperCase();
-  if (!CODE_RE.test(clean)) return null;
-  return clean;
+  const clean = raw.trim().toUpperCase().replace(/\s+/g, "");
+  if (CODE_RE.test(clean)) return clean;
+  if (RAW_CODE_BODY_RE.test(clean)) return `JBL-${clean}`;
+  return null;
 }
 
 function generateRandomCouponCode(): string {
@@ -220,25 +430,31 @@ async function sendCouponEmailIfConfigured(
     (await getRuntimeEnv("RESEND_FROM_EMAIL")) ||
     "Jian Bing Liu <onboarding@resend.dev>";
 
-  const expiryDate = coupon.expiresAt.slice(0, 10);
+  const expiryDate = escapeHtml(coupon.expiresAt.slice(0, 10));
+  const safeOfferEn = escapeHtml(coupon.offerTitleEn);
+  const safeOfferZh = escapeHtml(coupon.offerTitleZh);
+  const safeDiscountEn = escapeHtml(coupon.discountLabelEn);
+  const safeDiscountZh = escapeHtml(coupon.discountLabelZh);
+  const safeCode = escapeHtml(coupon.couponCode);
+
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; color: #1c1816;">
       <h2 style="margin: 0 0 8px; color: #9c2d1d;">Jian Bing Liu 煎饼刘 · 124 Camden Rd</h2>
-      <p style="margin: 0 0 16px; color: #5c514a;">${coupon.offerTitleEn} / ${coupon.offerTitleZh}</p>
+      <p style="margin: 0 0 16px; color: #5c514a;">${safeOfferEn} / ${safeOfferZh}</p>
       <div style="border: 2px dashed #c84b31; border-radius: 16px; padding: 20px; text-align: center; background: #fbf8f3;">
         <div style="font-size: 13px; font-weight: 700; color: #9c2d1d; letter-spacing: 0.08em; text-transform: uppercase;">
-          ${coupon.discountLabelEn} · ${coupon.discountLabelZh}
+          ${safeDiscountEn} · ${safeDiscountZh}
         </div>
         <div style="font-size: 32px; font-weight: 800; letter-spacing: 0.14em; margin: 12px 0; color: #1c1816;">
-          ${coupon.couponCode}
+          ${safeCode}
         </div>
         <div style="font-size: 13px; color: #5c514a;">
-          Valid until / 有效期至: <strong>${expiryDate}</strong> · Max uses / 可用次数: <strong>${coupon.maxUses}</strong>
+          Valid until / 有效期至: <strong>${expiryDate}</strong> · Walk-in counter orders £10+ only / 限到店柜台点餐满 £10 使用
         </div>
       </div>
       <p style="margin: 16px 0 0; font-size: 13px; color: #5c514a;">
-        Show this code at our Camden Road counter before paying. Staff will redeem it once in-store.<br/>
-        到店点餐付款前向店员出示此券码即可立减。
+        Show this code at our Camden Road counter before paying. Limit 1 per order, not valid on delivery platforms.<br/>
+        到店点餐付款前向店员出示此券码即可立减（每单限用 1 张，不与外卖平台同享）。
       </p>
     </div>
   `;
@@ -269,6 +485,7 @@ export type ClaimCouponResult =
       ok: true;
       coupon: WelcomeCouponRecord;
       emailSent: boolean;
+      restoredExisting?: boolean;
     }
   | {
       ok: false;
@@ -276,8 +493,10 @@ export type ClaimCouponResult =
         | "disabled"
         | "db_unavailable"
         | "invalid_email"
+        | "rate_limited"
         | "turnstile_failed"
         | "already_claimed"
+        | "device_limit"
         | "internal_error";
       messageZh: string;
       messageEn: string;
@@ -288,7 +507,30 @@ export async function claimWelcomeCoupon(input: {
   name?: string;
   marketingOptIn?: boolean;
   turnstileToken?: string;
+  honeypot?: string;
+  clientIp?: string | null;
+  deviceCouponCode?: string | null;
 }): Promise<ClaimCouponResult> {
+  // Silent honeypot trap against automated form-filling bots
+  if (input.honeypot && input.honeypot.trim() !== "") {
+    return {
+      ok: false,
+      reason: "rate_limited",
+      messageZh: "请求过于频繁，请稍后再试。",
+      messageEn: "Too many requests. Please try again later.",
+    };
+  }
+
+  const ipHash = await hashClientIp(input.clientIp);
+  if (!checkAndRecordIpBurst(ipHash)) {
+    return {
+      ok: false,
+      reason: "rate_limited",
+      messageZh: "操作过于频繁，请过几分钟再试。",
+      messageEn: "Too many attempts. Please wait a few minutes and try again.",
+    };
+  }
+
   const siteContent = await getSiteContent();
   const cfg = siteContent.welcomeCoupon;
   if (!cfg.enabled) {
@@ -300,13 +542,23 @@ export async function claimWelcomeCoupon(input: {
     };
   }
 
-  const normalizedEmail = normalizeCustomerEmail(input.email);
-  if (!normalizedEmail) {
+  const parsedEmail = normalizeCustomerEmail(input.email);
+  if (!parsedEmail) {
     return {
       ok: false,
       reason: "invalid_email",
-      messageZh: "请输入有效的电子邮箱地址。",
-      messageEn: "Please enter a valid email address.",
+      messageZh: "请输入真实有效的常用电子邮箱（不支持临时邮箱）。",
+      messageEn: "Please enter a valid personal email address (burner emails are not accepted).",
+    };
+  }
+
+  const mxValid = await hasValidMailExchange(parsedEmail.domain);
+  if (!mxValid) {
+    return {
+      ok: false,
+      reason: "invalid_email",
+      messageZh: "该邮箱域名无法接收邮件，请检查是否拼写有误。",
+      messageEn: "That email domain cannot receive mail. Please check for typos.",
     };
   }
 
@@ -332,18 +584,124 @@ export async function claimWelcomeCoupon(input: {
 
   await ensureCouponsSchema(db);
 
-  const existing = await db
-    .prepare("SELECT id FROM welcome_coupons WHERE normalized_email = ?")
-    .bind(normalizedEmail)
-    .first<{ id: string }>();
+  // 1. Check if this device already holds a coupon via HttpOnly cookie
+  const normalizedDeviceCode = input.deviceCouponCode
+    ? normalizeCouponCode(input.deviceCouponCode)
+    : null;
+  if (normalizedDeviceCode) {
+    const deviceRow = await db
+      .prepare("SELECT * FROM welcome_coupons WHERE coupon_code = ?")
+      .bind(normalizedDeviceCode)
+      .first<RawCouponRow>();
 
-  if (existing) {
+    if (deviceRow) {
+      const deviceCoupon = toCouponRecord(deviceRow);
+      // Same user cleared localStorage and re-entered their own email -> seamlessly restore active voucher!
+      if (
+        deviceCoupon.normalizedEmail === parsedEmail.normalized &&
+        deviceCoupon.effectiveStatus === "active"
+      ) {
+        return {
+          ok: true,
+          coupon: deviceCoupon,
+          emailSent: false,
+          restoredExisting: true,
+        };
+      }
+      // Customer trying to register a second fake email on the exact same phone/browser -> block!
+      if (deviceCoupon.normalizedEmail !== parsedEmail.normalized) {
+        return {
+          ok: false,
+          reason: "device_limit",
+          messageZh:
+            deviceCoupon.effectiveStatus === "active"
+              ? `当前设备已领过新客券（${deviceCoupon.couponCode}），每人每台设备限享 1 次首单礼。`
+              : "当前设备已使用过新客首单优惠，每人限享 1 次，感谢光临煎饼刘！",
+          messageEn:
+            deviceCoupon.effectiveStatus === "active"
+              ? `This device already has an active welcome voucher (${deviceCoupon.couponCode}). Limit 1 per customer.`
+              : "A welcome voucher has already been used on this device (limit 1 per customer).",
+        };
+      }
+    }
+  }
+
+  // 2. Check if this email already claimed previously
+  const existingRow = await db
+    .prepare("SELECT * FROM welcome_coupons WHERE normalized_email = ?")
+    .bind(parsedEmail.normalized)
+    .first<RawCouponRow>();
+
+  if (existingRow) {
+    const existingCoupon = toCouponRecord(existingRow);
+    if (existingCoupon.effectiveStatus === "redeemed") {
+      return {
+        ok: false,
+        reason: "already_claimed",
+        messageZh: `该邮箱的新客立减券已于 ${existingCoupon.redeemedAt?.slice(0, 10) ?? "早前"} 到店核销使用过啦，每人限享 1 次！`,
+        messageEn: "This email's welcome coupon has already been redeemed in-store (limit 1 per customer).",
+      };
+    }
+    if (existingCoupon.effectiveStatus === "active") {
+      // Re-send to their inbox if Resend is configured, without leaking another person's code to unverified devices
+      const resent = await sendCouponEmailIfConfigured(existingCoupon);
+      if (resent) {
+        return {
+          ok: false,
+          reason: "already_claimed",
+          messageZh: "该邮箱已领取过新客券！我们已将核销码重新发送至你的邮箱，请查收。",
+          messageEn: "Already claimed! We just re-sent your active voucher code to your email inbox.",
+        };
+      }
+    }
     return {
       ok: false,
       reason: "already_claimed",
       messageZh: "该邮箱已领取过新客优惠券，每人限领一次。",
       messageEn:
         "A welcome coupon has already been claimed with this email (limit 1 per customer).",
+    };
+  }
+
+  // 3. Enforce per-IP & global issuance caps against incognito multi-account abuse & botnets
+  if (ipHash) {
+    const ipCounts = await db
+      .prepare(
+        `SELECT
+           SUM(CASE WHEN created_at >= datetime('now', '-1 day') THEN 1 ELSE 0 END) AS day_count,
+           SUM(CASE WHEN created_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) AS month_count
+         FROM welcome_coupons
+         WHERE ip_hash = ?`
+      )
+      .bind(ipHash)
+      .first<{ day_count: number | null; month_count: number | null }>();
+
+    if (
+      Number(ipCounts?.day_count ?? 0) >= MAX_ISSUED_PER_IP_24H ||
+      Number(ipCounts?.month_count ?? 0) >= MAX_ISSUED_PER_IP_30D
+    ) {
+      return {
+        ok: false,
+        reason: "rate_limited",
+        messageZh: "当前网络今日领券次数已达上限（每位新客限领 1 张）。如在店内需要帮助请联系店员。",
+        messageEn:
+          "Claim limit reached for this network connection (limit 1 welcome offer per new customer).",
+      };
+    }
+  }
+
+  const globalDayCount = await db
+    .prepare(
+      "SELECT COUNT(*) AS cnt FROM welcome_coupons WHERE created_at >= datetime('now', '-1 day')"
+    )
+    .first<{ cnt: number }>();
+
+  if (Number(globalDayCount?.cnt ?? 0) >= MAX_GLOBAL_ISSUED_PER_24H) {
+    return {
+      ok: false,
+      reason: "rate_limited",
+      messageZh: "今日新客线上立减券已抢完，欢迎明日再来领取！",
+      messageEn: "Today's batch of online welcome vouchers has been fully claimed. Please check back tomorrow!",
     };
   }
 
@@ -363,19 +721,19 @@ export async function claimWelcomeCoupon(input: {
           `INSERT INTO welcome_coupons (
              id, email, normalized_email, customer_name, coupon_code,
              offer_title_zh, offer_title_en, discount_label_zh, discount_label_en,
-             max_uses, used_count, status, marketing_opt_in, expires_at
+             max_uses, used_count, status, marketing_opt_in, expires_at, ip_hash
            )
            VALUES (
              ?, ?, ?, ?, ?,
              ?, ?, ?, ?,
-             ?, 0, 'active', ?, datetime('now', '+' || ? || ' days')
+             ?, 0, 'active', ?, datetime('now', '+' || ? || ' days'), ?
            )
            RETURNING *`
         )
         .bind(
           id,
           cleanEmail,
-          normalizedEmail,
+          parsedEmail.normalized,
           cleanName,
           code,
           cfg.title.zh,
@@ -384,7 +742,8 @@ export async function claimWelcomeCoupon(input: {
           cfg.discountLabel.en,
           maxUses,
           optIn,
-          String(validDays)
+          String(validDays),
+          ipHash
         )
         .first<RawCouponRow>();
 
@@ -460,7 +819,7 @@ export async function redeemCouponAtomic(
     return {
       ok: false,
       reason: "invalid_code",
-      message: "核销码格式不正确（应为 JBL-XXXXXX）。",
+      message: "核销码格式不正确（请输入 6 位券码或完整 JBL-XXXXXX）。",
     };
   }
 
@@ -501,7 +860,7 @@ export async function redeemCouponAtomic(
     return {
       ok: false,
       reason: "not_found",
-      message: `找不到核销码 ${code}，请核对后重试。`,
+      message: `查无此券码（${code}），谨防伪造截图！`,
     };
   }
 
@@ -509,7 +868,7 @@ export async function redeemCouponAtomic(
     return {
       ok: false,
       reason: "void",
-      message: `核销码 ${code} 已被作废，无法使用。`,
+      message: `此券（${code}）已被作废，切勿减免！`,
       coupon: existing,
     };
   }
@@ -518,7 +877,7 @@ export async function redeemCouponAtomic(
     return {
       ok: false,
       reason: "exhausted",
-      message: `核销码 ${code} 已用完（${existing.usedCount}/${existing.maxUses} 次），不可重复核销。`,
+      message: `此券已于 ${existing.redeemedAt ?? "早前"} 核销用过了（${existing.usedCount}/${existing.maxUses} 次），切勿重复减免！`,
       coupon: existing,
     };
   }
@@ -526,8 +885,53 @@ export async function redeemCouponAtomic(
   return {
     ok: false,
     reason: "expired",
-    message: `核销码 ${code} 已于 ${existing.expiresAt.slice(0, 10)} 过期，无法使用。`,
+    message: `此券已于 ${existing.expiresAt.slice(0, 10)} 过期，无法使用！`,
     coupon: existing,
+  };
+}
+
+/**
+ * Allows store staff to undo an accidental tap of "Redeem" so Mom never worries about a slip of the finger.
+ */
+export async function unredeemCouponByCode(
+  rawCode: string,
+  staffIdentity: string
+): Promise<{ ok: boolean; coupon?: WelcomeCouponRecord; message: string }> {
+  const code = normalizeCouponCode(rawCode);
+  if (!code) {
+    return { ok: false, message: "核销码格式不正确。" };
+  }
+  const db = await getMenuDb();
+  if (!db) {
+    return { ok: false, message: "未连接到 Cloudflare D1 数据库。" };
+  }
+  await ensureCouponsSchema(db);
+
+  const updated = await db
+    .prepare(
+      `UPDATE welcome_coupons
+       SET used_count = MAX(0, used_count - 1),
+           status = 'active',
+           redeemed_at = CASE WHEN used_count - 1 <= 0 THEN NULL ELSE redeemed_at END,
+           redeemed_by = ?
+       WHERE coupon_code = ?
+         AND used_count > 0
+         AND status != 'void'
+       RETURNING *`
+    )
+    .bind(`undo:${staffIdentity}`, code)
+    .first<RawCouponRow>();
+
+  if (!updated) {
+    const existing = await lookupCouponByCode(code);
+    if (!existing) return { ok: false, message: `找不到核销码 ${code}。` };
+    return { ok: false, coupon: existing, message: "该券当前没有可撤销的核销记录。" };
+  }
+
+  return {
+    ok: true,
+    coupon: toCouponRecord(updated),
+    message: `已撤销误操作，${code} 已恢复为「可使用」状态！`,
   };
 }
 
@@ -569,7 +973,7 @@ export async function voidCouponByCode(
   };
 }
 
-export async function listWelcomeCoupons(limit = 100): Promise<{
+export async function listWelcomeCoupons(limit = 150): Promise<{
   writable: boolean;
   coupons: WelcomeCouponRecord[];
   stats: CouponStatsSummary;

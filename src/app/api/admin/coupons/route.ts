@@ -4,6 +4,7 @@ import {
   listWelcomeCoupons,
   lookupCouponByCode,
   redeemCouponAtomic,
+  unredeemCouponByCode,
   voidCouponByCode,
 } from "@/lib/coupon-service";
 
@@ -26,7 +27,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const snapshot = await listWelcomeCoupons(150);
+  const snapshot = await listWelcomeCoupons(200);
   return NextResponse.json(snapshot, {
     headers: { "Cache-Control": "no-store" },
   });
@@ -52,6 +53,14 @@ export async function POST(request: Request) {
       const result = await redeemCouponAtomic(code, staff);
       return NextResponse.json(result, {
         status: result.ok ? 200 : 409,
+        headers: { "Cache-Control": "no-store" },
+      });
+    }
+
+    if (action === "unredeem") {
+      const result = await unredeemCouponByCode(code, staff);
+      return NextResponse.json(result, {
+        status: result.ok ? 200 : 400,
         headers: { "Cache-Control": "no-store" },
       });
     }
