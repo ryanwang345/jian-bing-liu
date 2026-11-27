@@ -73,8 +73,23 @@ export interface NewArrivalsConfig {
   ctaLabel: LocalizedText;
 }
 
+export interface WelcomeCouponConfig {
+  /** Master switch for the first-visit customer registration coupon */
+  enabled: boolean;
+  badge: LocalizedText;
+  title: LocalizedText;
+  subtitle: LocalizedText;
+  discountLabel: LocalizedText;
+  ctaLabel: LocalizedText;
+  /** Coupon validity window in days from claim time (1-365) */
+  validDays: number;
+  /** Max allowed redemptions per coupon (default 1) */
+  maxUses: number;
+}
+
 export interface SiteContentConfig {
   newArrivals: NewArrivalsConfig;
+  welcomeCoupon: WelcomeCouponConfig;
   store: {
     nameEn: string;
     nameZh: string;
@@ -265,6 +280,22 @@ export const defaultSiteContent: SiteContentConfig = {
       en: "Fresh from Mrs Liu's griddle — come and try them first!",
     },
     ctaLabel: { zh: "立即尝鲜", en: "Try it now" },
+  },
+  welcomeCoupon: {
+    enabled: true,
+    badge: { zh: "新客首单礼", en: "First-Visit Offer" },
+    title: {
+      zh: "首次登记即领 £2 到店立减券",
+      en: "Get £2 off your first Camden order",
+    },
+    subtitle: {
+      zh: "满 £10 可用 · 登记邮箱立即出码，到店点餐出示二维码由店员核销。",
+      en: "Valid on orders £10+ · Register with your email to get an instant QR code for in-store pickup.",
+    },
+    discountLabel: { zh: "满 £10 减 £2", en: "£2 OFF £10+" },
+    ctaLabel: { zh: "免费领券", en: "Claim £2 Off" },
+    validDays: 14,
+    maxUses: 1,
   },
   store: {
     nameEn: restaurant.name,
@@ -964,6 +995,18 @@ export function mergeSiteContent(raw: unknown): SiteContentConfig {
   const days = Number(merged.newArrivals.autoExpireDays);
   merged.newArrivals.autoExpireDays =
     Number.isFinite(days) && days > 0 ? Math.min(Math.round(days), 365) : 0;
+
+  const couponDays = Number(merged.welcomeCoupon.validDays);
+  merged.welcomeCoupon.validDays =
+    Number.isFinite(couponDays) && couponDays >= 1
+      ? Math.min(Math.round(couponDays), 365)
+      : 14;
+
+  const couponMaxUses = Number(merged.welcomeCoupon.maxUses);
+  merged.welcomeCoupon.maxUses =
+    Number.isFinite(couponMaxUses) && couponMaxUses >= 1
+      ? Math.min(Math.round(couponMaxUses), 10)
+      : 1;
 
   // Validate gallery categories defensively
   const validGalleryCats = new Set<GalleryCategoryKey>([

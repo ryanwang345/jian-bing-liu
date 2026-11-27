@@ -22,6 +22,7 @@ export async function GET() {
 
   let socialProfiles: unknown[] = [];
   let showcasePosts: unknown[] = [];
+  let welcomeCoupons: unknown[] = [];
 
   if (db) {
     try {
@@ -33,6 +34,17 @@ export async function GET() {
       socialProfiles = profilesRes.results ?? [];
     } catch {
       socialProfiles = [];
+    }
+
+    try {
+      const couponsRes = await db
+        .prepare(
+          "SELECT id, email, customer_name, coupon_code, discount_label_zh, discount_label_en, max_uses, used_count, status, marketing_opt_in, expires_at, created_at, redeemed_at, redeemed_by FROM welcome_coupons ORDER BY created_at DESC"
+        )
+        .all();
+      welcomeCoupons = couponsRes.results ?? [];
+    } catch {
+      welcomeCoupons = [];
     }
 
     try {
@@ -87,6 +99,7 @@ export async function GET() {
     },
     socialProfiles,
     showcasePosts,
+    welcomeCoupons,
   };
 
   return new NextResponse(JSON.stringify(backupPayload, null, 2), {

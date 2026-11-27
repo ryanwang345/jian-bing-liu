@@ -28,6 +28,7 @@ import { useSocialLinks } from "@/components/SocialLinksProvider";
 import { SocialStoryStrip } from "@/components/SocialStoryStrip";
 import { NewBadge } from "@/components/NewBadge";
 import { SoldOutBadge } from "@/components/SoldOutBadge";
+import { WelcomeCouponSection } from "@/components/WelcomeCouponSection";
 import { featuredMenuItems } from "@/data/menu";
 import type { SocialPost } from "@/data/reviews";
 import type { HomeSectionId } from "@/data/site-content";
@@ -972,6 +973,7 @@ export function HomeView({
       {home.sections
         .filter((sec) => sec.visible)
         .map((sec) => renderSection(sec.id))}
+      <WelcomeCouponSection />
     </>
   );
 }

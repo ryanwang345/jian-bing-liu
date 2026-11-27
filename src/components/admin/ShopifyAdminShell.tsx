@@ -18,6 +18,7 @@ import {
   Settings,
   Share2,
   Store,
+  Ticket,
   X,
 } from "lucide-react";
 
@@ -30,7 +31,7 @@ export type MainAdminTab =
   | "gallery"
   | "settings";
 
-export type AdminNavKey = MainAdminTab | "posts" | "social";
+export type AdminNavKey = MainAdminTab | "posts" | "social" | "coupons";
 
 interface ShopifyAdminShellProps {
   activeNav: AdminNavKey;
@@ -123,6 +124,12 @@ export function ShopifyAdminShell({
   ];
 
   const channelAndSettingsItems: NavItemDef[] = [
+    {
+      key: "coupons",
+      label: "新客优惠券与核销",
+      href: "/admin/coupons",
+      icon: Ticket,
+    },
     {
       key: "posts",
       label: "社媒展示帖",
