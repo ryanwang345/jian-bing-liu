@@ -69,11 +69,58 @@ interface GoogleTextSearchResponse {
 const DEFAULT_MIN_RATING = 4;
 const CACHE_REVALIDATE_SECONDS = 3600; // 1 hour
 const CACHE_TTL_MS = CACHE_REVALIDATE_SECONDS * 1000;
+const PLACE_ID_CACHE_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
 const FETCH_TIMEOUT_MS = 2200;
+
+const EDGE_REVIEWS_CACHE_KEY = "https://cache.internal/reviews-payload-v1";
+const EDGE_PLACE_ID_CACHE_KEY = "https://cache.internal/google-place-id-v1";
 
 let cachedPlaceId: string | null = null;
 let memoryCache: { payload: ReviewsPayload; expiresAt: number } | null = null;
 let inFlightRefresh: Promise<ReviewsPayload> | null = null;
+
+function getEdgeCache(): Cache | null {
+  try {
+    if (typeof caches !== "undefined" && "default" in caches) {
+      return (caches as unknown as { default: Cache }).default;
+    }
+  } catch {
+    // Not in Cloudflare Workers runtime
+  }
+  return null;
+}
+
+async function readEdgeJsonCache<T>(cacheKey: string): Promise<T | null> {
+  const cache = getEdgeCache();
+  if (!cache) return null;
+  try {
+    const match = await cache.match(cacheKey);
+    if (!match) return null;
+    return (await match.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+async function writeEdgeJsonCache(
+  cacheKey: string,
+  data: unknown,
+  maxAgeSeconds: number
+): Promise<void> {
+  const cache = getEdgeCache();
+  if (!cache) return;
+  try {
+    const res = new Response(JSON.stringify(data), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `public, max-age=${maxAgeSeconds}`,
+      },
+    });
+    await cache.put(cacheKey, res);
+  } catch {
+    // Best-effort edge cache write
+  }
+}
 
 async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
   const configuredPlaceId = await getRuntimeEnv("GOOGLE_PLACE_ID");
@@ -81,6 +128,14 @@ async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
     return configuredPlaceId;
   }
   if (cachedPlaceId) {
+    return cachedPlaceId;
+  }
+
+  const edgeCachedId = await readEdgeJsonCache<{ placeId?: string }>(
+    EDGE_PLACE_ID_CACHE_KEY
+  );
+  if (edgeCachedId?.placeId) {
+    cachedPlaceId = edgeCachedId.placeId;
     return cachedPlaceId;
   }
 
@@ -106,6 +161,11 @@ async function resolveGooglePlaceId(apiKey: string): Promise<string | null> {
   const placeId = data.places?.[0]?.id?.trim() || null;
   if (placeId) {
     cachedPlaceId = placeId;
+    await writeEdgeJsonCache(
+      EDGE_PLACE_ID_CACHE_KEY,
+      { placeId },
+      PLACE_ID_CACHE_TTL_SECONDS
+    );
   }
   return placeId;
 }
@@ -604,6 +664,11 @@ async function computeDynamicReviews(): Promise<ReviewsPayload> {
     payload,
     expiresAt: Date.now() + ttl,
   };
+  await writeEdgeJsonCache(
+    EDGE_REVIEWS_CACHE_KEY,
+    payload,
+    Math.floor(ttl / 1000)
+  );
   return payload;
 }
 
@@ -623,6 +688,18 @@ export async function getDynamicReviews(): Promise<ReviewsPayload> {
       });
     }
     return memoryCache.payload;
+  }
+
+  // Cold isolate: check Cloudflare Edge Cache before calling upstream Google API
+  const edgeCached = await readEdgeJsonCache<ReviewsPayload>(
+    EDGE_REVIEWS_CACHE_KEY
+  );
+  if (edgeCached) {
+    memoryCache = {
+      payload: edgeCached,
+      expiresAt: now + CACHE_TTL_MS,
+    };
+    return edgeCached;
   }
 
   // Cold boot: coalesce concurrent requests into one upstream fetch
