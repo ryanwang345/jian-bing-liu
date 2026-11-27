@@ -12,6 +12,10 @@ import { RouteTransition } from "@/components/motion/RouteTransition";
 import { ScrollAmbientLights } from "@/components/motion/ScrollAmbientLights";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { useSiteContent } from "@/components/SiteContentProvider";
+import {
+  WelcomeCouponProvider,
+  WelcomeCouponTopBar,
+} from "@/components/WelcomeCouponSection";
 import type { FestivalPreset } from "@/data/festivals";
 import { useLocale } from "@/lib/i18n";
 import type { NewArrivalSummary } from "@/lib/new-arrivals";
@@ -49,9 +53,10 @@ export function StorefrontChrome({
       : "";
 
   return (
-    <>
+    <WelcomeCouponProvider>
       <ScrollAmbientLights isFestive={Boolean(activeFestival)} />
       <ScrollProgressBar />
+      <WelcomeCouponTopBar />
       {customBannerText.trim() && (
         <div
           role="region"
@@ -77,6 +82,6 @@ export function StorefrontChrome({
 
       <Footer />
       <MobileActionBar />
-    </>
+    </WelcomeCouponProvider>
   );
 }

@@ -970,10 +970,11 @@ export function HomeView({
 
   return (
     <>
+      {/* Prime top-of-homepage placement for the Welcome Coupon ticket showcase */}
+      <WelcomeCouponSection />
       {home.sections
         .filter((sec) => sec.visible)
         .map((sec) => renderSection(sec.id))}
-      <WelcomeCouponSection />
     </>
   );
 }

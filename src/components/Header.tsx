@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, Globe, MapPin, Menu, Phone, X } from "lucide-react";
+import { ExternalLink, Globe, MapPin, Menu, Phone, Ticket, X } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { phoneToTelHref, useSiteContent } from "@/components/SiteContentProvider";
+import { useWelcomeCoupon } from "@/components/WelcomeCouponSection";
 import { useLocale, type LocalizedText } from "@/lib/i18n";
 
 const navItems: Array<{ href: string; label: LocalizedText }> = [
@@ -122,7 +123,9 @@ function LanguageToggle() {
 export function Header() {
   const pathname = usePathname();
   const { locale, t, pick } = useLocale();
-  const { store } = useSiteContent();
+  const { store, welcomeCoupon } = useSiteContent();
+  const { enabled: couponEnabled, claimed: claimedCoupon, openCouponModal } =
+    useWelcomeCoupon();
   const phoneHref = phoneToTelHref(store.phoneDisplay);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -282,8 +285,22 @@ export function Header() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-2.5 lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <LanguageToggle />
+          {couponEnabled && (
+            <button
+              type="button"
+              onClick={openCouponModal}
+              className="sticker-shadow inline-flex items-center gap-1.5 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-3.5 py-2 text-xs font-extrabold text-cinnabar-dark transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-cinnabar hover:text-parchment active:scale-[0.97]"
+            >
+              <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>
+                {claimedCoupon
+                  ? pick("我的优惠券", "My Coupon")
+                  : pick("领 £2 券", "£2 Off")}
+              </span>
+            </button>
+          )}
           {store.orderOnlineUrl && (
             <a
               href={store.orderOnlineUrl}
@@ -301,9 +318,23 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile & iPad Portrait: Language toggle + iPad Order button + Menu drawer trigger */}
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5 lg:hidden">
+        {/* Mobile & iPad Portrait: Language toggle + Coupon pill + iPad Order button + Menu drawer trigger */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:hidden">
           <LanguageToggle />
+          {couponEnabled && (
+            <button
+              type="button"
+              onClick={openCouponModal}
+              className="sticker-shadow inline-flex items-center gap-1 rounded-full border border-cinnabar/40 bg-[#fff5e4] px-2.5 py-1.5 text-xs font-extrabold text-cinnabar-dark transition-all active:scale-95"
+            >
+              <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>
+                {claimedCoupon
+                  ? pick("券码", "QR")
+                  : pick("领券", "£2")}
+              </span>
+            </button>
+          )}
           {store.orderOnlineUrl && (
             <a
               href={store.orderOnlineUrl}
@@ -375,6 +406,26 @@ export function Header() {
           </nav>
 
           <div className="mt-4 space-y-3 border-t border-kraft-deep/70 pt-4">
+            {couponEnabled && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  openCouponModal();
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-5 py-3 text-sm font-extrabold text-cinnabar-dark shadow-xs transition-colors hover:bg-cinnabar hover:text-parchment"
+              >
+                <Ticket className="h-4 w-4" aria-hidden="true" />
+                <span>
+                  {claimedCoupon
+                    ? pick(
+                        `查看我的优惠券（${claimedCoupon.couponCode}）`,
+                        `View My Coupon (${claimedCoupon.couponCode})`
+                      )
+                    : `${t(welcomeCoupon.badge)} · ${t(welcomeCoupon.ctaLabel)}`}
+                </span>
+              </button>
+            )}
             {store.orderOnlineUrl && (
               <a
                 href={store.orderOnlineUrl}
