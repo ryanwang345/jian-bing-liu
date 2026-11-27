@@ -6,7 +6,7 @@ import { listWelcomeCoupons, lookupCouponByCode } from "@/lib/coupon-service";
 import { getSiteContent } from "@/lib/site-content-service";
 
 export const metadata = {
-  title: "新客优惠券与核销 · 管理中心",
+  title: "优惠券极速核销与流水 · 管理中心",
   robots: { index: false, follow: false },
 };
 
@@ -22,11 +22,16 @@ export default async function AdminCouponsPage({
 
   const params = await searchParams;
   const queryCode = params.code?.trim().toUpperCase() || "";
+  const staff = session.identity || "admin";
 
-  const [snapshot, siteContent, initialLookup] = await Promise.all([
-    listWelcomeCoupons(150),
+  // Run lookup first if arrived via QR scan so the freshly recorded scan event appears in `snapshot.logs`
+  const initialLookup = queryCode
+    ? await lookupCouponByCode(queryCode, { recordScanByStaff: staff })
+    : null;
+
+  const [snapshot, siteContent] = await Promise.all([
+    listWelcomeCoupons(200),
     getSiteContent(),
-    queryCode ? lookupCouponByCode(queryCode) : Promise.resolve(null),
   ]);
 
   return (
@@ -40,6 +45,7 @@ export default async function AdminCouponsPage({
         writable={snapshot.writable}
         initialCoupons={snapshot.coupons}
         initialStats={snapshot.stats}
+        initialLogs={snapshot.logs}
         initialLookup={initialLookup}
         initialQueryCode={queryCode}
         initialSiteContent={siteContent}

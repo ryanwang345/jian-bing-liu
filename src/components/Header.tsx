@@ -3,7 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, Globe, MapPin, Menu, Phone, Ticket, X } from "lucide-react";
+import {
+  ExternalLink,
+  Globe,
+  MapPin,
+  Menu,
+  Phone,
+  Ticket,
+  UserCheck,
+  X,
+} from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { phoneToTelHref, useSiteContent } from "@/components/SiteContentProvider";
 import { useWelcomeCoupon } from "@/components/WelcomeCouponSection";
@@ -80,7 +89,6 @@ function LanguageToggle() {
         aria-hidden="true"
       />
       <div ref={trackRef} className="relative inline-flex items-center">
-        {/* Sliding Dark-Ink Active Capsule */}
         {pill && (
           <span
             aria-hidden="true"
@@ -159,7 +167,6 @@ export function Header() {
     });
   }, [activeNavIndex]);
 
-  // Re-measure active indicator whenever route OR language changes (text widths shift smoothly!)
   useEffect(() => {
     measureActiveNav();
   }, [measureActiveNav, locale]);
@@ -167,7 +174,6 @@ export function Header() {
   useEffect(() => {
     const onResize = () => measureActiveNav();
     window.addEventListener("resize", onResize);
-    // Re-measure once webfonts finish loading to keep pill centered accurately
     if (document.fonts && typeof document.fonts.ready?.then === "function") {
       document.fonts.ready.then(measureActiveNav).catch(() => {});
     }
@@ -204,6 +210,8 @@ export function Header() {
     });
   };
 
+  const isWalletPage = pathname?.startsWith("/my-coupons");
+
   return (
     <header
       className={`sticky top-0 z-50 border-b bg-parchment/92 backdrop-blur-md transition-[box-shadow,border-color,background-color] duration-300 ${
@@ -224,7 +232,7 @@ export function Header() {
           <BrandMark size="md" variant="dark" />
         </Link>
 
-        {/* Desktop Nav (lg+ so iPad portrait never squeezes or wraps tabs) */}
+        {/* Desktop Nav */}
         <nav
           ref={navRef}
           aria-label={pick("主导航", "Primary navigation")}
@@ -233,7 +241,6 @@ export function Header() {
           }
           className="relative hidden items-center gap-0.5 rounded-full border border-kraft-deep/55 bg-white/55 p-1 backdrop-blur-xs lg:flex"
         >
-          {/* Hover Ghost Capsule */}
           <span
             aria-hidden="true"
             className={`pointer-events-none absolute top-1 bottom-1 left-0 rounded-full bg-kraft/55 transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -245,7 +252,6 @@ export function Header() {
             }}
           />
 
-          {/* Sliding Active Tab Capsule + Vermilion Accent Dot */}
           {activePill && (
             <span
               aria-hidden="true"
@@ -287,20 +293,46 @@ export function Header() {
 
         <div className="hidden items-center gap-2 lg:flex">
           <LanguageToggle />
-          {couponEnabled && (
-            <button
-              type="button"
-              onClick={openCouponModal}
-              className="sticker-shadow inline-flex items-center gap-1.5 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-3.5 py-2 text-xs font-extrabold text-cinnabar-dark transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-cinnabar hover:text-parchment active:scale-[0.97]"
+
+          {claimedCoupon ? (
+            <Link
+              href="/my-coupons"
+              className={`sticker-shadow inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-extrabold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:scale-[0.97] ${
+                isWalletPage
+                  ? "border-cinnabar bg-cinnabar text-parchment"
+                  : "border-cinnabar/35 bg-[#fff5e4] text-cinnabar-dark hover:bg-cinnabar hover:text-parchment"
+              }`}
             >
               <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>
-                {claimedCoupon
-                  ? pick("我的优惠券", "My Coupon")
-                  : pick("领 £2 券", "£2 Off")}
-              </span>
-            </button>
+              <span>{pick("我的优惠券", "My Coupons")}</span>
+            </Link>
+          ) : (
+            <>
+              {couponEnabled && (
+                <button
+                  type="button"
+                  onClick={openCouponModal}
+                  className="sticker-shadow inline-flex items-center gap-1.5 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-3.5 py-2 text-xs font-extrabold text-cinnabar-dark transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-cinnabar hover:text-parchment active:scale-[0.97]"
+                >
+                  <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{pick("领 £2 券", "£2 Off")}</span>
+                </button>
+              )}
+              <Link
+                href="/my-coupons"
+                title={pick("登录我的优惠券卡包", "Sign in to My Coupons")}
+                aria-label={pick("登录我的优惠券卡包", "Sign in to My Coupons")}
+                className={`inline-flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
+                  isWalletPage
+                    ? "border-cinnabar bg-cinnabar text-parchment"
+                    : "border-kraft-deep bg-kraft/65 text-ink-soft hover:border-cinnabar/40 hover:text-cinnabar"
+                }`}
+              >
+                <UserCheck className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </>
           )}
+
           {store.orderOnlineUrl && (
             <a
               href={store.orderOnlineUrl}
@@ -318,22 +350,28 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile & iPad Portrait: Language toggle + Coupon pill + iPad Order button + Menu drawer trigger */}
+        {/* Mobile & iPad Portrait */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:hidden">
           <LanguageToggle />
-          {couponEnabled && (
-            <button
-              type="button"
-              onClick={openCouponModal}
+          {claimedCoupon ? (
+            <Link
+              href="/my-coupons"
               className="sticker-shadow inline-flex items-center gap-1 rounded-full border border-cinnabar/40 bg-[#fff5e4] px-2.5 py-1.5 text-xs font-extrabold text-cinnabar-dark transition-all active:scale-95"
             >
               <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>
-                {claimedCoupon
-                  ? pick("券码", "QR")
-                  : pick("领券", "£2")}
-              </span>
-            </button>
+              <span>{pick("卡包", "Wallet")}</span>
+            </Link>
+          ) : (
+            couponEnabled && (
+              <button
+                type="button"
+                onClick={openCouponModal}
+                className="sticker-shadow inline-flex items-center gap-1 rounded-full border border-cinnabar/40 bg-[#fff5e4] px-2.5 py-1.5 text-xs font-extrabold text-cinnabar-dark transition-all active:scale-95"
+              >
+                <Ticket className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{pick("领券", "£2")}</span>
+              </button>
+            )
           )}
           {store.orderOnlineUrl && (
             <a
@@ -403,10 +441,31 @@ export function Header() {
                 </Link>
               );
             })}
+
+            <Link
+              href="/my-coupons"
+              aria-current={isWalletPage ? "page" : undefined}
+              className={`flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-colors ${
+                isWalletPage
+                  ? "bg-kraft font-semibold text-cinnabar"
+                  : "text-ink hover:bg-kraft/60"
+              }`}
+            >
+              <span className="inline-flex items-center gap-2">
+                <UserCheck className="h-4 w-4 text-cinnabar" />
+                {pick("我的优惠券卡包（登录 / 查状态）", "My Coupons Wallet")}
+              </span>
+              {isWalletPage && (
+                <span
+                  aria-hidden="true"
+                  className="h-2 w-2 rounded-full bg-cinnabar"
+                />
+              )}
+            </Link>
           </nav>
 
           <div className="mt-4 space-y-3 border-t border-kraft-deep/70 pt-4">
-            {couponEnabled && (
+            {couponEnabled && !claimedCoupon && (
               <button
                 type="button"
                 onClick={() => {
@@ -417,12 +476,7 @@ export function Header() {
               >
                 <Ticket className="h-4 w-4" aria-hidden="true" />
                 <span>
-                  {claimedCoupon
-                    ? pick(
-                        `查看我的优惠券（${claimedCoupon.couponCode}）`,
-                        `View My Coupon (${claimedCoupon.couponCode})`
-                      )
-                    : `${t(welcomeCoupon.badge)} · ${t(welcomeCoupon.ctaLabel)}`}
+                  {`${t(welcomeCoupon.badge)} · ${t(welcomeCoupon.ctaLabel)}`}
                 </span>
               </button>
             )}

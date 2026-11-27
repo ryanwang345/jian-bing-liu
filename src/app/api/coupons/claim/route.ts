@@ -4,6 +4,11 @@ import {
   claimWelcomeCoupon,
   DEVICE_COUPON_COOKIE_NAME,
 } from "@/lib/coupon-service";
+import {
+  createCustomerWalletToken,
+  CUSTOMER_WALLET_COOKIE_NAME,
+  CUSTOMER_WALLET_MAX_AGE_SEC,
+} from "@/lib/customer-wallet-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +60,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as {
       email?: unknown;
       name?: unknown;
+      pin?: unknown;
       marketingOptIn?: unknown;
       turnstileToken?: unknown;
       website?: unknown;
@@ -62,6 +68,7 @@ export async function POST(request: Request) {
 
     const email = typeof body.email === "string" ? body.email : "";
     const name = typeof body.name === "string" ? body.name : "";
+    const pin = typeof body.pin === "string" ? body.pin : undefined;
     const marketingOptIn = Boolean(body.marketingOptIn);
     const turnstileToken =
       typeof body.turnstileToken === "string" ? body.turnstileToken : undefined;
@@ -71,6 +78,7 @@ export async function POST(request: Request) {
     const result = await claimWelcomeCoupon({
       email,
       name,
+      pin,
       marketingOptIn,
       turnstileToken,
       honeypot,
@@ -80,7 +88,9 @@ export async function POST(request: Request) {
 
     if (!result.ok) {
       const status =
-        result.reason === "invalid_email" || result.reason === "turnstile_failed"
+        result.reason === "invalid_email" ||
+        result.reason === "invalid_pin" ||
+        result.reason === "turnstile_failed"
           ? 400
           : result.reason === "rate_limited"
             ? 429
@@ -98,6 +108,11 @@ export async function POST(request: Request) {
         headers: { "Cache-Control": "no-store" },
       });
     }
+
+    const walletToken = await createCustomerWalletToken({
+      email: result.coupon.email,
+      normalizedEmail: result.coupon.normalizedEmail,
+    });
 
     const response = NextResponse.json(
       {
@@ -124,13 +139,23 @@ export async function POST(request: Request) {
       }
     );
 
-    // Bind device browser via HttpOnly cookie to block multi-email farming & enable seamless same-device recovery
+    const isProd = process.env.NODE_ENV === "production";
+
     response.cookies.set(DEVICE_COUPON_COOKIE_NAME, result.coupon.couponCode, {
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: isProd,
       path: "/",
       maxAge: DEVICE_COOKIE_MAX_AGE_SEC,
+    });
+
+    // Automatically log customer into `/my-coupons` on the claiming device
+    response.cookies.set(CUSTOMER_WALLET_COOKIE_NAME, walletToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: isProd,
+      path: "/",
+      maxAge: CUSTOMER_WALLET_MAX_AGE_SEC,
     });
 
     return response;

@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import QRCode from "qrcode";
 import {
@@ -18,11 +19,13 @@ import {
   Copy,
   Download,
   Gift,
+  KeyRound,
   Loader2,
   Mail,
   ShieldCheck,
   Sparkles,
   Ticket,
+  UserCheck,
   X,
 } from "lucide-react";
 import { useSiteContent } from "@/components/SiteContentProvider";
@@ -42,7 +45,7 @@ export interface ClaimedCouponClient {
   effectiveStatus: string;
 }
 
-const STORAGE_KEY = "jbl_welcome_coupon_v1";
+export const COUPON_LOCAL_STORAGE_KEY = "jbl_welcome_coupon_v1";
 const POPUP_DISMISS_SESSION_KEY = "jbl_welcome_coupon_popup_dismissed_v1";
 const TOPBAR_DISMISS_SESSION_KEY = "jbl_welcome_coupon_topbar_dismissed_v1";
 
@@ -63,12 +66,14 @@ export function useWelcomeCoupon() {
 }
 
 export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const { isZh, t, pick } = useLocale();
   const { welcomeCoupon, store } = useSiteContent();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [pin, setPin] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -98,7 +103,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let savedCoupon: ClaimedCouponClient | null = null;
     try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
+      const saved = window.localStorage.getItem(COUPON_LOCAL_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as ClaimedCouponClient;
         if (parsed?.couponCode) {
@@ -110,7 +115,12 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
       // Ignore storage errors
     }
 
-    if (!welcomeCoupon.enabled || store.temporarilyClosed || savedCoupon) {
+    if (
+      !welcomeCoupon.enabled ||
+      store.temporarilyClosed ||
+      savedCoupon ||
+      pathname?.startsWith("/my-coupons")
+    ) {
       return;
     }
 
@@ -128,7 +138,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
     }, 380);
 
     return () => window.clearTimeout(timer);
-  }, [welcomeCoupon.enabled, store.temporarilyClosed]);
+  }, [welcomeCoupon.enabled, store.temporarilyClosed, pathname]);
 
   // Close on Escape & lock background scroll while modal is open
   useEffect(() => {
@@ -213,6 +223,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
+          pin: pin.trim() || undefined,
           marketingOptIn,
           website: honeypot,
         }),
@@ -239,7 +250,10 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
       setEmailSent(Boolean(data.emailSent));
       setRestoredExisting(Boolean(data.restoredExisting));
       try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.coupon));
+        window.localStorage.setItem(
+          COUPON_LOCAL_STORAGE_KEY,
+          JSON.stringify(data.coupon)
+        );
         window.sessionStorage.setItem(POPUP_DISMISS_SESSION_KEY, "1");
       } catch {
         // Ignore storage errors
@@ -264,11 +278,9 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Warm parchment background
     ctx.fillStyle = "#fbf6ec";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Top vermilion header band
     ctx.fillStyle = "#b8251c";
     ctx.fillRect(0, 0, canvas.width, 210);
 
@@ -287,9 +299,12 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
 
     ctx.fillStyle = "#fde8c8";
     ctx.font = "22px sans-serif";
-    ctx.fillText("Walk-in Counter Orders £10+ Only · 限到店柜台点餐满 £10 使用", 360, 176);
+    ctx.fillText(
+      "Walk-in Counter Orders £10+ Only · 限到店柜台点餐满 £10 使用",
+      360,
+      176
+    );
 
-    // White QR card box
     ctx.fillStyle = "#ffffff";
     ctx.strokeStyle = "#d9c39e";
     ctx.lineWidth = 3;
@@ -314,14 +329,14 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
 
       ctx.fillStyle = "#8a1c14";
       ctx.font = "bold 20px sans-serif";
-      ctx.fillText(
-        "付款前出示由店员扫码核销 · 不与外卖平台同享",
-        360,
-        845
-      );
+      ctx.fillText("付款前出示由店员扫码核销 · 不与外卖平台同享", 360, 845);
       ctx.fillStyle = "#6e6258";
       ctx.font = "18px sans-serif";
-      ctx.fillText("124 Camden Rd, London NW1 9EE · jianbingliu.uk", 360, 885);
+      ctx.fillText(
+        "124 Camden Rd, London NW1 9EE · jianbingliu.uk/my-coupons",
+        360,
+        885
+      );
 
       const link = document.createElement("a");
       link.download = `JianBingLiu-${claimed.couponCode}.png`;
@@ -363,9 +378,9 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
           onClick={(e) => {
             if (e.target === e.currentTarget) closeCouponModal();
           }}
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-[#1a1614]/68 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-[#1a1614]/68 p-4 backdrop-blur-xs"
         >
-          <div className="animate-fade-up relative w-full max-w-md overflow-hidden rounded-[30px] border border-[#e6d2ae] bg-parchment shadow-[0_28px_80px_rgba(26,22,20,0.45)]">
+          <div className="animate-fade-up relative my-auto w-full max-w-md overflow-hidden rounded-[30px] border border-[#e6d2ae] bg-parchment shadow-[0_28px_80px_rgba(26,22,20,0.45)]">
             {/* Festive Vermilion Ticket Header */}
             <div className="relative overflow-hidden bg-gradient-to-br from-[#8f1414] via-[#b8251c] to-[#991b14] px-6 pt-6 pb-5 text-parchment">
               <div
@@ -414,15 +429,15 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
 
             <div className="p-6 pt-5">
               {!claimed ? (
-                <form onSubmit={handleSubmit} className="space-y-3.5">
+                <form onSubmit={handleSubmit} className="space-y-3">
                   {/* Invisible anti-bot honeypot field */}
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0"
                   >
-                    <label htmlFor="coupon-website- trap">Website</label>
+                    <label htmlFor="coupon-website-trap">Website</label>
                     <input
-                      id="coupon-website- trap"
+                      id="coupon-website-trap"
                       type="text"
                       tabIndex={-1}
                       autoComplete="off"
@@ -431,22 +446,51 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     />
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor="coupon-customer-name"
-                      className="block text-xs font-semibold text-ink"
-                    >
-                      {pick("怎么称呼你（选填）", "Your name (optional)")}
-                    </label>
-                    <input
-                      id="coupon-customer-name"
-                      type="text"
-                      maxLength={80}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={pick("例如：Alex / 小陈", "e.g. Alex")}
-                      className="mt-1 w-full rounded-xl border border-kraft-deep bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-cinnabar"
-                    />
+                  <div className="grid gap-2.5 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="coupon-customer-name"
+                        className="block text-xs font-semibold text-ink"
+                      >
+                        {pick("称呼（选填）", "Name (optional)")}
+                      </label>
+                      <input
+                        id="coupon-customer-name"
+                        type="text"
+                        maxLength={80}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder={pick("如：Alex / 小陈", "e.g. Alex")}
+                        className="mt-1 w-full rounded-xl border border-kraft-deep bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-cinnabar"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="coupon-customer-pin"
+                        className="block text-xs font-semibold text-ink"
+                      >
+                        {pick("取券密码（选填4位数字）", "4-Digit PIN (optional)")}
+                      </label>
+                      <div className="relative mt-1">
+                        <KeyRound
+                          className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-ink-soft"
+                          aria-hidden="true"
+                        />
+                        <input
+                          id="coupon-customer-pin"
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={8}
+                          value={pin}
+                          onChange={(e) =>
+                            setPin(e.target.value.replace(/[^\d]/g, ""))
+                          }
+                          placeholder={pick("如手机后4位", "e.g. 8866")}
+                          className="w-full rounded-xl border border-kraft-deep bg-white py-2.5 pr-3 pl-8 font-mono text-sm text-ink outline-none transition-colors focus:border-cinnabar"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div>
@@ -477,7 +521,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     </div>
                   </div>
 
-                  <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-kraft-deep/70 bg-white/75 p-3 text-xs leading-relaxed text-ink-soft">
+                  <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-kraft-deep/70 bg-white/75 p-2.5 text-xs leading-relaxed text-ink-soft">
                     <input
                       type="checkbox"
                       checked={marketingOptIn}
@@ -486,8 +530,8 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     />
                     <span>
                       {pick(
-                        "我愿意接收煎饼刘的新品上新及节日限定通知（可随时取消，不勾选也可照常领券）。",
-                        "Send me occasional updates on seasonal flavours and Camden specials (optional — you can still claim without ticking)."
+                        "我愿意接收煎饼刘的新品及老客福利券通知（可随时取消，不勾选也可照常领券）。",
+                        "Send me seasonal specials and loyalty vouchers (optional)."
                       )}
                     </span>
                   </label>
@@ -518,24 +562,30 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     </span>
                   </button>
 
-                  <div className="flex items-center justify-between pt-0.5 text-[11px] text-ink-soft">
-                    <span>
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-kraft-deep/60 pt-2.5 text-xs">
+                    <Link
+                      href="/my-coupons"
+                      onClick={closeCouponModal}
+                      className="inline-flex items-center gap-1 font-bold text-cinnabar hover:underline"
+                    >
+                      <UserCheck className="h-3.5 w-3.5" />
                       {pick(
-                        `限到店柜台满 £10 使用 · ${welcomeCoupon.validDays} 天内有效（不与外卖平台同享）`,
-                        `Counter orders £10+ only · Valid ${welcomeCoupon.validDays} days (excl. delivery apps)`
+                        "已领过券？登录我的优惠券卡包 →",
+                        "Already claimed? Sign in to My Coupons →"
                       )}
-                    </span>
+                    </Link>
+
                     <button
                       type="button"
                       onClick={closeCouponModal}
-                      className="shrink-0 pl-2 font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
+                      className="font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
                     >
                       {pick("稍后再领", "Maybe later")}
                     </button>
                   </div>
                 </form>
               ) : (
-                <div className="space-y-3.5 text-center">
+                <div className="space-y-3 text-center">
                   <div className="flex flex-wrap items-center justify-center gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-jade/15 px-3 py-1 text-xs font-bold text-jade">
                       <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -552,25 +602,25 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     )}
                   </div>
 
-                  <div className="rounded-2xl border-2 border-dashed border-cinnabar/45 bg-white p-4 sm:p-5">
+                  <div className="rounded-2xl border-2 border-dashed border-cinnabar/45 bg-white p-4">
                     <p className="text-xs font-bold tracking-wider text-cinnabar uppercase">
                       {isZh ? claimed.discountLabelZh : claimed.discountLabelEn}
                     </p>
 
                     {qrDataUrl && (
-                      <div className="mx-auto mt-2.5 w-fit rounded-xl border border-kraft-deep/60 bg-white p-2">
+                      <div className="mx-auto mt-2 w-fit rounded-xl border border-kraft-deep/60 bg-white p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={qrDataUrl}
                           alt={`QR code for ${claimed.couponCode}`}
-                          width={160}
-                          height={160}
-                          className="h-40 w-40"
+                          width={152}
+                          height={152}
+                          className="h-38 w-38"
                         />
                       </div>
                     )}
 
-                    <div className="mt-2.5 flex items-center justify-center gap-2">
+                    <div className="mt-2 flex items-center justify-center gap-2">
                       <span className="font-mono text-2xl font-extrabold tracking-[0.14em] text-ink">
                         {claimed.couponCode}
                       </span>
@@ -588,7 +638,7 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                       </button>
                     </div>
 
-                    <p className="mt-2 text-xs font-medium text-ink-soft">
+                    <p className="mt-1.5 text-xs font-medium text-ink-soft">
                       {pick(
                         `有效期至：${claimed.expiresAt.slice(0, 10)} · 限到店核销 ${claimed.maxUses} 次`,
                         `Valid until ${claimed.expiresAt.slice(0, 10)} · ${claimed.maxUses} in-store use`
@@ -596,16 +646,27 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                     </p>
                   </div>
 
-                  {qrDataUrl && (
-                    <button
-                      type="button"
-                      onClick={handleDownloadVoucherImage}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-4 py-2.5 text-xs font-extrabold text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-parchment"
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {qrDataUrl && (
+                      <button
+                        type="button"
+                        onClick={handleDownloadVoucherImage}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-full border border-cinnabar/35 bg-[#fff5e4] px-4 py-2.5 text-xs font-extrabold text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-parchment"
+                      >
+                        <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                        {pick("保存到手机相册", "Save to Photos")}
+                      </button>
+                    )}
+
+                    <Link
+                      href="/my-coupons"
+                      onClick={closeCouponModal}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-xs font-bold text-parchment transition-colors hover:bg-cinnabar"
                     >
-                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                      {pick("保存优惠券图片到手机相册", "Save Voucher Card to Phone")}
-                    </button>
-                  )}
+                      <UserCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                      {pick("进入我的卡包管理", "Open My Wallet")}
+                    </Link>
+                  </div>
 
                   {emailSent && (
                     <p className="text-xs font-medium text-jade">
@@ -617,11 +678,14 @@ export function WelcomeCouponProvider({ children }: { children: ReactNode }) {
                   )}
 
                   <p className="flex items-start justify-center gap-1.5 text-left text-[11px] leading-relaxed text-ink-soft">
-                    <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cinnabar" aria-hidden="true" />
+                    <ShieldCheck
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cinnabar"
+                      aria-hidden="true"
+                    />
                     <span>
                       {pick(
-                        "仅限到店柜台直接点餐单笔满 £10 使用（每单限 1 张，不与饭团等外卖平台同享）。付款前由店员实时扫码核销生效。",
-                        "Walk-in counter orders £10+ only (limit 1 per order, not valid on delivery apps). Staff must scan live at counter."
+                        "仅限到店柜台直接点餐单笔满 £10 使用（每单限 1 张，不与外卖平台同享）。付款前由店员扫码实时核销。",
+                        "Walk-in counter orders £10+ only (limit 1 per order, excl. delivery apps). Staff must scan live at counter."
                       )}
                     </span>
                   </p>
@@ -655,8 +719,13 @@ export function WelcomeCouponTopBar() {
     }
   }, []);
 
-  // On `/` the full-size ticket showcase card already sits right at the very top of the page
-  if (!enabled || store.temporarilyClosed || dismissed || pathname === "/") {
+  if (
+    !enabled ||
+    store.temporarilyClosed ||
+    dismissed ||
+    pathname === "/" ||
+    pathname?.startsWith("/my-coupons")
+  ) {
     return null;
   }
 
@@ -701,9 +770,7 @@ export function WelcomeCouponTopBar() {
         >
           <Ticket className="h-3 w-3" aria-hidden="true" />
           <span>
-            {claimed
-              ? pick("出示券码", "View QR")
-              : t(welcomeCoupon.ctaLabel)}
+            {claimed ? pick("出示券码", "View QR") : t(welcomeCoupon.ctaLabel)}
           </span>
           <ArrowRight className="h-3 w-3" aria-hidden="true" />
         </button>
@@ -739,25 +806,12 @@ export function WelcomeCouponSection() {
       className="relative z-20 border-b border-kraft-deep/80 bg-gradient-to-b from-[#f9eedb] to-parchment px-4 py-5 sm:px-6 sm:py-6 lg:px-8"
     >
       <div className="mx-auto max-w-7xl">
-        <div
-          onClick={openCouponModal}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              openCouponModal();
-            }
-          }}
-          className="group relative cursor-pointer overflow-hidden rounded-[26px] border-2 border-cinnabar/35 bg-gradient-to-r from-[#8f1414] via-[#b8251c] to-[#9b1c15] p-5 text-parchment shadow-[0_16px_40px_-12px_rgba(184,37,28,0.42)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_48px_-12px_rgba(184,37,28,0.52)] sm:p-6 lg:px-9 lg:py-6"
-        >
-          {/* Ambient golden shimmer */}
+        <div className="group relative overflow-hidden rounded-[26px] border-2 border-cinnabar/35 bg-gradient-to-r from-[#8f1414] via-[#b8251c] to-[#9b1c15] p-5 text-parchment shadow-[0_16px_40px_-12px_rgba(184,37,28,0.42)] transition-all duration-300 hover:shadow-[0_22px_48px_-12px_rgba(184,37,28,0.52)] sm:p-6 lg:px-9 lg:py-6">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -top-20 left-1/3 h-48 w-80 rounded-full bg-[#f0c26e]/20 blur-3xl"
           />
 
-          {/* Ticket side cutouts */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute top-1/2 -left-3 hidden h-6 w-6 -translate-y-1/2 rounded-full bg-[#f9eedb] sm:block"
@@ -768,8 +822,18 @@ export function WelcomeCouponSection() {
           />
 
           <div className="relative z-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
-              {/* Ticket Stub Value Stamp */}
+            <div
+              onClick={openCouponModal}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openCouponModal();
+                }
+              }}
+              className="flex cursor-pointer flex-col gap-3 sm:flex-row sm:items-center sm:gap-5"
+            >
               <div className="flex shrink-0 items-center gap-2 rounded-2xl border border-[#f0c26e]/50 bg-black/25 px-4 py-2.5 backdrop-blur-xs sm:flex-col sm:gap-0.5 sm:border-r-2 sm:border-dashed sm:px-5 sm:py-3">
                 <span className="text-[11px] font-bold tracking-widest text-[#f0c26e] uppercase">
                   {t(welcomeCoupon.badge)}
@@ -783,7 +847,10 @@ export function WelcomeCouponSection() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1 rounded-full bg-[#f0c26e]/20 px-2.5 py-0.5 text-[11px] font-bold text-[#f0c26e]">
                     <Sparkles className="h-3 w-3" aria-hidden="true" />
-                    {pick("限时到店福利 · 秒出核销码", "Instant In-Store QR Voucher")}
+                    {pick(
+                      "限时到店福利 · 秒出核销码",
+                      "Instant In-Store QR Voucher"
+                    )}
                   </span>
                 </div>
                 <h2 className="mt-1.5 font-display text-xl font-bold tracking-tight text-white sm:text-2xl lg:text-[28px]">
@@ -800,19 +867,28 @@ export function WelcomeCouponSection() {
               </div>
             </div>
 
-            <div className="flex w-full shrink-0 items-center md:w-auto">
-              <span className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#f0c26e] px-6 py-3.5 text-sm font-extrabold text-[#1a1614] shadow-lg transition-all group-hover:scale-[1.03] group-hover:bg-white sm:w-auto">
+            <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+              <button
+                type="button"
+                onClick={openCouponModal}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#f0c26e] px-6 py-3.5 text-sm font-extrabold text-[#1a1614] shadow-lg transition-all hover:scale-[1.03] hover:bg-white sm:w-auto"
+              >
                 <Ticket className="h-4 w-4" aria-hidden="true" />
                 <span>
                   {claimed
-                    ? pick("查看二维码核销", "Show QR Voucher")
+                    ? pick("出示二维码核销", "Show QR Voucher")
                     : t(welcomeCoupon.ctaLabel)}
                 </span>
-                <ArrowRight
-                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
-              </span>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+
+              <Link
+                href="/my-coupons"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-[#f0c26e]/45 bg-black/25 px-4 py-3.5 text-xs font-bold text-parchment transition-colors hover:bg-black/40 hover:text-white sm:w-auto"
+              >
+                <UserCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{pick("我的卡包", "My Coupons")}</span>
+              </Link>
             </div>
           </div>
         </div>

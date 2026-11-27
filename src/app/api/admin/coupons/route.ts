@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSessionStatus } from "@/lib/admin-auth";
 import {
+  issueCustomerVoucherByAdmin,
   listWelcomeCoupons,
   lookupCouponByCode,
   redeemCouponAtomic,
@@ -18,9 +19,14 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code")?.trim();
+  const recordScan = searchParams.get("scan") !== "0";
+  const staff = session.identity || "admin";
 
   if (code) {
-    const coupon = await lookupCouponByCode(code);
+    const coupon = await lookupCouponByCode(
+      code,
+      recordScan ? { recordScanByStaff: staff } : undefined
+    );
     return NextResponse.json(
       { ok: Boolean(coupon), coupon },
       { headers: { "Cache-Control": "no-store" } }
@@ -43,6 +49,15 @@ export async function POST(request: Request) {
     const body = (await request.json()) as {
       action?: unknown;
       code?: unknown;
+      email?: unknown;
+      customerName?: unknown;
+      campaignType?: unknown;
+      offerTitleZh?: unknown;
+      offerTitleEn?: unknown;
+      discountLabelZh?: unknown;
+      discountLabelEn?: unknown;
+      validDays?: unknown;
+      maxUses?: unknown;
     };
 
     const action = body.action;
@@ -69,6 +84,31 @@ export async function POST(request: Request) {
       const result = await voidCouponByCode(code, staff);
       return NextResponse.json(result, {
         status: result.ok ? 200 : 400,
+        headers: { "Cache-Control": "no-store" },
+      });
+    }
+
+    if (action === "issue") {
+      const result = await issueCustomerVoucherByAdmin({
+        email: typeof body.email === "string" ? body.email : "",
+        customerName:
+          typeof body.customerName === "string" ? body.customerName : "",
+        campaignType:
+          typeof body.campaignType === "string" ? body.campaignType : "vip",
+        offerTitleZh:
+          typeof body.offerTitleZh === "string" ? body.offerTitleZh : "",
+        offerTitleEn:
+          typeof body.offerTitleEn === "string" ? body.offerTitleEn : "",
+        discountLabelZh:
+          typeof body.discountLabelZh === "string" ? body.discountLabelZh : "",
+        discountLabelEn:
+          typeof body.discountLabelEn === "string" ? body.discountLabelEn : "",
+        validDays: Number(body.validDays) || 30,
+        maxUses: Number(body.maxUses) || 1,
+        staffIdentity: staff,
+      });
+      return NextResponse.json(result, {
+        status: result.ok ? 201 : 400,
         headers: { "Cache-Control": "no-store" },
       });
     }
