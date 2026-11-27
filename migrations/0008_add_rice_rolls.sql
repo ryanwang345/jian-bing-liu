@@ -1,0 +1,86 @@
+-- Add three rice roll (饭团) flavours to mains-and-rice at £9.50 each.
+INSERT OR IGNORE INTO menu_items (
+  id,
+  category_id,
+  name_en,
+  name_zh,
+  chinese_name,
+  desc_en,
+  desc_zh,
+  image_url,
+  image_alt_en,
+  image_alt_zh,
+  dietary_tags,
+  note_en,
+  note_zh,
+  is_featured,
+  is_available,
+  sort_order
+) VALUES
+  (
+    'braised-chicken-rice-roll',
+    'mains-and-rice',
+    'Braised Chicken Rice Roll',
+    '卤鸡肉饭团',
+    '卤鸡肉饭团',
+    'Warm, hearty sticky rice roll packed with tender house-braised chicken, crispy fillings and savoury seasoning.',
+    '热乎扎实的米饭团，满满裹入自家慢火卤制的鲜嫩鸡肉与酥脆配料，咸香饱满、顶饿又满足。',
+    '/images/purple-rice-roll.webp',
+    'Hearty sliced rice roll packed with braised chicken and crispy savoury fillings',
+    '对半切开的饱满卤鸡肉饭团，露出扎实鸡肉与酥脆配料',
+    '[]',
+    NULL,
+    NULL,
+    0,
+    1,
+    3
+  ),
+  (
+    'braised-beef-rice-roll',
+    'mains-and-rice',
+    'Braised Beef Rice Roll',
+    '酱牛肉饭团',
+    '酱牛肉饭团',
+    'Warm sticky rice roll generously filled with rich slow-braised spiced beef and crunchy house fillings.',
+    '热乎软糯的米饭团，夹满浓香入味的自家酱牛肉与酥脆配料，肉香与米香融为一体。',
+    '/images/purple-rice-roll.webp',
+    'Hearty sliced rice roll packed with spiced braised beef and crispy fillings',
+    '对半切开的饱满酱牛肉饭团，露出大片酱牛肉与酥脆配料',
+    '[]',
+    NULL,
+    NULL,
+    0,
+    1,
+    4
+  ),
+  (
+    'roast-pork-rice-roll',
+    'mains-and-rice',
+    'Roast Pork Rice Roll',
+    '烧肉饭团',
+    '烧肉饭团',
+    'Warm sticky rice roll stuffed with savoury-sweet glazed roast pork and crisp, crunchy fillings.',
+    '热乎饱满的米饭团，裹入焦香油润的烧肉与酥脆配料，咸香微甜、一口大满足。',
+    '/images/purple-rice-roll.webp',
+    'Hearty sliced rice roll packed with savoury roast pork and crispy fillings',
+    '对半切开的饱满烧肉饭团，露出焦香烧肉与酥脆配料',
+    '[]',
+    NULL,
+    NULL,
+    0,
+    1,
+    5
+  );
+
+INSERT OR IGNORE INTO menu_variants (
+  id,
+  item_id,
+  size_en,
+  size_zh,
+  price_pence,
+  is_default,
+  sort_order
+) VALUES
+  ('braised-chicken-rice-roll-default', 'braised-chicken-rice-roll', 'Regular', '标准', 950, 1, 0),
+  ('braised-beef-rice-roll-default', 'braised-beef-rice-roll', 'Regular', '标准', 950, 1, 0),
+  ('roast-pork-rice-roll-default', 'roast-pork-rice-roll', 'Regular', '标准', 950, 1, 0);

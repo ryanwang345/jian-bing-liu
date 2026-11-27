@@ -519,6 +519,51 @@ export const menuCategories: MenuCategory[] = [
         price: "£15.00",
         secondaryPrice: { en: "£17.00 Large", zh: "大份 £17.00" },
       },
+      {
+        id: "braised-chicken-rice-roll",
+        name: { en: "Braised Chicken Rice Roll", zh: "卤鸡肉饭团" },
+        chineseName: "卤鸡肉饭团",
+        description: {
+          en: "Warm, hearty sticky rice roll packed with tender house-braised chicken, crispy fillings and savoury seasoning.",
+          zh: "热乎扎实的米饭团，满满裹入自家慢火卤制的鲜嫩鸡肉与酥脆配料，咸香饱满、顶饿又满足。",
+        },
+        price: "£9.50",
+        image: "/images/purple-rice-roll.webp",
+        imageAlt: {
+          en: "Hearty sliced rice roll packed with braised chicken and crispy savoury fillings",
+          zh: "对半切开的饱满卤鸡肉饭团，露出扎实鸡肉与酥脆配料",
+        },
+      },
+      {
+        id: "braised-beef-rice-roll",
+        name: { en: "Braised Beef Rice Roll", zh: "酱牛肉饭团" },
+        chineseName: "酱牛肉饭团",
+        description: {
+          en: "Warm sticky rice roll generously filled with rich slow-braised spiced beef and crunchy house fillings.",
+          zh: "热乎软糯的米饭团，夹满浓香入味的自家酱牛肉与酥脆配料，肉香与米香融为一体。",
+        },
+        price: "£9.50",
+        image: "/images/purple-rice-roll.webp",
+        imageAlt: {
+          en: "Hearty sliced rice roll packed with spiced braised beef and crispy fillings",
+          zh: "对半切开的饱满酱牛肉饭团，露出大片酱牛肉与酥脆配料",
+        },
+      },
+      {
+        id: "roast-pork-rice-roll",
+        name: { en: "Roast Pork Rice Roll", zh: "烧肉饭团" },
+        chineseName: "烧肉饭团",
+        description: {
+          en: "Warm sticky rice roll stuffed with savoury-sweet glazed roast pork and crisp, crunchy fillings.",
+          zh: "热乎饱满的米饭团，裹入焦香油润的烧肉与酥脆配料，咸香微甜、一口大满足。",
+        },
+        price: "£9.50",
+        image: "/images/purple-rice-roll.webp",
+        imageAlt: {
+          en: "Hearty sliced rice roll packed with savoury roast pork and crispy fillings",
+          zh: "对半切开的饱满烧肉饭团，露出焦香烧肉与酥脆配料",
+        },
+      },
     ],
   },
   {
