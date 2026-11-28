@@ -18,12 +18,18 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function MyCouponsPage() {
-  const [session, cookieStore, emailOtpAvailable] = await Promise.all([
-    getCustomerWalletSession(),
-    cookies(),
-    isEmailOtpConfigured(),
-  ]);
+export default async function MyCouponsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string; code?: string }>;
+}) {
+  const [session, cookieStore, emailOtpAvailable, resolvedParams] =
+    await Promise.all([
+      getCustomerWalletSession(),
+      cookies(),
+      isEmailOtpConfigured(),
+      searchParams,
+    ]);
 
   let initialWallet = session
     ? await getCustomerWalletSnapshot(session.normalizedEmail)
@@ -36,10 +42,21 @@ export default async function MyCouponsPage() {
     }
   }
 
+  const prefillEmail =
+    typeof resolvedParams.email === "string"
+      ? resolvedParams.email.trim().slice(0, 254)
+      : "";
+  const prefillCode =
+    typeof resolvedParams.code === "string"
+      ? resolvedParams.code.trim().slice(0, 24)
+      : "";
+
   return (
     <CustomerWalletClient
       initialWallet={initialWallet}
       initialEmailOtpAvailable={emailOtpAvailable}
+      initialPrefillEmail={prefillEmail}
+      initialPrefillCode={prefillCode}
     />
   );
 }

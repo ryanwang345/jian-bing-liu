@@ -667,15 +667,24 @@ export async function isEmailOtpConfigured(): Promise<boolean> {
   return Boolean(apiKey);
 }
 
+const DEFAULT_RESEND_FROM_EMAIL = "Jian Bing Liu 煎饼刘 <info@jianbingliu.uk>";
+const DEFAULT_RESEND_REPLY_TO = "info@jianbingliu.uk";
+
+async function resolveResendSender(): Promise<string> {
+  const configured = await getRuntimeEnv("RESEND_FROM_EMAIL");
+  if (configured && configured.includes("@")) {
+    return configured;
+  }
+  return DEFAULT_RESEND_FROM_EMAIL;
+}
+
 async function sendCouponEmailIfConfigured(
   coupon: WelcomeCouponRecord
 ): Promise<boolean> {
   const apiKey = await getRuntimeEnv("RESEND_API_KEY");
   if (!apiKey) return false;
 
-  const fromEmail =
-    (await getRuntimeEnv("RESEND_FROM_EMAIL")) ||
-    "Jian Bing Liu <onboarding@resend.dev>";
+  const fromEmail = await resolveResendSender();
 
   const expiryDate = escapeHtml(coupon.expiresAt.slice(0, 10));
   const safeOfferEn = escapeHtml(coupon.offerTitleEn);
@@ -683,28 +692,100 @@ async function sendCouponEmailIfConfigured(
   const safeDiscountEn = escapeHtml(coupon.discountLabelEn);
   const safeDiscountZh = escapeHtml(coupon.discountLabelZh);
   const safeCode = escapeHtml(coupon.couponCode);
+  const safeName = coupon.customerName ? escapeHtml(coupon.customerName) : "";
+  const walletUrl = `https://jianbingliu.uk/my-coupons?email=${encodeURIComponent(coupon.email)}&code=${encodeURIComponent(coupon.couponCode)}`;
 
   const html = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; color: #1c1816;">
-      <h2 style="margin: 0 0 8px; color: #9c2d1d;">Jian Bing Liu 煎饼刘 · 124 Camden Rd</h2>
-      <p style="margin: 0 0 16px; color: #5c514a;">${safeOfferEn} / ${safeOfferZh}</p>
-      <div style="border: 2px dashed #c84b31; border-radius: 16px; padding: 20px; text-align: center; background: #fbf8f3;">
-        <div style="font-size: 13px; font-weight: 700; color: #9c2d1d; letter-spacing: 0.08em; text-transform: uppercase;">
-          ${safeDiscountEn} · ${safeDiscountZh}
-        </div>
-        <div style="font-size: 32px; font-weight: 800; letter-spacing: 0.14em; margin: 12px 0; color: #1c1816;">
-          ${safeCode}
-        </div>
-        <div style="font-size: 13px; color: #5c514a;">
-          Valid until / 有效期至: <strong>${expiryDate}</strong> · Walk-in counter orders £10+ only / 限到店柜台点餐满 £10 使用
-        </div>
-      </div>
-      <p style="margin: 16px 0 0; font-size: 13px; color: #5c514a;">
-        Manage all your vouchers anytime at <a href="https://jianbingliu.uk/my-coupons" style="color: #9c2d1d; font-weight: 600;">jianbingliu.uk/my-coupons</a>.<br/>
-        随时访问 <a href="https://jianbingliu.uk/my-coupons" style="color: #9c2d1d; font-weight: 600;">jianbingliu.uk/my-coupons</a> 登录管理你的全部优惠券。
-      </p>
-    </div>
+  <!doctype html>
+  <html lang="zh-Hans">
+  <body style="margin: 0; padding: 0; background-color: #fbf6ec; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #1c1816;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #fbf6ec; padding: 28px 14px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 540px; background-color: #ffffff; border: 1px solid #e6d2ae; border-radius: 24px; overflow: hidden; box-shadow: 0 12px 32px rgba(26, 22, 20, 0.08);">
+            <!-- Vermilion Brand Header -->
+            <tr>
+              <td style="background: linear-gradient(135deg, #8f1414 0%, #b8251c 100%); background-color: #b8251c; padding: 26px 28px 22px; text-align: left;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="vertical-align: middle;">
+                      <span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 8px; background-color: #f0c26e; color: #8f1414; font-weight: 800; font-size: 16px; vertical-align: middle; margin-right: 10px;">刘</span>
+                      <span style="color: #ffffff; font-size: 20px; font-weight: 800; letter-spacing: 0.02em; vertical-align: middle;">煎饼刘 · Jian Bing Liu</span>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin: 10px 0 0; font-size: 12px; color: #fde8c8; letter-spacing: 0.04em;">
+                  124 Camden Road, London NW1 9EE · 专属电子优惠券
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="height: 3px; background-color: #f0c26e; font-size: 0; line-height: 0;">&nbsp;</td>
+            </tr>
+
+            <!-- Main Content -->
+            <tr>
+              <td style="padding: 28px 28px 24px;">
+                <p style="margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #1c1816;">
+                  ${safeName ? `你好，${safeName} / Hello ${safeName},` : "你好 / Hello,"}
+                </p>
+                <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #5c514a;">
+                  你的专属优惠券已放入个人卡包：<strong style="color: #9c2d1d;">${safeOfferZh}</strong>（${safeOfferEn}）。
+                </p>
+
+                <!-- Select-all Voucher Box -->
+                <div style="border: 2px dashed #c84b31; border-radius: 18px; padding: 22px 16px; text-align: center; background-color: #fbf8f3;">
+                  <div style="display: inline-block; background-color: #9c2d1d; color: #ffffff; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; letter-spacing: 0.05em;">
+                    ${safeDiscountZh} · ${safeDiscountEn}
+                  </div>
+                  <div style="margin: 16px 0 12px;">
+                    <span style="display: inline-block; background-color: #ffffff; border: 1px solid #e6d2ae; border-radius: 12px; padding: 10px 22px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 30px; font-weight: 800; letter-spacing: 0.12em; color: #1c1816; user-select: all; -webkit-user-select: all;">${safeCode}</span>
+                  </div>
+                  <div style="font-size: 12px; color: #786a5e;">
+                    点击上方券码可一键全选复制 · 有效期至 <strong>${expiryDate}</strong>
+                  </div>
+                </div>
+
+                <!-- Primary CTA -->
+                <div style="text-align: center; margin: 24px 0 18px;">
+                  <a href="${walletUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #b8251c; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 999px; box-shadow: 0 6px 16px rgba(184, 37, 28, 0.25);">
+                    🎟️ 一键打开「我的优惠券」出示二维码
+                  </a>
+                </div>
+
+                <div style="border-top: 1px solid #efe4d2; padding-top: 16px; font-size: 12px; line-height: 1.65; color: #6e6258;">
+                  <p style="margin: 0 0 4px;">
+                    • 限到店柜台直接点餐单笔满 £10 使用（每单限 1 张，不与外卖平台同享）。
+                  </p>
+                  <p style="margin: 0;">
+                    • Walk-in counter orders £10+ only at 124 Camden Rd. Present QR code before payment.
+                  </p>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color: #f8f1e4; padding: 14px 28px; border-top: 1px solid #e6d2ae; font-size: 11px; color: #7a6d61; text-align: center;">
+                Jian Bing Liu 煎饼刘 · <a href="mailto:info@jianbingliu.uk" style="color: #9c2d1d; text-decoration: none; font-weight: 600;">info@jianbingliu.uk</a> · <a href="https://jianbingliu.uk" style="color: #9c2d1d; text-decoration: none; font-weight: 600;">jianbingliu.uk</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
   `;
+
+  const text = [
+    `Jian Bing Liu 煎饼刘 · ${coupon.offerTitleZh} (${coupon.offerTitleEn})`,
+    `优惠福利 / Offer: ${coupon.discountLabelZh} (${coupon.discountLabelEn})`,
+    `优惠券码 / Voucher Code: ${coupon.couponCode}`,
+    `有效期至 / Valid until: ${coupon.expiresAt.slice(0, 10)}`,
+    `我的卡包 / Manage wallet: ${walletUrl}`,
+    `Contact: info@jianbingliu.uk`,
+  ].join("\n");
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -715,12 +796,18 @@ async function sendCouponEmailIfConfigured(
       },
       body: JSON.stringify({
         from: fromEmail,
+        reply_to: DEFAULT_RESEND_REPLY_TO,
         to: [coupon.email],
-        subject: `Your Jian Bing Liu Voucher: ${coupon.couponCode} (${coupon.discountLabelEn})`,
+        subject: `${coupon.couponCode} — Jian Bing Liu 煎饼刘专属优惠券 (${coupon.discountLabelEn})`,
         html,
+        text,
       }),
       signal: AbortSignal.timeout(4000),
     });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      console.error("[Resend coupon email error]", res.status, errText);
+    }
     return res.ok;
   } catch {
     return false;
@@ -1967,9 +2054,108 @@ export async function requestCustomerWalletOtp(input: {
     )
     .run();
 
-  const fromEmail =
-    (await getRuntimeEnv("RESEND_FROM_EMAIL")) ||
-    "Jian Bing Liu <onboarding@resend.dev>";
+  const fromEmail = await resolveResendSender();
+  const safeCustomerName = snapshot.customerName
+    ? escapeHtml(snapshot.customerName)
+    : "";
+  const oneClickCopyUrl = `https://jianbingliu.uk/my-coupons?email=${encodeURIComponent(snapshot.email)}&code=${encodeURIComponent(otpCode)}`;
+
+  const otpEmailHtml = `
+  <!doctype html>
+  <html lang="zh-Hans">
+  <body style="margin: 0; padding: 0; background-color: #fbf6ec; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #1c1816;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #fbf6ec; padding: 28px 14px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 540px; background-color: #ffffff; border: 1px solid #e6d2ae; border-radius: 24px; overflow: hidden; box-shadow: 0 12px 32px rgba(26, 22, 20, 0.08);">
+            <!-- Vermilion Brand Header -->
+            <tr>
+              <td style="background: linear-gradient(135deg, #8f1414 0%, #b8251c 100%); background-color: #b8251c; padding: 24px 28px 20px; text-align: left;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="vertical-align: middle;">
+                      <span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 8px; background-color: #f0c26e; color: #8f1414; font-weight: 800; font-size: 16px; vertical-align: middle; margin-right: 10px;">刘</span>
+                      <span style="color: #ffffff; font-size: 20px; font-weight: 800; letter-spacing: 0.02em; vertical-align: middle;">煎饼刘 · Jian Bing Liu</span>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin: 10px 0 0; font-size: 12px; color: #fde8c8; letter-spacing: 0.04em;">
+                  我的优惠券卡包 · 登录安全验证 / Coupon Wallet Verification
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="height: 3px; background-color: #f0c26e; font-size: 0; line-height: 0;">&nbsp;</td>
+            </tr>
+
+            <!-- Main Content -->
+            <tr>
+              <td style="padding: 28px 28px 24px;">
+                <p style="margin: 0 0 8px; font-size: 15px; font-weight: 700; color: #1c1816;">
+                  ${safeCustomerName ? `你好，${safeCustomerName} / Hi ${safeCustomerName},` : "你好 / Hello,"}
+                </p>
+                <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.65; color: #5c514a;">
+                  你正在登录煎饼刘「我的优惠券」卡包。请使用下方 6 位一次性验证码完成验证：<br/>
+                  <span style="font-size: 13px; color: #786a5e;">Enter this 6-digit verification code to access your Jian Bing Liu coupons:</span>
+                </p>
+
+                <!-- Interactive Select-All OTP Box (contiguous digits, zero hidden spaces) -->
+                <div style="border: 2px dashed #c84b31; border-radius: 18px; padding: 22px 16px; text-align: center; background-color: #fbf8f3;">
+                  <div style="font-size: 11px; font-weight: 700; color: #9c2d1d; letter-spacing: 0.12em; text-transform: uppercase;">
+                    6-DIGIT VERIFICATION CODE · 6 位安全验证码
+                  </div>
+                  <div style="margin: 14px 0 12px;">
+                    <span style="display: inline-block; background-color: #ffffff; border: 1.5px solid #e6d2ae; border-radius: 14px; padding: 12px 26px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 38px; font-weight: 800; letter-spacing: 0.18em; color: #1c1816; user-select: all; -webkit-user-select: all;">${otpCode}</span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 600; color: #5c514a;">
+                    👆 点按数字即可全选复制（无空格） · <span style="color: #9c2d1d;">10 分钟内有效</span>
+                  </div>
+                </div>
+
+                <!-- True One-Click Copy & Pre-Fill Action Button (Web Handler) -->
+                <div style="text-align: center; margin: 22px 0 18px;">
+                  <a href="${oneClickCopyUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #b8251c; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 999px; box-shadow: 0 6px 16px rgba(184, 37, 28, 0.25);">
+                    📋 一键复制验证码并前往登录 · Copy &amp; Sign In
+                  </a>
+                  <p style="margin: 10px 0 0; font-size: 11px; color: #8a7b6e;">
+                    点击按钮可一键复制 <strong>${otpCode}</strong> 并自动填入卡包登录页
+                  </p>
+                </div>
+
+                <!-- Security Footer Note -->
+                <div style="border-top: 1px solid #efe4d2; padding-top: 16px; font-size: 12px; line-height: 1.65; color: #6e6258;">
+                  <p style="margin: 0 0 4px;">
+                    • 若非本人操作，请忽略此邮件，切勿将验证码转告他人。
+                  </p>
+                  <p style="margin: 0;">
+                    • This code expires in 10 minutes. If you didn&apos;t request it, you can safely ignore this email.
+                  </p>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Store Footer -->
+            <tr>
+              <td style="background-color: #f8f1e4; padding: 14px 28px; border-top: 1px solid #e6d2ae; font-size: 11px; color: #7a6d61; text-align: center;">
+                Jian Bing Liu 煎饼刘 · 124 Camden Rd, London NW1 9EE<br/>
+                <a href="mailto:info@jianbingliu.uk" style="color: #9c2d1d; text-decoration: none; font-weight: 600;">info@jianbingliu.uk</a> · <a href="https://jianbingliu.uk/my-coupons" style="color: #9c2d1d; text-decoration: none; font-weight: 600;">jianbingliu.uk/my-coupons</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
+  `;
+
+  const otpEmailText = [
+    "Jian Bing Liu 煎饼刘 · 我的优惠券登录验证码",
+    `Your verification code / 你的 6 位登录验证码: ${otpCode}`,
+    "Valid for 10 minutes / 10 分钟内有效。",
+    `One-click copy & sign in / 一键复制并登录: ${oneClickCopyUrl}`,
+    "Contact: info@jianbingliu.uk",
+  ].join("\n");
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -1980,22 +2166,23 @@ export async function requestCustomerWalletOtp(input: {
       },
       body: JSON.stringify({
         from: fromEmail,
+        reply_to: DEFAULT_RESEND_REPLY_TO,
         to: [snapshot.email],
         subject: `${otpCode} — Jian Bing Liu 煎饼刘登录验证码`,
-        html: `<div style="font-family: sans-serif; padding: 20px; color: #1c1816;">
-          <h3 style="color: #9c2d1d; margin: 0 0 8px;">Jian Bing Liu 煎饼刘 · 我的优惠券登录</h3>
-          <p style="margin: 0 0 12px;">Your 6-digit verification code / 你的 6 位登录验证码：</p>
-          <div style="font-size: 32px; font-weight: 800; letter-spacing: 0.2em; padding: 14px 20px; background: #fbf6ec; border-radius: 12px; display: inline-block;">${otpCode}</div>
-          <p style="margin: 12px 0 0; font-size: 12px; color: #6e6258;">Valid for 10 minutes / 10 分钟内有效。</p>
-        </div>`,
+        html: otpEmailHtml,
+        text: otpEmailText,
       }),
       signal: AbortSignal.timeout(4000),
     });
-    if (!res.ok) throw new Error("Resend failed");
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      console.error("[Resend OTP email error]", res.status, errText);
+      throw new Error(`Resend failed (${res.status})`);
+    }
     return {
       ok: true,
-      messageZh: "6 位验证码已发送至你的邮箱，请在 10 分钟内输入。",
-      messageEn: "A 6-digit code has been sent to your email (valid for 10 minutes).",
+      messageZh: "6 位验证码已从 info@jianbingliu.uk 发送至你的邮箱，请在 10 分钟内输入。",
+      messageEn: "A 6-digit code has been sent from info@jianbingliu.uk (valid for 10 minutes).",
     };
   } catch {
     return {

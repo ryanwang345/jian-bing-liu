@@ -7,6 +7,7 @@ import {
   AlertCircle,
   Check,
   CheckCircle2,
+  ClipboardPaste,
   Clock,
   Copy,
   Download,
@@ -39,6 +40,8 @@ import { useLocale } from "@/lib/i18n";
 interface CustomerWalletClientProps {
   initialWallet: CustomerWalletSnapshot | null;
   initialEmailOtpAvailable: boolean;
+  initialPrefillEmail?: string;
+  initialPrefillCode?: string;
 }
 
 type WalletTab = "active" | "redeemed" | "expired" | "history" | "settings";
@@ -59,10 +62,22 @@ function formatDateTimeShort(raw: string | null | undefined): string {
 export function CustomerWalletClient({
   initialWallet,
   initialEmailOtpAvailable,
+  initialPrefillEmail = "",
+  initialPrefillCode = "",
 }: CustomerWalletClientProps) {
   const { isZh, pick } = useLocale();
   const { store, welcomeCoupon } = useSiteContent();
   const { claimed: modalClaimedCoupon, openCouponModal } = useWelcomeCoupon();
+
+  const prefillIsSixDigitOtp = /^\d{6}$/.test(initialPrefillCode.trim());
+  const prefillOtpValue = prefillIsSixDigitOtp
+    ? initialPrefillCode.trim()
+    : "";
+  const prefillVoucherValue =
+    !prefillIsSixDigitOtp &&
+    /^(JBL-)?[A-Z0-9]{4,12}$/i.test(initialPrefillCode.trim())
+      ? initialPrefillCode.trim().toUpperCase()
+      : "";
 
   const [wallet, setWallet] = useState<CustomerWalletSnapshot | null>(
     initialWallet
@@ -80,11 +95,12 @@ export function CustomerWalletClient({
 
   // Login form states
   const [loginMode, setLoginMode] = useState<"credential" | "otp">(
-    "credential"
+    prefillIsSixDigitOtp && initialEmailOtpAvailable ? "otp" : "credential"
   );
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginCredential, setLoginCredential] = useState("");
-  const [loginOtp, setLoginOtp] = useState("");
+  const [loginEmail, setLoginEmail] = useState(initialPrefillEmail);
+  const [loginCredential, setLoginCredential] = useState(prefillVoucherValue);
+  const [loginOtp, setLoginOtp] = useState(prefillOtpValue);
+  const [otpCopied, setOtpCopied] = useState(false);
   const [otpSentNotice, setOtpSentNotice] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -214,9 +230,26 @@ export function CustomerWalletClient({
     }
   }, [wallet, modalClaimedCoupon?.couponCode, refreshWallet]);
 
+  // Attempt best-effort auto-copy when arriving via email "一键复制验证码" link
+  useEffect(() => {
+    if (!prefillOtpValue) return;
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+      return;
+    }
+    void navigator.clipboard
+      .writeText(prefillOtpValue)
+      .then(() => {
+        setOtpCopied(true);
+        window.setTimeout(() => setOtpCopied(false), 3500);
+      })
+      .catch(() => {
+        // Browser may require explicit user tap; the prominent Copy button handles that cleanly
+      });
+  }, [prefillOtpValue]);
+
   // Pre-fill login credential from localStorage if available on same browser
   useEffect(() => {
-    if (wallet) return;
+    if (wallet || prefillVoucherValue || prefillOtpValue) return;
     try {
       const saved = window.localStorage.getItem(COUPON_LOCAL_STORAGE_KEY);
       if (saved) {
@@ -549,6 +582,30 @@ export function CustomerWalletClient({
     }
   };
 
+  const handleCopyOtp = async (codeToCopy: string) => {
+    if (!codeToCopy) return;
+    try {
+      await navigator.clipboard.writeText(codeToCopy);
+      setOtpCopied(true);
+      window.setTimeout(() => setOtpCopied(false), 2500);
+    } catch {
+      // Ignore clipboard permissions
+    }
+  };
+
+  const handlePasteOtp = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      const digits = text.replace(/\D/g, "").slice(0, 6);
+      if (digits) {
+        setLoginOtp(digits);
+        setAuthError(null);
+      }
+    } catch {
+      // Ignore clipboard permission restrictions
+    }
+  };
+
   const handleDownloadVoucherPng = (coupon: WelcomeCouponRecord) => {
     if (!qrDataUrl) return;
     const canvas = document.createElement("canvas");
@@ -739,24 +796,68 @@ export function CustomerWalletClient({
                 </div>
               ) : (
                 <div>
+                  {prefillOtpValue && (
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-cinnabar/35 bg-[#fbf6ec] px-3.5 py-2.5">
+                      <div className="text-xs">
+                        <span className="font-semibold text-ink-soft">
+                          {pick("已从邮件自动带入验证码：", "From email: ")}
+                        </span>
+                        <span className="font-mono text-base font-extrabold tracking-widest text-cinnabar">
+                          {prefillOtpValue}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyOtp(prefillOtpValue)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-cinnabar/35 bg-white px-2.5 py-1.5 text-xs font-extrabold text-cinnabar-dark transition-colors hover:bg-cinnabar hover:text-white"
+                      >
+                        {otpCopied ? (
+                          <>
+                            <Check className="h-3.5 w-3.5 text-jade" />
+                            <span>{pick("已拷贝", "Copied")}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3.5 w-3.5" />
+                            <span>{pick("一键拷贝", "Copy")}</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
                   <label
                     htmlFor="wallet-login-otp"
                     className="block text-xs font-bold text-ink"
                   >
                     {pick("6 位邮箱验证码", "6-Digit Email Code")}
                   </label>
-                  <div className="mt-1.5 flex gap-2">
-                    <input
-                      id="wallet-login-otp"
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={6}
-                      required
-                      value={loginOtp}
-                      onChange={(e) => setLoginOtp(e.target.value)}
-                      placeholder="123456"
-                      className="flex-1 rounded-xl border border-kraft-deep bg-parchment/45 px-3.5 py-3 font-mono text-sm tracking-widest text-ink outline-none focus:border-cinnabar focus:bg-white"
-                    />
+                  <div className="mt-1.5 flex flex-wrap gap-2">
+                    <div className="relative min-w-[160px] flex-1">
+                      <input
+                        id="wallet-login-otp"
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        maxLength={6}
+                        required
+                        value={loginOtp}
+                        onChange={(e) =>
+                          setLoginOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                        }
+                        placeholder="123456"
+                        className="w-full rounded-xl border border-kraft-deep bg-parchment/45 py-3 pr-20 pl-3.5 font-mono text-sm tracking-widest text-ink outline-none focus:border-cinnabar focus:bg-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void handlePasteOtp()}
+                        title={pick("从剪贴板粘贴验证码", "Paste from clipboard")}
+                        className="absolute top-1/2 right-2 inline-flex -translate-y-1/2 items-center gap-1 rounded-lg border border-kraft-deep bg-white px-2 py-1 text-[11px] font-bold text-ink-soft hover:border-cinnabar/40 hover:text-cinnabar"
+                      >
+                        <ClipboardPaste className="h-3 w-3" />
+                        <span>{pick("粘贴", "Paste")}</span>
+                      </button>
+                    </div>
                     <button
                       type="button"
                       disabled={authLoading}
